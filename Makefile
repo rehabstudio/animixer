@@ -1,5 +1,5 @@
-setup:
-	cd functions && npm install
+setup-fb:
+	cd firebase/functions && npm install
 
-deploy:
-	cd functions && npm run deploy
+deploy-fb:
+	cd firebase/functions && npm run deploy

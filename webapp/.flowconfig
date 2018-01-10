@@ -1,0 +1,14 @@
+[ignore]
+.*/build/.*
+.*/public/.*
+.*/setup.js
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+
+[strict]

@@ -26,12 +26,12 @@ const bucket = storage.bucket(config.storageBucket);
 
 firebase.initializeApp(config);
 
-// a. the action name from the make_name Dialogflow intent
+// the action name from the generate_animal Dialogflow intent
 const GENERATE_ACTION = 'generate_animal';
-// b. the parameters that are parsed from the make_name intent
-const ANIMAL1_ARGUMENT = 'animal1';
-const ANIMAL2_ARGUMENT = 'animal2';
-const ANIMAL3_ARGUMENT = 'animal3';
+// the parameters that are parsed from the generate_animal intent
+const ANIMAL1_ARGUMENT = 'animalHead';
+const ANIMAL2_ARGUMENT = 'animalBody';
+const ANIMAL3_ARGUMENT = 'animalLegs';
 
 
 exports.generateAnimal = functions.https.onRequest((request, response) => {
@@ -39,17 +39,15 @@ exports.generateAnimal = functions.https.onRequest((request, response) => {
   console.log('Request headers: ' + JSON.stringify(request.headers));
   console.log('Request body: ' + JSON.stringify(request.body));
 
-
-// c. The function that generates the silly name
   function generate (app) {
-    let animal1 = app.getArgument(ANIMAL1_ARGUMENT);
-    let animal2 = app.getArgument(ANIMAL2_ARGUMENT);
-    let animal3 = app.getArgument(ANIMAL3_ARGUMENT);
+    let animalHead = app.getArgument(ANIMAL1_ARGUMENT);
+    let animalBody = app.getArgument(ANIMAL2_ARGUMENT);
+    let animalLegs = app.getArgument(ANIMAL3_ARGUMENT);
     let imageName = 'trex.jpg';
     let imageUrl = `https://storage.googleapis.com/${config.storageBucket}/${imageName}`;
 
     let simpleResp = {};
-    let animalName = animal1 + animal2 + animal3;
+    let animalName = animalHead + animalBody + animalLegs;
     simpleResp.speech = ('<speak>Alright, your animal is ' +
       animalName +
       '! I hope you like it. This is what it sounds like...' +
@@ -62,7 +60,7 @@ exports.generateAnimal = functions.https.onRequest((request, response) => {
 
     app.tell(resp);
   }
-  // d. build an action map, which maps intent names to functions
+  // build an action map, which maps intent names to functions
   let actionMap = new Map();
   actionMap.set(GENERATE_ACTION, generate);
 
