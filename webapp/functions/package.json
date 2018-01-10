@@ -8,9 +8,15 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
+  "engines": {
+    "node": "~4.2"
+  },
   "dependencies": {
-    "firebase-admin": "~5.4.2",
-    "firebase-functions": "^0.7.1"
+    "@google-cloud/storage": "^1.5.2",
+    "actions-on-google": "^1.0.0",
+    "firebase": "^4.8.1",
+    "firebase-admin": "^4.2.1",
+    "firebase-functions": "^0.5.7"
   },
   "private": true
 }
