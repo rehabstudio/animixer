@@ -17,12 +17,12 @@ import routes from './routes';
 import registerServiceWorker from './registerServiceWorker';
 
 firebase.initializeApp({
-  apiKey: "AIzaSyB9j98cQ4v_tu7mLr-gClzWxSNTmAOd8es",
-  authDomain: "animixer-1d266.firebaseapp.com",
-  databaseURL: "https://animixer-1d266.firebaseio.com",
-  projectId: "animixer-1d266",
-  storageBucket: "animixer-1d266.appspot.com",
-  messagingSenderId: "74799871575"
+  apiKey: 'AIzaSyB9j98cQ4v_tu7mLr-gClzWxSNTmAOd8es',
+  authDomain: 'animixer-1d266.firebaseapp.com',
+  databaseURL: 'https://animixer-1d266.firebaseio.com',
+  projectId: 'animixer-1d266',
+  storageBucket: 'animixer-1d266.appspot.com',
+  messagingSenderId: '74799871575',
 });
 
 const render = props =>
