@@ -1,5 +1,14 @@
-setup-fb:
-	cd firebase/functions && npm install
+setup:
+	yarn install
 
-deploy-fb:
-	cd firebase/functions && npm run deploy
+run:
+	yarn start
+
+deploy:
+	yarn build && firebase deploy
+
+setup-functions:
+	cd functions && yarn install
+
+deploy-functions:
+	cd functions && npm run deploy
