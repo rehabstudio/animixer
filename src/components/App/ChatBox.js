@@ -107,8 +107,12 @@ class ChatBox extends React.Component<{}, {}> {
 
     imageNode.className += 'container';
     title.innerHTML = imageData.basic_card.title;
+    image.className += 'image-size';
     image.src = imageData.basic_card.image.url;
-    image.alt = imageData.basic_card.accessibility_text;
+    if (imageData.basic_card.image.accessibility_text) {
+      image.alt = imageData.basic_card.image.accessibility_text;
+    }
+    image.addEventListener('load', this.updateScroll.bind(this));
 
     imageNode.appendChild(title);
     imageNode.appendChild(image);
