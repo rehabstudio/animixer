@@ -85,7 +85,7 @@ class ChatBox extends React.Component<{}, {}> {
   createQueryNode(query) {
     let node = document.createElement('div');
     node.className =
-      'clearfix left-align left card-panel green accent-1 bring-front';
+      'clearfix left-align left card-panel green accent-1 bring-front margins';
     node.innerHTML = query;
     this.resultDiv.appendChild(node);
   }
@@ -93,7 +93,7 @@ class ChatBox extends React.Component<{}, {}> {
   createResponseNode() {
     let node = document.createElement('div');
     node.className =
-      'clearfix right-align right card-panel blue-text text-darken-2 hoverable bring-front';
+      'clearfix right-align right card-panel blue-text text-darken-2 hoverable bring-front margins';
     node.innerHTML = '...';
     this.resultDiv.appendChild(node);
     this.updateScroll();
@@ -152,6 +152,7 @@ class ChatBox extends React.Component<{}, {}> {
       node.innerHTML = response ? response : '[empty response]';
     }
     node.setAttribute('data-actual-response', response);
+    this.updateScroll();
   }
 
   updateScroll() {
