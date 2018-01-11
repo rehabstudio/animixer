@@ -8,7 +8,8 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { ApiAiClient } from 'api-ai-javascript';
+// Compiled with babel in node_modules for build process
+import { ApiAiClient } from '.lib/api-ai-javascript';
 
 const ENTER_KEY_CODE = 13;
 

@@ -6,6 +6,7 @@
     "@firebase/app": "^0.1.4",
     "@firebase/auth": "^0.3.0",
     "@firebase/firestore": "^0.2.1",
+    "api-ai-javascript": "^2.0.0-beta.21",
     "classnames": "^2.2.5",
     "history": "^4.7.2",
     "lodash": "^4.17.4",
@@ -20,6 +21,8 @@
     "universal-router": "^5.0.0"
   },
   "devDependencies": {
+    "api-ai-javascript": "^2.0.0-beta.21",
+    "babel-cli": "^6.26.0",
     "babel-plugin-relay": "^1.3.0",
     "babel-plugin-styled-components": "^1.2.0",
     "babel-plugin-transform-export-extensions": "^6.22.0",
@@ -53,7 +56,7 @@
     ]
   },
   "scripts": {
-    "postinstall": "(cd ./functions && yarn install --no-lockfile)",
+    "postinstall": "NODE_ENV=production ./node_modules/.bin/babel node_modules/api-ai-javascript --out-dir  node_modules/.lib/api-ai-javascript && (cd ./functions && yarn install --no-lockfile)",
     "precommit": "lint-staged",
     "flow": "flow",
     "lint": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" . && stylelint \"src/**/*.js\"",
