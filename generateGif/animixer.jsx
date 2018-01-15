@@ -1,0 +1,208 @@
+/*
+  @Author: Noel Wilson
+  @company: Rehab
+
+  After Effects script to automate Rendering animixer animals,
+  generation of animals and rendering of image sequence
+*/
+
+// ------------------------------------------------------------------
+// Utils
+// ------------------------------------------------------------------
+
+String.prototype.endsWith = function( str ) {
+    return this.substring( this.length - str.length, this.length ) === str;
+};
+
+String.prototype.startsWith = function( str ) {
+    return this.substring( 0, str.length ) === str;
+};
+
+function remove(array, element) {
+    const index = array.indexOf(element);
+    array.splice(index, 1);
+}
+
+function permutator(list, maxLen) {
+    // Copy initial values as arrays
+    var perm = list.map(function(val) {
+        return [val];
+    });
+    // Our permutation generator
+    var generate = function(perm, maxLen, currLen) {
+        // Reached desired length
+        if (currLen === maxLen) {
+            return perm;
+        }
+        // For each existing permutation
+        for (var i = 0, len = perm.length; i < len; i++) {
+            var currPerm = perm.shift();
+            // Create new permutation
+            for (var k = 0; k < list.length; k++) {
+                if (currPerm.indexOf(list[k]) == -1) {
+                    perm.push(currPerm.concat(list[k]));
+                }
+            }
+        }
+        // Recurse
+        return generate(perm, maxLen, currLen + 1);
+    };
+    // Start with size 1 because of initial values
+    return generate(perm, maxLen, 1);
+};
+
+// ------------------------------------------------------------------
+// After Effects project asset getters
+// ------------------------------------------------------------------
+
+function getComps(compareString) {
+    var comps = [];
+    for (var i = 1; i <= app.project.numItems; i++) {
+        if (app.project.item(i) instanceof CompItem && app.project.item(i).name.endsWith(compareString) ) {
+            comps.push(app.project.item(i));
+        }
+    }
+    return comps;
+};
+
+function getLayers(comp, compareString , operation) {
+    operation = operation || 'endsWith'
+    var layers= [];
+    for (var i = 1; i <= comp.layers.length; i++) {
+        if (eval('comp.layers[i].name.'+operation+'(compareString)')) {
+            layers.push(comp.layers[i]);
+        }
+    }
+    return layers;
+};
+
+// ------------------------------------------------------------------
+// After Effects render functions
+// ------------------------------------------------------------------
+
+function renderAnimals() {
+    //app.beginUndoGroup('XXX');
+
+    // Get all walk comps
+    var walkComps = getComps('_walk');
+
+    // While there are walk comps to process
+    while (walkComps.length > 0) {
+
+        // Generate all possible combinations for target comp
+        var permutations = permutator(walkComps, 3);
+
+        for(var i=0;i<permutations.length;i++){
+            renderAnimalComp(permutations[i][0], permutations[i][1], permutations[i][2]);
+        }
+
+        // remove target comp from list of comps
+        walkComps.shift();
+    }
+
+    //app.endUndoGroup();
+    //app.project.renderQueue.render();
+}
+
+function getMarkerWidth(markers) {
+    return  markers[1].transform.position.value[0]  - markers[0].transform.position.value[0] ;
+}
+
+/**
+ * Place the legs of the new animal between the body legs markers
+ */
+function placeLegs(bodyMarkers, legsMarkers, legLayer) {
+    // Find center of markers
+    var centerx = (bodyMarkers[0].transform.position.value[0] + bodyMarkers[1].transform.position.value[0]) / 2;
+    var centery = (bodyMarkers[1].transform.position.value[1] + bodyMarkers[1].transform.position.value[1]) / 2;
+    var bodyWidth = Math.abs(getMarkerWidth(bodyMarkers));
+    var legsWidth = Math.abs(getMarkerWidth(legsMarkers));
+    var scale = bodyWidth /legsWidth;
+
+    // Move legs anchor to center
+    legLayer.transform.position.setValueAtTime(0, [centerx, centery]);
+
+    // Make legs width match markers width
+    if (legLayer.name.endsWith('_noscale') === false) {
+        legLayer.transform.scale.setValueAtTime(0, [scale*100, 100]);
+    }
+}
+
+/**
+ * Move currently displayed Render layers to correct places then render this comp
+ */
+function renderAnimalComp(headComp, bodyComp, legsComp) {
+    // Create render comp for animal
+    var head = headComp.name.replace('_walk', '') ;
+    var body = bodyComp.name.replace('_walk', '');
+    var tail = bodyComp.name.replace('_tail', '');
+    var legs = legsComp.name.replace('_walk', '');
+    var compName = head + '_' + body + '_' + legs + '_render';
+    var existing = getComps(compName)[0];
+
+    if (existing) {
+        existing.remove();
+    }
+
+    var renderComp = app.project.items.addComp(compName, 1800, 1800, 1, 0.7 , 25)
+
+    // Get BG layer
+    var bgLayer = getLayers(bodyComp, 'bg', 'startsWith')[0];
+
+    // Get All layers we need to generate new comp
+    var headLayer = getLayers(headComp, head + '_head', 'startsWith')[0];
+    var bodyLayer = getLayers(bodyComp, body  + '_body', 'startsWith')[0];
+    var tailLayer = getLayers(bodyComp, body  + '_tail', 'startsWith')[0];
+    var legsLayer = getLayers(legsComp, legs + '_legs', 'startsWith')[0];
+    var bodyLegsMarkers = getLayers(bodyComp, 'x_' + body + '_legs', 'startsWith');
+    var legsMarkers = getLayers(legsComp, 'x_' + legs + '_legs', 'startsWith');
+    var headMarker = getLayers(bodyComp, 'x_' + body + '_head', 'startsWith')[0];
+    var tailMarker = getLayers(bodyComp, 'x_' + body + '_tail', 'startsWith')[0];
+    var markerPos;
+
+    // Copy layers to render comp
+    bgLayer.copyToComp(renderComp);
+    headLayer.copyToComp(renderComp);
+    legsLayer.copyToComp(renderComp);
+    tailLayer.copyToComp(renderComp);
+    bodyLayer.copyToComp(renderComp);
+
+    // Get render layers
+    var renderHeadLayer = getLayers(renderComp, head + '_head', 'startsWith')[0];
+    var renderBodyLayer = getLayers(renderComp, body + '_body', 'startsWith')[0];
+    var renderLegsLayer = getLayers(renderComp, legs + '_legs', 'startsWith')[0];
+    var renderTailLayer = getLayers(renderComp, body + '_tail', 'startsWith')[0];
+
+    // Move head to body
+    markerPos = headMarker.transform.position.value;
+    renderHeadLayer.transform.position.setValueAtTime(0, [markerPos[0] , markerPos[1] ]);
+
+    // Move tail to body
+    markerPos = tailMarker.transform.position.value;
+    renderTailLayer.transform.position.setValueAtTime(0, [markerPos[0] , markerPos[1] ]);
+
+    // Move legs to body
+    placeLegs(bodyLegsMarkers, legsMarkers, renderLegsLayer);
+
+    // Parent head and tail to body
+    renderHeadLayer.parent = renderBodyLayer;
+    renderTailLayer.parent = renderBodyLayer;
+
+    // render
+    var renderItem = app.project.renderQueue.items.add(renderComp);
+    var output = renderItem.outputModule(1);
+    var filepath = '~/animixer/' + compName + '/' + compName ;
+
+    Folder(filepath).create();
+    output.file = new File(filepath);
+
+    output.applyTemplate('TIFF Sequence with Alpha');
+
+    return [renderComp, renderItem];
+}
+
+// ------------------------------------------------------------------
+// Main
+// ------------------------------------------------------------------
+
+renderAnimals();

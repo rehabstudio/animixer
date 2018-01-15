@@ -4,6 +4,7 @@
 # Dependencies
 /node_modules
 /functions/node_modules
+venv
 
 # Testing
 /coverage
