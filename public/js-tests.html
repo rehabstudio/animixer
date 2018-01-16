@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <form id="animal-form">
+      <h2>Animal type search</h2>
+      <input type="search" id="animal-field" />
+      <button type="submit">Submit</button>
+      <p id="typeOutput"></p>
+    </form>
+    <form id="chooseAnimals">
+      <h2>Animal name maker</h2>
+      <select>
+        <option>Head</option>
+        <option value="chicken">Chicken</option>
+        <option value="crocodile">Crocodile</option>
+        <option value="elephant">Elephant</option>
+        <option value="giraffe">Giraffe</option>
+        <option value="rhinoceros">Rhino</option>
+        <option value="tiger">Tiger</option>
+        </select>
+        <select>
+        <option>Body</option>
+        <option value="chicken">Chicken</option>
+        <option value="crocodile">Crocodile</option>
+        <option value="elephant">Elephant</option>
+        <option value="giraffe">Giraffe</option>
+        <option value="rhinoceros">Rhino</option>
+        <option value="tiger">Tiger</option>
+        </select>
+        <select>
+        <option>Legs</option>
+        <option value="chicken">Chicken</option>
+        <option value="crocodile">Crocodile</option>
+        <option value="elephant">Elephant</option>
+        <option value="giraffe">Giraffe</option>
+        <option value="rhinoceros">Rhino</option>
+        <option value="tiger">Tiger</option>
+        </select>
+        <button type="submit">Submit</button>
+        <p id="nameOutput"></p>
+    </form>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+
+// Animal type lookup
+  const acceptableAnimals = ['chicken', 'crocodile', 'giraffe', 'monkey'];
+  const acceptableTypes = ['Animal', 'Bird', 'Primate', 'Reptile'];
+  const replacementAnimals = {
+    'Animal': 'giraffe',
+    'Bird': 'chicken',
+    'Primate': 'monkey',
+    'Reptile': 'crocodile',
+  }
+
+  const animalForm = document.getElementById('animal-form');
+  const animalField = document.getElementById('animal-field');
+  const outputField = document.getElementById('typeOutput');
+  animalForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let animalName = animalField.value.toLowerCase();
+    if (acceptableAnimals.includes(animalName)) {
+      outputField.textContent = 'All good';
+    } else {
+      animalTypeLookup(animalName);
+    }
+  });
+  function animalTypeLookup(animalName) {
+    const resultArray = [];
+    let typeMatchResponse;
+    axios.get('https://kgsearch.googleapis.com/v1/entities:search', {
+      params: {
+        query: animalName,
+        types: 'Thing',
+        fields: 'itemListElement',
+        key: 'AIzaSyAYqqXyXbUaqfMg_yAps3ZSLvld5inqVYY',
+      }
+    })
+    .then((response) => {
+      const things = response.data.itemListElement;
+      [...things].forEach((thing) => {
+        if (acceptableTypes.includes(thing.result.description) && resultArray.includes(thing.result.description) == false) {
+          resultArray.push(thing.result.description);
+        }
+      });
+      if (resultArray.length > 0) {
+        const resultType = resultArray[0];
+        typeMatchResponse = `I don’t know this ${resultType.toLowerCase()}, but I have a ${replacementAnimals[resultType]}`;
+      } else {
+        typeMatchResponse = `I don’t think that’s an animal. Try something else.`;
+      }
+      outputField.textContent = typeMatchResponse;
+    });
+  }
+
+// Animal name maker
+
+const animalSyllables = {
+'chicken': ['chick', 'ick', 'ken'],
+'crocodile': ['croc', 'oco', 'dile'],
+'elephant': ['ele', 'epha', 'phant'],
+'giraffe': ['gir', 'ira', 'raffe'],
+'rhinoceros': ['rhin', 'oçe', 'ros'],
+'tiger': ['ti', 'ige', 'ger'],
+}
+
+const chooseAnimals = document.getElementById('chooseAnimals');
+const animalParts = chooseAnimals.querySelectorAll('select');
+const nameOutput = document.getElementById('nameOutput');
+
+chooseAnimals.addEventListener('submit', (e) => {
+e.preventDefault();
+const animalChoice = [];
+animalParts.forEach((part) => {
+  animalChoice.push(part.value);
+});
+console.log(animalChoice);
+makeAnimalName(animalChoice);
+});
+
+function makeAnimalName(animalChoice) {
+
+let animalName = '';
+let loopCount = 0;
+[...animalChoice].forEach((animal) => {
+  animalName += animalSyllables[animal][loopCount];
+  loopCount++;
+});
+nameOutput.textContent = animalName;
+}
+  </script>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 {
   "name": "app",
   "version": "0.0.0",
-  "homepage" : "https://animixer-1d266.firebaseapp.com/",
+  "homepage": "https://animixer-1d266.firebaseapp.com/",
   "private": true,
   "dependencies": {
     "@firebase/app": "^0.1.4",
