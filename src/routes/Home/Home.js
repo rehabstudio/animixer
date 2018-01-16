@@ -9,7 +9,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import Card from 'material-ui/Card';
-import Typography from 'material-ui/Typography';
 import ChatBox from '../../components/App/ChatBox';
 
 const Container = styled.div`
@@ -28,9 +27,6 @@ class Home extends React.Component<{}> {
     return (
       <Container>
         <Content>
-          <Typography type="headline" gutterBottom>
-            <strong>Animixer</strong>
-          </Typography>
           <ChatBox accessToken="35806a855ec547b28ce01e07815569e4" />
         </Content>
       </Container>

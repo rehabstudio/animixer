@@ -14,4 +14,4 @@ osascript generateImages.scpt
 
 # Generate gifs and upload to cloud storage
 source ./setup.sh
-python generate_gifs.py
+GOOGLE_APPLICATION_CREDENTIALS='/Users/noel.wilson/Projects/animixer/animixer-pk.json' python generate_gifs.py

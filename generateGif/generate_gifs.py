@@ -37,8 +37,8 @@ def upload_to_cloud(file_paths):
     for gif in tqdm(file_paths):
         file_name = gif.split('/')[-1]
         blob = bucket.blob(file_name)
-        blob.make_public()
         blob.upload_from_filename(gif)
+        blob.make_public()
 
 
 if __name__ == '__main__':

@@ -10,6 +10,12 @@
 // Utils
 // ------------------------------------------------------------------
 
+var errorStr = '';
+
+String.prototype.trim = function( str ) {
+    return this.replace(/^\s+|\s+$/gm,'');
+}
+
 String.prototype.endsWith = function( str ) {
     return this.substring( this.length - str.length, this.length ) === str;
 };
@@ -65,14 +71,29 @@ function getComps(compareString) {
     return comps;
 };
 
+function getFolder(compareString) {
+    var comps = [];
+    for (var i = 1; i <= app.project.numItems; i++) {
+        if (app.project.item(i) instanceof FolderItem && app.project.item(i).name.endsWith(compareString) ) {
+            comps.push(app.project.item(i));
+        }
+    }
+    return comps;
+};
+
 function getLayers(comp, compareString , operation) {
     operation = operation || 'endsWith'
     var layers= [];
     for (var i = 1; i <= comp.layers.length; i++) {
-        if (eval('comp.layers[i].name.'+operation+'(compareString)')) {
+        var name = comp.layers[i].name.trim();
+        if (eval('name.'+operation+'(compareString)')) {
             layers.push(comp.layers[i]);
         }
     }
+    if (layers.length === 0) {
+        errorStr += 'Layer not found: ' + compareString + '\n';
+    }
+
     return layers;
 };
 
@@ -85,6 +106,7 @@ function renderAnimals() {
 
     // Get all walk comps
     var walkComps = getComps('_walk');
+    errorStr = '';
 
     // While there are walk comps to process
     while (walkComps.length > 0) {
@@ -93,12 +115,25 @@ function renderAnimals() {
         var permutations = permutator(walkComps, 3);
 
         for(var i=0;i<permutations.length;i++){
-            var renderCompItem = renderAnimalComp(permutations[i][0], permutations[i][1], permutations[i][2]);
-            scaleComp(renderCompItem[0], 0.25);
+            try {
+                var renderCompItem = renderAnimalComp(permutations[i][0], permutations[i][1], permutations[i][2]);
+                scaleComp(renderCompItem[0], 0.25);
+            }
+            catch(err) {
+                errorStr +='Error missing element / badly named element, skipping animal: ' + permutations[i][0].name + ' ' + permutations[i][1].name + ' ' + permutations[i][2].name + '\n';
+                errorStr += 'Error: ' + err + '\n';
+            }
         }
 
         // remove target comp from list of comps
         walkComps.shift();
+    }
+
+    // Show errors
+    if (errorStr) {
+        errorStr = 'Error Report:\n' + errorStr;
+        $.writeln(errorStr);
+        alert(errorStr);
     }
 
     //app.endUndoGroup();
@@ -140,12 +175,18 @@ function renderAnimalComp(headComp, bodyComp, legsComp) {
     var legs = legsComp.name.replace('_walk', '');
     var compName = head + '_' + body + '_' + legs + '_render';
     var existing = getComps(compName)[0];
+    var folderName = 'Animixes';
 
     if (existing) {
         existing.remove();
     }
 
-    var renderComp = app.project.items.addComp(compName, 1800, 1800, 1, 0.7 , 25)
+    var renderFolder = getFolder(folderName)[0];
+    if (renderFolder === undefined) {
+        renderFolder = app.project.items.addFolder(folderName);
+    }
+    var renderComp = app.project.items.addComp(compName, 1800, 1800, 1, 0.7 , 25);
+    renderComp.parentFolder = renderFolder;
 
     // Get BG layer
     var bgLayer = getLayers(bodyComp, 'bg', 'startsWith')[0];
@@ -182,6 +223,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp) {
     renderLegsLayer.visibile = true;
     renderTailLayer.locked = false;
     renderTailLayer.visibile = true;
+    renderBGLayer.locked = false;
     renderBGLayer.visibile = true;
 
     // Move head to body

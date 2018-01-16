@@ -14,7 +14,7 @@ const Container = styled.div`
   bottom: 0;
   left: 0;
   padding: 24px;
-  color: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 1);
 `;
 
 const Copyright = styled.span`
@@ -31,7 +31,7 @@ const ExtLink = styled.a`
   &:hover,
   &:active,
   &:visited {
-    color: rgba(0, 0, 0, 0.6);
+    color: rgba(255, 255, 255, 1);
     text-decoration: none;
   }
 

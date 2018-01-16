@@ -5,6 +5,10 @@
 /node_modules
 /functions/node_modules
 venv
+/generateSound/models/*
+
+# Private key
+animixer-pk.json
 
 # Testing
 /coverage

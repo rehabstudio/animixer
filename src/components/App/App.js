@@ -16,8 +16,7 @@ import Footer from './Footer';
 
 const Container = styled.div`
   height: 100vh;
-  background: url(https://koistya.github.io/files/background-v1-1920x1080.jpg)
-    no-repeat center center fixed;
+  background: url(/safari-background.jpg) no-repeat center center fixed;
   background-size: cover;
 `;
 

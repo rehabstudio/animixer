@@ -14,10 +14,10 @@ import { ApiAiClient } from '.lib/api-ai-javascript';
 const ENTER_KEY_CODE = 13;
 
 const Container = styled.div`
-  height: calc(100vh - 225px);
-  height: -o-calc(100vh - 225px); /* opera */
-  height: -webkit-calc(100vh - 225px); /* google, safari */
-  height: -moz-calc(100vh - 225px); /* firefox */
+  height: calc(100vh - 180px);
+  height: -o-calc(100vh - 180px); /* opera */
+  height: -webkit-calc(100vh - 180px); /* google, safari */
+  height: -moz-calc(100vh - 180px); /* firefox */
   overflow-y: auto;
 `;
 
@@ -73,7 +73,7 @@ class ChatBox extends React.Component<{}, {}> {
       .catch(
         function(err) {
           console.log(err);
-          this.setResponseOnNode('Something goes wrong', responseNode);
+          this.setResponseOnNode('Something went wrong', responseNode);
         }.bind(this),
       );
   }
@@ -124,13 +124,16 @@ class ChatBox extends React.Component<{}, {}> {
     let text = document.createElement('p');
     let audio = document.createElement('audio');
     let source = document.createElement('source');
-    let audioContent = /<audio(.*?)<\/audio>/g.exec(speech)[1];
-    let audioSrc = /src="(.*?)"/g.exec(audioContent)[1];
-    let audioExt = audioSrc.split('.').pop();
+    let audioContent = /<audio(.*?)<\/audio>/g.exec(speech);
 
-    audio.setAttribute('controls', '');
-    source.src = audioSrc;
-    source.setAttribute('type', 'audio/' + audioExt);
+    if (audioContent) {
+      let audioSrc = /src="(.*?)"/g.exec(audioContent[1])[1];
+      let audioExt = audioSrc.split('.').pop();
+      audio.setAttribute('controls', '');
+      source.src = audioSrc;
+      source.setAttribute('type', 'audio/' + audioExt);
+    }
+
     text.innerHTML = /<speak>(.*?)<\/speak>/g
       .exec(speech)[1]
       .replace(audio, '');
