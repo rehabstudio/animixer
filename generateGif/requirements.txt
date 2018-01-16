@@ -54,4 +54,5 @@ pytz==2017.3
 requests==2.18.4
 rsa==3.4.2
 six==1.11.0
+tqdm==4.19.5
 urllib3==1.22

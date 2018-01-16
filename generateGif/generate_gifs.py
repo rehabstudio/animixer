@@ -1,3 +1,5 @@
+#!/ bin/python3
+
 import os
 from google.cloud import storage
 import imageio
@@ -22,7 +24,7 @@ def generate_gifs():
         for filename in sorted(filenames):
             images.append(imageio.imread(filename))
         gif_path = os.path.join(subdir, (subdir_name + '.gif'))
-        imageio.mimsave(gif_path, images)
+        imageio.mimsave(gif_path, images, fps=25)
         gif_paths.append(gif_path)
 
     return gif_paths
@@ -35,6 +37,7 @@ def upload_to_cloud(file_paths):
     for gif in tqdm(file_paths):
         file_name = gif.split('/')[-1]
         blob = bucket.blob(file_name)
+        blob.make_public()
         blob.upload_from_filename(gif)
 
 

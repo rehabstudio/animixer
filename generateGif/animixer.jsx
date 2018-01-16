@@ -93,7 +93,8 @@ function renderAnimals() {
         var permutations = permutator(walkComps, 3);
 
         for(var i=0;i<permutations.length;i++){
-            renderAnimalComp(permutations[i][0], permutations[i][1], permutations[i][2]);
+            var renderCompItem = renderAnimalComp(permutations[i][0], permutations[i][1], permutations[i][2]);
+            scaleComp(renderCompItem[0], 0.25);
         }
 
         // remove target comp from list of comps
@@ -168,10 +169,20 @@ function renderAnimalComp(headComp, bodyComp, legsComp) {
     bodyLayer.copyToComp(renderComp);
 
     // Get render layers
+    var renderBGLayer = getLayers(renderComp, 'bg', 'startsWith')[0];
     var renderHeadLayer = getLayers(renderComp, head + '_head', 'startsWith')[0];
     var renderBodyLayer = getLayers(renderComp, body + '_body', 'startsWith')[0];
     var renderLegsLayer = getLayers(renderComp, legs + '_legs', 'startsWith')[0];
     var renderTailLayer = getLayers(renderComp, body + '_tail', 'startsWith')[0];
+    renderHeadLayer.locked = false;
+    renderHeadLayer.visibile = true;
+    renderBodyLayer.locked = false;
+    renderBodyLayer.visibile = true;
+    renderLegsLayer.locked = false;
+    renderLegsLayer.visibile = true;
+    renderTailLayer.locked = false;
+    renderTailLayer.visibile = true;
+    renderBGLayer.visibile = true;
 
     // Move head to body
     markerPos = headMarker.transform.position.value;
@@ -199,6 +210,75 @@ function renderAnimalComp(headComp, bodyComp, legsComp) {
     output.applyTemplate('TIFF Sequence with Alpha');
 
     return [renderComp, renderItem];
+}
+
+function scaleComp(comp, scaleFactor)
+{
+    var activeComp = comp;
+
+    // Create a null 3D layer.
+    var null3DLayer = activeComp.layers.addNull();
+    null3DLayer.threeDLayer = true;
+
+    // Set its position to (0,0,0).
+    null3DLayer.position.setValue([0,0,0]);
+
+    // Set null3DLayer as parent of all layers that don't have parents.
+    makeParentLayerOfAllUnparented(activeComp, null3DLayer);
+
+    // Set new comp width and height.
+    activeComp.width  = Math.floor(activeComp.width * scaleFactor);
+    activeComp.height = Math.floor(activeComp.height * scaleFactor);
+
+    // Then for all cameras, scale the Zoom parameter proportionately.
+    scaleAllCameraZooms(activeComp, scaleFactor);
+
+    // Set the scale of the super parent null3DLayer proportionately.
+    var superParentScale = null3DLayer.scale.value;
+    superParentScale[0] = superParentScale[0] * scaleFactor;
+    superParentScale[1] = superParentScale[1] * scaleFactor;
+    superParentScale[2] = superParentScale[2] * scaleFactor;
+    null3DLayer.scale.setValue(superParentScale);
+
+    // Delete the super parent null3DLayer with dejumping enabled.
+    null3DLayer.remove();
+}
+
+//
+// Sets newParent as the parent of all layers in theComp that don't have parents.
+// This includes 2D/3D lights, camera, av, text, etc.
+//
+function makeParentLayerOfAllUnparented(theComp, newParent)
+{
+    for (var i = 1; i <= theComp.numLayers; i++) {
+        var curLayer = theComp.layer(i);
+        var wasLocked = curLayer.locked;
+        curLayer.locked = false;
+        if (curLayer != newParent && curLayer.parent == null) {
+            curLayer.parent = newParent;
+        }
+        curLayer.locked = wasLocked
+    }
+}
+
+//
+// Scales the zoom factor of every camera by the given scale_factor.
+// Handles both single values and multiple keyframe values.
+function scaleAllCameraZooms(theComp, scaleBy)
+{
+    for (var i = 1; i <= theComp.numLayers; i++) {
+        var curLayer = theComp.layer(i);
+        if (curLayer.matchName == "ADBE Camera Layer") {
+            var curZoom = curLayer.zoom;
+            if (curZoom.numKeys == 0) {
+                curZoom.setValue(curZoom.value * scaleBy);
+            } else {
+                for (var j = 1; j <= curZoom.numKeys; j++) {
+                    curZoom.setValueAtKey(j,curZoom.keyValue(j)*scaleBy);
+                }
+            }
+        }
+    }
 }
 
 // ------------------------------------------------------------------
