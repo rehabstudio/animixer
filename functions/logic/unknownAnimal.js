@@ -2,7 +2,6 @@ const rp = require('request-promise');
 
 function unknownAnimal(animalName) {
   // Animal type lookup
-  const acceptableAnimals = ['chicken', 'crocodile', 'giraffe', 'monkey'];
   const acceptableTypes = ['Animal', 'Bird', 'Primate', 'Reptile'];
   const replacementAnimals = {
     Animal: 'giraffe',
@@ -12,6 +11,7 @@ function unknownAnimal(animalName) {
   };
   const resultArray = [];
   let typeMatchResponse;
+  console.log('animalName:', animalName);
   return rp
     .get({
       url: 'https://kgsearch.googleapis.com/v1/entities:search',
@@ -24,11 +24,11 @@ function unknownAnimal(animalName) {
       resolveWithFullResponse: true,
     })
     .then(response => {
-      const things = response.data.itemListElement;
+      const things = JSON.parse(response.body).itemListElement;
       things.forEach(thing => {
         if (
           acceptableTypes.includes(thing.result.description) &&
-          resultArray.includes(thing.result.description) == false
+          resultArray.includes(thing.result.description) === false
         ) {
           resultArray.push(thing.result.description);
         }

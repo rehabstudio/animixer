@@ -16,16 +16,17 @@ const storage = googleStorage({
   projectId: config.projectId,
   keyFilename: path.resolve('../animixer-pk.json'),
 });
-const bucket = storage.bucket(config.storageBucket);
 
 firebase.initializeApp(config);
 
 // the action name from the generate_animal Dialogflow intent
 const GENERATE_ACTION = 'generate_animal';
+const UNKNOWN_ACTION = 'unknown';
 // the parameters that are parsed from the generate_animal intent
 const ANIMAL1_ARGUMENT = 'animalHead';
 const ANIMAL2_ARGUMENT = 'animalBody';
 const ANIMAL3_ARGUMENT = 'animalLegs';
+const UNKNOWN_ARGUMENT = 'noun';
 const animalSyllables = {
   chicken: ['chick', 'ick', 'ken'],
   crocodile: ['croc', 'oco', 'dile'],
@@ -53,23 +54,15 @@ function makeAnimalName(head, body, legs) {
   return getSyllable(head, 0) + getSyllable(body, 1) + getSyllable(legs, 2);
 }
 
-function verifyAnimals(animalHead, animalBody, animalLegs) {
-  let noHead_1 = 'We can see a head of something but what is it?';
-  let noBody_1 = `Something’s moving in the bushes. It looks like a ${animalHead}. What body does it have?`;
-  let noBody_2 = `Yes, there’s something with the head of a ${animalHead}. What body does it have?`;
-  let nolegs_1 = `The body of a ${animalBody} - that’s a rare animal. And what legs does it have?`;
-  let nolegs_2 = `No-one’s seen an animal like this before with the body of a ${animalLegs}.  And what legs does it have?`;
-
-  // Check that we have the animal
-
-  if (animalHead === null) {
-    return noHead_1;
-  } else if (animalBody === null) {
-    return randomSelection([noBody_1, noBody_2]);
-  } else if (animalLegs === null) {
-    return randomSelection([nolegs_1, nolegs_2]);
-  }
-  return null;
+function unknown(app) {
+  let noun = app.getArgument(UNKNOWN_ARGUMENT);
+  unknownAnimal.unknownAnimal(noun).then(unknownResp => {
+    let simpleResp = {};
+    let resp;
+    simpleResp.speech = `<speak>${unknownResp}</speak>`;
+    resp = new RichResponse().addSimpleResponse(simpleResp);
+    app.tell(resp);
+  });
 }
 
 /**
@@ -81,21 +74,6 @@ function generate(app) {
   let animalLegs = app.getArgument(ANIMAL3_ARGUMENT);
   let simpleResp = {};
   let resp;
-  let context = {
-    animalHead: animalHead,
-    animalBody: animalBody,
-    animalLegs: animalLegs,
-  };
-  let test = app.getContextArgument('animals', 'animalHead');
-  console.log('test:', test);
-  app.setContext('animals', 3, context);
-  let response = verifyAnimals(animalHead, animalBody, animalLegs);
-  if (response) {
-    simpleResp.speech = `<speak>${response}</speak>`;
-    resp = new RichResponse().addSimpleResponse(simpleResp);
-    app.tell(resp);
-    return;
-  }
   let imageName =
     animalHead + '_' + animalBody + '_' + animalLegs + '_render.gif';
   let audioName = animalHead + '_' + animalBody + '.wav';
@@ -114,7 +92,7 @@ function generate(app) {
 
   Promise.all([imagePromise])
     .then(responses => {
-      if (responses[0].statusCode === 200 && responses[0].statusCode == 200) {
+      if (responses[0].statusCode === 200 && responses[0].statusCode === 200) {
         simpleResp.speech =
           '<speak>' +
           randomSelection([success_msg_1, success_msg_2]) +
@@ -145,17 +123,18 @@ function generate(app) {
     });
 }
 
-const animxer = functions.https.onRequest((request, response) => {
+const animixer = functions.https.onRequest((request, response) => {
   const app = new App({ request, response });
   console.log('Request headers: ' + JSON.stringify(request.headers));
   console.log('Request body: ' + JSON.stringify(request.body));
   // build an action map, which maps intent names to functions
   let actionMap = new Map();
   actionMap.set(GENERATE_ACTION, generate);
+  actionMap.set(UNKNOWN_ACTION, unknown);
 
   app.handleRequest(actionMap);
 });
 
 module.exports = {
-  animxer,
+  animixer,
 };
