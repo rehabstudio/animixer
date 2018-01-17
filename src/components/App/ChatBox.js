@@ -93,7 +93,7 @@ class ChatBox extends React.Component<{}, {}> {
   createResponseNode() {
     let node = document.createElement('div');
     node.className =
-      'clearfix right-align right card-panel blue-text text-darken-2 hoverable bring-front margins';
+      'clearfix left-align right card-panel blue-text text-darken-2 hoverable bring-front margins';
     node.innerHTML = '...';
     this.resultDiv.appendChild(node);
     this.updateScroll();

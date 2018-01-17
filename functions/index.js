@@ -26,7 +26,6 @@ const GENERATE_ACTION = 'generate_animal';
 const ANIMAL1_ARGUMENT = 'animalHead';
 const ANIMAL2_ARGUMENT = 'animalBody';
 const ANIMAL3_ARGUMENT = 'animalLegs';
-
 const animalSyllables = {
   chicken: ['chick', 'ick', 'ken'],
   crocodile: ['croc', 'oco', 'dile'],
@@ -35,6 +34,10 @@ const animalSyllables = {
   rhinoceros: ['rhin', 'oçe', 'ros'],
   tiger: ['ti', 'ige', 'ger'],
 };
+
+function randomSelection(values) {
+  return values[Math.floor(Math.random() * values.length)];
+}
 
 /**
  * Create new animal name from list of hardcoded animal Syllables
@@ -50,6 +53,25 @@ function makeAnimalName(head, body, legs) {
   return getSyllable(head, 0) + getSyllable(body, 1) + getSyllable(legs, 2);
 }
 
+function verifyAnimals(animalHead, animalBody, animalLegs) {
+  let noHead_1 = 'We can see a head of something but what is it?';
+  let noBody_1 = `Something’s moving in the bushes. It looks like a ${animalHead}. What body does it have?`;
+  let noBody_2 = `Yes, there’s something with the head of a ${animalHead}. What body does it have?`;
+  let nolegs_1 = `The body of a ${animalBody} - that’s a rare animal. And what legs does it have?`;
+  let nolegs_2 = `No-one’s seen an animal like this before with the body of a ${animalLegs}.  And what legs does it have?`;
+
+  // Check that we have the animal
+
+  if (animalHead === null) {
+    return noHead_1;
+  } else if (animalBody === null) {
+    return randomSelection([noBody_1, noBody_2]);
+  } else if (animalLegs === null) {
+    return randomSelection([nolegs_1, nolegs_2]);
+  }
+  return null;
+}
+
 /**
  * Generate animal response using 3 animals passed from google assistant
  */
@@ -57,6 +79,23 @@ function generate(app) {
   let animalHead = app.getArgument(ANIMAL1_ARGUMENT);
   let animalBody = app.getArgument(ANIMAL2_ARGUMENT);
   let animalLegs = app.getArgument(ANIMAL3_ARGUMENT);
+  let simpleResp = {};
+  let resp;
+  let context = {
+    animalHead: animalHead,
+    animalBody: animalBody,
+    animalLegs: animalLegs,
+  };
+  let test = app.getContextArgument('animals', 'animalHead');
+  console.log('test:', test);
+  app.setContext('animals', 3, context);
+  let response = verifyAnimals(animalHead, animalBody, animalLegs);
+  if (response) {
+    simpleResp.speech = `<speak>${response}</speak>`;
+    resp = new RichResponse().addSimpleResponse(simpleResp);
+    app.tell(resp);
+    return;
+  }
   let imageName =
     animalHead + '_' + animalBody + '_' + animalLegs + '_render.gif';
   let audioName = animalHead + '_' + animalBody + '.wav';
@@ -66,21 +105,19 @@ function generate(app) {
   let audioUrl = `https://storage.googleapis.com/${
     config.storageBucket
   }/${audioName}`;
-  let simpleResp = {};
   let animalName = makeAnimalName(animalHead, animalBody, animalLegs);
-
   // If image doesn't exist display animal not found dialog
   let imagePromise = rp({ uri: imageUrl, resolveWithFullResponse: true });
   //let audioPromise = rp({ uri: audioUrl, resolveWithFullResponse: true });
-  let resp;
+  let success_msg_1 = `Congratulations, you’ve found the wild ${animalName}! This is what is sounds like…`;
+  let success_msg_2 = `Congratulations, you’ve just discovered the mysterious ${animalName}! Hear it...`;
 
   Promise.all([imagePromise])
     .then(responses => {
       if (responses[0].statusCode === 200 && responses[0].statusCode == 200) {
         simpleResp.speech =
-          '<speak>Congratulations, you’ve just discovered the mysterious ' +
-          animalName +
-          '! Hear it ROAR' +
+          '<speak>' +
+          randomSelection([success_msg_1, success_msg_2]) +
           '<audio src="' +
           audioUrl +
           '">' +
@@ -108,7 +145,7 @@ function generate(app) {
     });
 }
 
-exports.generateAnimal = functions.https.onRequest((request, response) => {
+const animxer = functions.https.onRequest((request, response) => {
   const app = new App({ request, response });
   console.log('Request headers: ' + JSON.stringify(request.headers));
   console.log('Request body: ' + JSON.stringify(request.body));
@@ -118,3 +155,7 @@ exports.generateAnimal = functions.https.onRequest((request, response) => {
 
   app.handleRequest(actionMap);
 });
+
+module.exports = {
+  animxer,
+};
