@@ -23,12 +23,31 @@ const ANIMAL2_ARGUMENT = 'animalBody';
 const ANIMAL3_ARGUMENT = 'animalLegs';
 const UNKNOWN_ARGUMENT = 'noun';
 const animalSyllables = {
+  antelope: ['ant', 'elo', 'lope'],
+  buffalo: ['buff', 'uffa', 'lo'],
   chicken: ['chick', 'ick', 'ken'],
   crocodile: ['croc', 'oco', 'dile'],
+  dog: ['do', 'o', 'g'],
+  duck: ['d', 'uc', 'ck'],
   elephant: ['ele', 'epha', 'phant'],
+  flamingo: ['flam', 'ami', 'mingo'],
+  frog: ['fr', 'o', 'g'],
   giraffe: ['gir', 'ira', 'raffe'],
+  gorilla: ['gorr', 'illa', 'rilla'],
+  hippopotamus: ['hipp', 'opota', 'tamus'],
+  hyena: ['hy', 'ena', 'yena'],
+  leopard: ['leop', 'opa', 'pard'],
+  lion: ['li', 'i', 'on'],
+  ostrich: ['ostr', 'ich', 'ich'],
+  pony: ['p', 'on', 'ny'],
+  puma: ['p', 'um', 'ma'],
+  pussycat: ['puss', 'ussy', 'cat'],
   rhinoceros: ['rhin', 'oçe', 'ros'],
   tiger: ['ti', 'ige', 'ger'],
+  tortoise: ['tort', 'oi', 'se'],
+  warthog: ['wart', 'art', 'hog'],
+  wildebeest: ['wild', 'ebe', 'beest'],
+  zebra: ['zeb', 'eb', 'bra'],
 };
 
 function randomSelection(values) {
