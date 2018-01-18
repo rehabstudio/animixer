@@ -65,7 +65,7 @@ function generateContext(app) {
   let args = [ANIMAL1_ARGUMENT, ANIMAL2_ARGUMENT, ANIMAL3_ARGUMENT];
   // Refresh context
   for (let i = 0; i < args.length; i++) {
-    context[args[i]] = app.getContextArgument('animals', args[i]);
+    context[args[i]] = app.getArgument(args[i]);
   }
 
   return context;
