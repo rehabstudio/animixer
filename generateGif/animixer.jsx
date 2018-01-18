@@ -101,27 +101,56 @@ function getLayers(comp, compareString , operation) {
 // After Effects render functions
 // ------------------------------------------------------------------
 
+function renderClear(app, comps) {
+    app.project.renderQueue.render();
+    while (app.project.renderQueue.numItems > 0){
+        app.project.renderQueue.item(app.project.renderQueue.numItems).remove();
+    }
+    while(comps.length > 0){
+        var comp = comps.shift();
+        comp.remove();
+    }
+ }
+
 function renderAnimals() {
     //app.beginUndoGroup('XXX');
 
     // Get all walk comps
     var walkComps = getComps('_walk');
     errorStr = '';
+    var batchSize = 250;
+    var batch = 0;
+    var skipExisting = true;
 
     // While there are walk comps to process
     while (walkComps.length > 0) {
 
         // Generate all possible combinations for target comp
         var permutations = permutator(walkComps, 3);
+        var comps = [];
 
         for(var i=0;i<permutations.length;i++){
             try {
-                var renderCompItem = renderAnimalComp(permutations[i][0], permutations[i][1], permutations[i][2]);
-                scaleComp(renderCompItem[0], 0.25);
+                var renderCompItem = renderAnimalComp(permutations[i][0], permutations[i][1], permutations[i][2], skipExisting);
+                if (renderCompItem) {
+                    $.writeln('Composed animal: ' + permutations[i][0].name + permutations[i][1].name + permutations[i][2].name);
+                    comps.push(renderCompItem[0]);
+                    batch++;
+                }
+                else {
+                    $.writeln('Skipping animal: ' + permutations[i][0].name + permutations[i][1].name + permutations[i][2].name);
+                }
+
             }
             catch(err) {
                 errorStr +='Error missing element / badly named element, skipping animal: ' + permutations[i][0].name + ' ' + permutations[i][1].name + ' ' + permutations[i][2].name + '\n';
                 errorStr += 'Error: ' + err + '\n';
+            }
+
+            if(batch >= batchSize) {
+                renderClear(app, comps);
+                batch = 0;
+                comps = [];
             }
         }
 
@@ -136,8 +165,9 @@ function renderAnimals() {
         alert(errorStr);
     }
 
+    $.writeln('Render animals complete');
+
     //app.endUndoGroup();
-    //app.project.renderQueue.render();
 }
 
 function getMarkerWidth(markers) {
@@ -164,11 +194,17 @@ function placeLegs(bodyMarkers, legsMarkers, legLayer) {
     }
 }
 
+function folderExists(folderPath) {
+    var folder = new Folder(folderPath);
+    return folder.exists;
+}
+
 /**
  * Move currently displayed Render layers to correct places then render this comp
  */
-function renderAnimalComp(headComp, bodyComp, legsComp) {
+function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
     // Create render comp for animal
+    skipExisting = skipExisting || false;
     var head = headComp.name.replace('_walk', '') ;
     var body = bodyComp.name.replace('_walk', '');
     var tail = bodyComp.name.replace('_tail', '');
@@ -176,8 +212,14 @@ function renderAnimalComp(headComp, bodyComp, legsComp) {
     var compName = head + '_' + body + '_' + legs + '_render';
     var existing = getComps(compName)[0];
     var folderName = 'Animixes';
+    var folderPath = '~/animixer/' + compName;
+    var filepath = folderPath + '/' + compName;
 
-    if (existing) {
+    // Skip if files already exist or comp exists
+    if (existing && skipExisting) {
+        return;
+    }
+    else if(existing) {
         existing.remove();
     }
 
@@ -241,12 +283,17 @@ function renderAnimalComp(headComp, bodyComp, legsComp) {
     renderHeadLayer.parent = renderBodyLayer;
     renderTailLayer.parent = renderBodyLayer;
 
+    // Scale comp
+    scaleComp(renderComp, 0.25);
+
     // render
+    if(skipExisting && folderExists(folderPath)) {
+        return;
+    }
     var renderItem = app.project.renderQueue.items.add(renderComp);
     var output = renderItem.outputModule(1);
-    var filepath = '~/animixer/' + compName + '/' + compName ;
 
-    Folder(filepath).create();
+    Folder(folderPath).create();
     output.file = new File(filepath);
 
     output.applyTemplate('TIFF Sequence with Alpha');

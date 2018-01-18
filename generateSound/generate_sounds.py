@@ -2,6 +2,8 @@
 
 import os
 import itertools
+
+from google.cloud import storage
 import numpy as np
 import matplotlib.pyplot as plt
 from multiprocessing import Pool
@@ -11,6 +13,7 @@ from IPython.display import Audio
 from tqdm import tqdm
 
 INPUT_DIR = os.path.join(os.path.dirname(__file__), 'input_data', 'animals')
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output_data')
 MAX_PROCESS = 4
 MODEL = 'models/model.ckpt-200000'
 ASYNC = False
@@ -77,9 +80,14 @@ def generate_sounds():
     return output_files
 
 
-def upload_to_cloud(file_paths):
+def upload_to_cloud():
     client = storage.Client()
     bucket = client.get_bucket('animixer-1d266.appspot.com')
+    file_paths = [
+        os.path.join(OUTPUT_DIR, f) for f in os.listdir(OUTPUT_DIR)
+        if os.path.isfile(os.path.join(OUTPUT_DIR, f)) and
+        (f.endswith('.wav') or f.endswith('.mp3')) and
+        f.startswith('_') is False ]
 
     print('Uploading to cloud')
     for sound in tqdm(file_paths):
@@ -90,5 +98,5 @@ def upload_to_cloud(file_paths):
 
 
 if __name__ == '__main__':
-    sound_files = generate_sounds()
-    upload_to_cloud(sound_files)
+    #sound_files = generate_sounds()
+    upload_to_cloud()

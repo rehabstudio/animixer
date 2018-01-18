@@ -12,11 +12,6 @@ const rp = require('request-promise');
 const unknownAnimal = require('./logic/unknownAnimal');
 const { config } = require('./config');
 
-const storage = googleStorage({
-  projectId: config.projectId,
-  keyFilename: path.resolve('../animixer-pk.json'),
-});
-
 firebase.initializeApp(config);
 
 // the action name from the generate_animal Dialogflow intent
@@ -65,42 +60,60 @@ function unknown(app) {
   });
 }
 
+function generateContext(app) {
+  let context = {};
+  let args = [ANIMAL1_ARGUMENT, ANIMAL2_ARGUMENT, ANIMAL3_ARGUMENT];
+  // Refresh context
+  for (let i = 0; i < args.length; i++) {
+    context[args[i]] = app.getContextArgument('animals', args[i]);
+  }
+
+  return context;
+}
+
 /**
  * Generate animal response using 3 animals passed from google assistant
  */
 function generate(app) {
-  let animalHead = app.getArgument(ANIMAL1_ARGUMENT);
-  let animalBody = app.getArgument(ANIMAL2_ARGUMENT);
-  let animalLegs = app.getArgument(ANIMAL3_ARGUMENT);
+  let context = generateContext(app);
   let simpleResp = {};
   let resp;
+
+  // Generate new animal name and search for its assets
+  let animalName = makeAnimalName(
+    context.animalHead,
+    context.animalBody,
+    context.animalLegs,
+  );
   let imageName =
-    animalHead + '_' + animalBody + '_' + animalLegs + '_render.gif';
-  let audioName = animalHead + '_' + animalBody + '.wav';
+    context.animalHead +
+    '_' +
+    context.animalBody +
+    '_' +
+    context.animalLegs +
+    '_render.gif';
+  let audioName = context.animalHead + context.animalBody + '.wav';
   let imageUrl = `https://storage.googleapis.com/${
     config.storageBucket
   }/${imageName}`;
   let audioUrl = `https://storage.googleapis.com/${
     config.storageBucket
   }/${audioName}`;
-  let animalName = makeAnimalName(animalHead, animalBody, animalLegs);
   // If image doesn't exist display animal not found dialog
   let imagePromise = rp({ uri: imageUrl, resolveWithFullResponse: true });
   //let audioPromise = rp({ uri: audioUrl, resolveWithFullResponse: true });
   let success_msg_1 = `Congratulations, you’ve found the wild ${animalName}! This is what is sounds like…`;
   let success_msg_2 = `Congratulations, you’ve just discovered the mysterious ${animalName}! Hear it...`;
 
+  // Wait for assets to be found
   Promise.all([imagePromise])
     .then(responses => {
       if (responses[0].statusCode === 200 && responses[0].statusCode === 200) {
         simpleResp.speech =
           '<speak>' +
           randomSelection([success_msg_1, success_msg_2]) +
-          '<audio src="' +
-          audioUrl +
-          '">' +
-          "(sound didn't load)" +
-          '</audio></speak>';
+          `<audio src="${audioUrl}"></audio>` +
+          '</speak>';
         let card = new BasicCard()
           .setTitle(animalName)
           .setImage(imageUrl, animalName);
@@ -115,8 +128,10 @@ function generate(app) {
     })
     .catch(err => {
       simpleResp.speech =
-        `<speak>No animal was found with: Head of a ${animalHead}, ` +
-        `body of a ${animalBody}, legs of a ${animalLegs}, please try again.</speak>`;
+        `<speak>No animal was found with: Head of a ${context.animalHead}, ` +
+        `body of a ${context.animalBody}, legs of a ${
+          context.animalLegs
+        }, please try again.</speak>`;
       resp = new RichResponse().addSimpleResponse(simpleResp);
 
       app.tell(resp);
