@@ -22,6 +22,12 @@ fi
 
 source ./venv/bin/activate
 
-# Install pretrained model
-curl http://download.magenta.tensorflow.org/models/nsynth/wavenet-ckpt.tar | tar -C models -x && mv models/wavenet-ckpt/* models
-#curl http://download.magenta.tensorflow.org/models/nsynth/baseline-ckpt.tar | tar -C models -x && mv models/baseline-ckpt/* models
+
+if [ ! -d ./models ]
+then
+    mkdir models
+
+    # Install pretrained model
+    curl http://download.magenta.tensorflow.org/models/nsynth/wavenet-ckpt.tar | tar -C models -x && mv models/wavenet-ckpt/* models
+    #curl http://download.magenta.tensorflow.org/models/nsynth/baseline-ckpt.tar | tar -C models -x && mv models/baseline-ckpt/* models
+fi
