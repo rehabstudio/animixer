@@ -25,7 +25,7 @@ def load_encoding(fname, sample_length=None, sr=16000, ckpt=MODEL):
     return audio, encoding
 
 
-def merge_sounds(audio_list):
+def merge_sounds(audio_list, skip_existing=False):
     audio_1 = audio_list[0]
     audio_2 = audio_list[1]
     print('Merging sounds "{}" and "{}"'.format(audio_1, audio_2))
@@ -33,6 +33,10 @@ def merge_sounds(audio_list):
     audio_name_2 = audio_2.split('/')[-1].split('.')[0]
     output_name = audio_name_1 + audio_name_2
     output_path = 'output_data/{}.wav'.format(output_name)
+
+    if(os.path.exists(output_path)) and skip_existing:
+        return output_path
+
     sample_length = 18000
     print("Loading Audio_1")
     aud1, enc1 = load_encoding(audio_1, sample_length)
@@ -51,7 +55,7 @@ def unique_combinations(file_list):
     return [x for x in itertools.combinations(file_list, 2)]
 
 
-def generate_sounds():
+def generate_sounds(skip_existing=False):
     print('Generating Sounds')
     output_files = []
     filenames = [
@@ -75,7 +79,7 @@ def generate_sounds():
                     output_files.append(value)
     else:
         for combo in tqdm(combinations):
-            output_files.append(merge_sounds(combo))
+            output_files.append(merge_sounds(combo, skip_existing))
 
     return output_files
 
@@ -98,5 +102,6 @@ def upload_to_cloud():
 
 
 if __name__ == '__main__':
-    #sound_files = generate_sounds()
+    skip_existing = True
+    generate_sounds(skip_existing)
     upload_to_cloud()
