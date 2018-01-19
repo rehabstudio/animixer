@@ -23,7 +23,7 @@ const animalSyllables = {
   tortoise: ['tort', 'oi', 'se'],
   warthog: ['wart', 'art', 'hog'],
   wildebeest: ['wild', 'ebe', 'beest'],
-  zebra: ['zeb', 'eb', 'bra'],
+  zebra: ['zeb', 'ebra', 'bra'],
 };
 
 function randomSelection(values) {

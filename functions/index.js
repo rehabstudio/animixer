@@ -18,6 +18,7 @@ firebase.initializeApp(config);
 // the action name from the generate_animal Dialogflow intent
 const GENERATE_ACTION = 'generate_animal';
 const UNKNOWN_ACTION = 'unknown';
+const EXIT_ACTION = 'exit';
 // the parameters that are parsed from the generate_animal intent
 const ANIMAL1_ARGUMENT = 'animalHead';
 const ANIMAL2_ARGUMENT = 'animalBody';
@@ -31,7 +32,7 @@ function unknown(app) {
     let resp;
     simpleResp.speech = `<speak>${unknownResp}</speak>`;
     resp = new RichResponse().addSimpleResponse(simpleResp);
-    app.tell(resp);
+    app.ask(resp);
   });
 }
 
@@ -89,15 +90,15 @@ function generate(app) {
           '<speak>' +
           utils.randomSelection([success_msg_1, success_msg_2]) +
           `<audio src="${audioUrl}"></audio>` +
+          'What an unusual animal. Would you like to discover another one?' +
           '</speak>';
         let card = new BasicCard()
           .setTitle(animalName)
           .setImage(imageUrl, animalName);
         resp = new RichResponse()
-          .addSimpleResponse(simpleResp)
-          .addBasicCard(card);
-
-        app.tell(resp);
+          .addBasicCard(card)
+          .addSimpleResponse(simpleResp);
+        app.ask(resp);
       } else {
         throw 'Animal content not found';
       }
@@ -106,8 +107,12 @@ function generate(app) {
       simpleResp.speech = `<speak>I haven’t discovered that animal yet on this safari. How about trying a different combination?</speak>`;
       resp = new RichResponse().addSimpleResponse(simpleResp);
 
-      app.tell(resp);
+      app.ask(resp);
     });
+}
+
+function exit(app) {
+  app.tell('Come back to the Animixer safari any time.');
 }
 
 const animixer = functions.https.onRequest((request, response) => {
@@ -118,6 +123,7 @@ const animixer = functions.https.onRequest((request, response) => {
   let actionMap = new Map();
   actionMap.set(GENERATE_ACTION, generate);
   actionMap.set(UNKNOWN_ACTION, unknown);
+  actionMap.set(EXIT_ACTION, exit);
 
   app.handleRequest(actionMap);
 });
