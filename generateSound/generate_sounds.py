@@ -37,7 +37,7 @@ def merge_sounds(audio_list, skip_existing=False):
     if(os.path.exists(output_path)) and skip_existing:
         return output_path
 
-    sample_length = 18000
+    sample_length = 25000
     print("Loading Audio_1")
     aud1, enc1 = load_encoding(audio_1, sample_length)
     print("Loading Audio_2")

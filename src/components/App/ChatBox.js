@@ -58,6 +58,9 @@ class ChatBox extends React.Component<{}, {}> {
       .then(
         function(response) {
           let result;
+          if (response === undefined) {
+            result = 'Come back to the Animixer safari any time.';
+          }
           try {
             if (response.result.fulfillment.data !== undefined) {
               result = response.result.fulfillment.data.google.rich_response;
