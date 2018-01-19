@@ -56,7 +56,7 @@ function unknownAnimal(animalName) {
         const replacement = utils.randomSelection(
           replacementAnimals[resultType],
         );
-        typeMatchResponse = `I haven’t seen a ${resultType.toLowerCase()} on this safari. How about a ${replacement}?`;
+        typeMatchResponse = `I haven’t seen a wild ${animalName} on this safari. How about the ${replacement}?`;
       } else {
         const resultType = utils.randomSelection([
           'Animal',
@@ -67,7 +67,7 @@ function unknownAnimal(animalName) {
         const replacement = utils.randomSelection(
           replacementAnimals[resultType],
         );
-        typeMatchResponse = `That doesn’t seem to be an animal. How about a ${replacement}`;
+        typeMatchResponse = `That doesn’t seem to be an animal. How about the ${replacement}?`;
       }
       return typeMatchResponse;
     });
