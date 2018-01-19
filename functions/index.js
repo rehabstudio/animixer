@@ -111,7 +111,8 @@ function generate(app) {
     '_' +
     context.animalLegs +
     '_render.gif';
-  let audioName = context.animalHead + context.animalBody + '.wav';
+  let audioName =
+    [context.animalHead, context.animalBody].sorted().join() + '.wav';
   let imageUrl = `https://storage.googleapis.com/${
     config.storageBucket
   }/${imageName}`;

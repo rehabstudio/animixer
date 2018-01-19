@@ -31,7 +31,7 @@ def merge_sounds(audio_list, skip_existing=False):
     print('Merging sounds "{}" and "{}"'.format(audio_1, audio_2))
     audio_name_1 = audio_1.split('/')[-1].split('.')[0]
     audio_name_2 = audio_2.split('/')[-1].split('.')[0]
-    output_name = audio_name_1 + audio_name_2
+    output_name = ''.join(sorted([audio_name_1 , audio_name_2]))
     output_path = 'output_data/{}.wav'.format(output_name)
 
     if(os.path.exists(output_path)) and skip_existing:

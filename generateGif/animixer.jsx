@@ -199,6 +199,11 @@ function folderExists(folderPath) {
     return folder.exists;
 }
 
+function fileExists(filePath) {
+    var folder = new File(filePath);
+    return folder.exists;
+}
+
 /**
  * Move currently displayed Render layers to correct places then render this comp
  */
@@ -215,11 +220,12 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
     var folderPath = '~/animixer/' + compName;
     var filepath = folderPath + '/' + compName;
 
-    // Skip if files already exist or comp exists
-    if (existing && skipExisting) {
+    // Skip if files already exist
+    if(skipExisting && fileExists(folderPath + '/' + compName + '_00000.tif')) {
         return;
     }
-    else if(existing) {
+
+    if(existing) {
         existing.remove();
     }
 
@@ -287,9 +293,6 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
     scaleComp(renderComp, 0.25);
 
     // render
-    if(skipExisting && folderExists(folderPath)) {
-        return;
-    }
     var renderItem = app.project.renderQueue.items.add(renderComp);
     var output = renderItem.outputModule(1);
 
