@@ -44,7 +44,7 @@ def storage_file_exists(gcs_file):
         status = False
     return status
 
-def upload_to_cloud(file_paths):
+def upload_to_cloud(file_paths, skip_existing=True):
     client = storage.Client()
     bucket = client.get_bucket('animixer-1d266.appspot.com')
     blobs = [b.name for b in bucket.list_blobs()]
@@ -52,7 +52,7 @@ def upload_to_cloud(file_paths):
     print('Uploading to cloud')
     for gif in tqdm(file_paths):
         file_name = gif.split('/')[-1]
-        if file_name in blobs:
+        if file_name in blobs and skip_existing:
             continue
         blob = bucket.blob(file_name)
         blob.upload_from_filename(gif)
@@ -61,4 +61,4 @@ def upload_to_cloud(file_paths):
 
 if __name__ == '__main__':
     gif_paths = generate_gifs()
-    upload_to_cloud(gif_paths)
+    upload_to_cloud(gif_paths, False)

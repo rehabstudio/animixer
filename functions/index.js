@@ -11,6 +11,7 @@ const {
 const rp = require('request-promise');
 const unknownAnimal = require('./logic/unknownAnimal');
 const { config } = require('./config');
+const utils = require('./logic/utils');
 
 firebase.initializeApp(config);
 
@@ -22,51 +23,6 @@ const ANIMAL1_ARGUMENT = 'animalHead';
 const ANIMAL2_ARGUMENT = 'animalBody';
 const ANIMAL3_ARGUMENT = 'animalLegs';
 const UNKNOWN_ARGUMENT = 'noun';
-const animalSyllables = {
-  antelope: ['ant', 'elo', 'lope'],
-  buffalo: ['buff', 'uffa', 'lo'],
-  chicken: ['chick', 'ick', 'ken'],
-  crocodile: ['croc', 'oco', 'dile'],
-  dog: ['do', 'o', 'g'],
-  duck: ['d', 'uc', 'ck'],
-  elephant: ['ele', 'epha', 'phant'],
-  flamingo: ['flam', 'ami', 'mingo'],
-  frog: ['fr', 'o', 'g'],
-  giraffe: ['gir', 'ira', 'raffe'],
-  gorilla: ['gorr', 'illa', 'rilla'],
-  hippopotamus: ['hipp', 'opota', 'tamus'],
-  hyena: ['hy', 'ena', 'yena'],
-  leopard: ['leop', 'opa', 'pard'],
-  lion: ['li', 'i', 'on'],
-  ostrich: ['ostr', 'ich', 'ich'],
-  pony: ['p', 'on', 'ny'],
-  puma: ['p', 'um', 'ma'],
-  pussycat: ['puss', 'ussy', 'cat'],
-  rhinoceros: ['rhin', 'oçe', 'ros'],
-  tiger: ['ti', 'ige', 'ger'],
-  tortoise: ['tort', 'oi', 'se'],
-  warthog: ['wart', 'art', 'hog'],
-  wildebeest: ['wild', 'ebe', 'beest'],
-  zebra: ['zeb', 'eb', 'bra'],
-};
-
-function randomSelection(values) {
-  return values[Math.floor(Math.random() * values.length)];
-}
-
-/**
- * Create new animal name from list of hardcoded animal Syllables
- */
-function makeAnimalName(head, body, legs) {
-  function getSyllable(animal, index) {
-    if (animalSyllables[animal] !== undefined) {
-      return animalSyllables[animal][index];
-    } else {
-      return animal;
-    }
-  }
-  return getSyllable(head, 0) + getSyllable(body, 1) + getSyllable(legs, 2);
-}
 
 function unknown(app) {
   let noun = app.getArgument(UNKNOWN_ARGUMENT);
@@ -99,7 +55,7 @@ function generate(app) {
   let resp;
 
   // Generate new animal name and search for its assets
-  let animalName = makeAnimalName(
+  let animalName = utils.makeAnimalName(
     context.animalHead,
     context.animalBody,
     context.animalLegs,
@@ -112,7 +68,7 @@ function generate(app) {
     context.animalLegs +
     '_render.gif';
   let audioName =
-    [context.animalHead, context.animalBody].sorted().join() + '.wav';
+    [context.animalHead, context.animalBody].sort().join('') + '.wav';
   let imageUrl = `https://storage.googleapis.com/${
     config.storageBucket
   }/${imageName}`;
@@ -131,7 +87,7 @@ function generate(app) {
       if (responses[0].statusCode === 200 && responses[0].statusCode === 200) {
         simpleResp.speech =
           '<speak>' +
-          randomSelection([success_msg_1, success_msg_2]) +
+          utils.randomSelection([success_msg_1, success_msg_2]) +
           `<audio src="${audioUrl}"></audio>` +
           '</speak>';
         let card = new BasicCard()
@@ -147,11 +103,7 @@ function generate(app) {
       }
     })
     .catch(err => {
-      simpleResp.speech =
-        `<speak>No animal was found with: Head of a ${context.animalHead}, ` +
-        `body of a ${context.animalBody}, legs of a ${
-          context.animalLegs
-        }, please try again.</speak>`;
+      simpleResp.speech = `<speak>I haven’t discovered that animal yet on this safari. How about trying a different combination?</speak>`;
       resp = new RichResponse().addSimpleResponse(simpleResp);
 
       app.tell(resp);

@@ -170,7 +170,7 @@ class ChatBox extends React.Component<{}, {}> {
     return (
       <Container innerRef={ele => (this.chatDiv = ele)} className="container">
         <div id="placeholder">
-          <h5>Say "hello" to talk to animxier</h5>
+          <h5>Say “Explore” to start your Animixer safari</h5>
         </div>
         <div id="main-wrapper">
           <div className="row">

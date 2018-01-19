@@ -1,13 +1,31 @@
 const rp = require('request-promise');
+const utils = require('./utils');
 
 function unknownAnimal(animalName) {
   // Animal type lookup
   const acceptableTypes = ['Animal', 'Bird', 'Primate', 'Reptile'];
   const replacementAnimals = {
-    Animal: 'giraffe',
-    Bird: 'chicken',
-    Primate: 'monkey',
-    Reptile: 'crocodile',
+    Animal: [
+      'antelope',
+      'buffalo',
+      'dog',
+      'elephant',
+      'giraffe',
+      'hippo',
+      'hyena',
+      'leopard',
+      'lion',
+      'pony',
+      'puma',
+      'rhinoceros',
+      'tiger',
+      'warthog',
+      'wildebeest',
+      'zebra',
+    ],
+    Bird: ['chicken', 'flamingo', 'duck', 'ostrich'],
+    Primate: ['gorilla'],
+    Reptile: ['crocodile', 'frog', 'tortoise'],
   };
   const resultArray = [];
   let typeMatchResponse;
@@ -35,11 +53,21 @@ function unknownAnimal(animalName) {
       });
       if (resultArray.length > 0) {
         const resultType = resultArray[0];
-        typeMatchResponse = `I don’t know this ${resultType.toLowerCase()}, but I have a ${
-          replacementAnimals[resultType]
-        }`;
+        const replacement = utils.randomSelection(
+          replacementAnimals[resultType],
+        );
+        typeMatchResponse = `I haven’t seen a ${resultType.toLowerCase()} on this safari. How about a ${replacement}?`;
       } else {
-        typeMatchResponse = `I don’t think that’s an animal. Try something else.`;
+        const resultType = utils.randomSelection([
+          'Animal',
+          'Bird',
+          'Primate',
+          'Reptile',
+        ]);
+        const replacement = utils.randomSelection(
+          replacementAnimals[resultType],
+        );
+        typeMatchResponse = `That doesn’t seem to be an animal. How about a ${replacement}`;
       }
       return typeMatchResponse;
     });
