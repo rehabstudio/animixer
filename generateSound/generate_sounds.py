@@ -37,7 +37,7 @@ def merge_sounds(audio_list, skip_existing=False):
     if(os.path.exists(output_path)) and skip_existing:
         return output_path
 
-    sample_length = 25000
+    sample_length = 30000
     print("Loading Audio_1")
     aud1, enc1 = load_encoding(audio_1, sample_length)
     print("Loading Audio_2")
@@ -79,7 +79,11 @@ def generate_sounds(skip_existing=False):
                     output_files.append(value)
     else:
         for combo in tqdm(combinations):
-            output_files.append(merge_sounds(combo, skip_existing))
+            try:
+                output_files.append(merge_sounds(combo, skip_existing))
+            except Exception as e:
+                print('Erro skipping combo: {}, Error: {}'.format(str(combo), str(e)))
+                continue
 
     return output_files
 
@@ -102,6 +106,6 @@ def upload_to_cloud():
 
 
 if __name__ == '__main__':
-    skip_existing = True
+    skip_existing = False
     generate_sounds(skip_existing)
     upload_to_cloud()
