@@ -25,21 +25,21 @@ class ChatBox extends React.Component<{}, {}> {
   constructor(props) {
     super(props);
     this.state = {
-      client: new ApiAiClient({ accessToken: this.props.accessToken }),
+      client: new ApiAiClient({ accessToken: this.props.accessToken })
     };
   }
 
   componentDidMount() {
     this.inputField.addEventListener(
       'keydown',
-      this.queryInputKeyDown.bind(this),
+      this.queryInputKeyDown.bind(this)
     );
   }
 
   componentWillUnmount() {
     this.inputField.removeEventListener(
       'keydown',
-      this.queryInputKeyDown.bind(this),
+      this.queryInputKeyDown.bind(this)
     );
   }
 
@@ -58,11 +58,11 @@ class ChatBox extends React.Component<{}, {}> {
       .then(
         function(response) {
           let result;
-          if (response === undefined) {
-            result = 'Come back to the Animixer safari any time.';
-          }
           try {
-            if (response.result.fulfillment.data !== undefined) {
+            if (
+              response.result.fulfillment.data !== undefined &&
+              response.result.fulfillment.data.google.rich_response
+            ) {
               result = response.result.fulfillment.data.google.rich_response;
             } else {
               result = response.result.fulfillment.speech;
@@ -71,13 +71,13 @@ class ChatBox extends React.Component<{}, {}> {
             result = '';
           }
           this.setResponseOnNode(result, responseNode);
-        }.bind(this),
+        }.bind(this)
       )
       .catch(
         function(err) {
           console.log(err);
           this.setResponseOnNode('Something went wrong', responseNode);
-        }.bind(this),
+        }.bind(this)
       );
   }
 

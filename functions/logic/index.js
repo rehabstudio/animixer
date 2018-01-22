@@ -1,7 +1,9 @@
-import unknownAnimal from './unknownAnimals';
+import response from './response';
+import knowledgeGraph from './knowledgeGraph';
 import utils from './utils';
 
 module.exports = {
-  unknownAnimal,
-  utils,
+  response,
+  knowledgeGraph,
+  utils
 };

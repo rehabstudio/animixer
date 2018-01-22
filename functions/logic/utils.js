@@ -23,7 +23,7 @@ const animalSyllables = {
   tortoise: ['tort', 'oi', 'se'],
   warthog: ['wart', 'art', 'hog'],
   wildebeest: ['wild', 'ebe', 'beest'],
-  zebra: ['zeb', 'ebra', 'bra'],
+  zebra: ['zeb', 'ebra', 'bra']
 };
 
 function randomSelection(values) {
@@ -46,5 +46,5 @@ function makeAnimalName(head, body, legs) {
 
 module.exports = {
   makeAnimalName,
-  randomSelection,
+  randomSelection
 };
