@@ -107,5 +107,5 @@ def upload_to_cloud():
 
 if __name__ == '__main__':
     skip_existing = False
-    generate_sounds(skip_existing)
+    #generate_sounds(skip_existing)
     upload_to_cloud()
