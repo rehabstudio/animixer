@@ -72,7 +72,6 @@ function shouldSwitchScreen(app) {
 function generateAnimal(app, skipSwitchScreen) {
   // If we don't have a screen ask to switch device
   skipSwitchScreen = skipSwitchScreen || false;
-  console.log('skipSwitchScreen', skipSwitchScreen);
   if (!skipSwitchScreen && shouldSwitchScreen(app)) {
     return;
   }
@@ -133,11 +132,9 @@ function exit(app) {
  * assistant this just facilitates the switch screen conversion in dialog flow.
  */
 function surfaceSwitch(app) {
-  console.log('app.isNewSurface():', app.isNewSurface());
   if (app.isNewSurface()) {
     generateAnimal(app);
   } else {
-    console.log('Here as expected');
     generateAnimal(app, true);
   }
 }
@@ -146,6 +143,7 @@ function surfaceSwitch(app) {
  * Actions on google mapping of handlers to actions
  */
 const animixer = functions.https.onRequest((request, response) => {
+  response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
   const app = new App({ request, response });
   console.log('Request headers: ' + JSON.stringify(request.headers));
   console.log('Request body: ' + JSON.stringify(request.body));

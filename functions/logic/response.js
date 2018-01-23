@@ -48,7 +48,7 @@ function screenSwitch(app) {
 function notFoundResponse(app) {
   let simpleResp = {};
   let resp;
-  simpleResp.speech = `<speak>I haven’t discovered that animal yet on this safari. How about trying a different combination?</speak>`;
+  simpleResp.speech = `<speak>I haven’t discovered that animal yet on this safari. Would you like to try a different combination?</speak>`;
   resp = new RichResponse().addSimpleResponse(simpleResp);
 
   app.ask(resp);
