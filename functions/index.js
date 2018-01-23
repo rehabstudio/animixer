@@ -13,6 +13,7 @@ firebase.initializeApp(config);
 const GENERATE_ACTION = 'generate_animal';
 const UNKNOWN_ACTION = 'unknown';
 const EXIT_ACTION = 'exit';
+const SURFACE_SWITCH_ACTION = 'new_surface_intent';
 // the parameters that are parsed from the generate_animal intent
 const ANIMAL1_ARGUMENT = 'animalHead';
 const ANIMAL2_ARGUMENT = 'animalBody';
@@ -43,9 +44,39 @@ function unknownAnimal(app) {
 }
 
 /**
+ * If we don't have a screen ask a user to switch to phone
+ */
+function shouldSwitchScreen(app) {
+  let hasScreen;
+  let screenAvailable;
+  try {
+    hasScreen = app.hasSurfaceCapability(app.SurfaceCapabilities.SCREEN_OUTPUT);
+    screenAvailable = app.hasAvailableSurfaceCapabilities(
+      app.SurfaceCapabilities.SCREEN_OUTPUT
+    );
+  } catch (err) {
+    hasScreen = false;
+    screenAvailable = false;
+  }
+
+  if (!hasScreen && screenAvailable) {
+    response.screenSwitch(app);
+    return true;
+  }
+  return false;
+}
+
+/**
  * Handle generate animal request
  */
-function generateAnimal(app) {
+function generateAnimal(app, skipSwitchScreen) {
+  // If we don't have a screen ask to switch device
+  skipSwitchScreen = skipSwitchScreen || false;
+  console.log('skipSwitchScreen', skipSwitchScreen);
+  if (!skipSwitchScreen && shouldSwitchScreen(app)) {
+    return;
+  }
+
   let context = generateContext(app, [
     ANIMAL1_ARGUMENT,
     ANIMAL2_ARGUMENT,
@@ -96,6 +127,22 @@ function exit(app) {
 }
 
 /**
+ * Check that surface switch action was successfull
+ *
+ * This doesn't do much the same response works on both home and google
+ * assistant this just facilitates the switch screen conversion in dialog flow.
+ */
+function surfaceSwitch(app) {
+  console.log('app.isNewSurface():', app.isNewSurface());
+  if (app.isNewSurface()) {
+    generateAnimal(app);
+  } else {
+    console.log('Here as expected');
+    generateAnimal(app, true);
+  }
+}
+
+/**
  * Actions on google mapping of handlers to actions
  */
 const animixer = functions.https.onRequest((request, response) => {
@@ -107,6 +154,7 @@ const animixer = functions.https.onRequest((request, response) => {
   actionMap.set(GENERATE_ACTION, generateAnimal);
   actionMap.set(UNKNOWN_ACTION, unknownAnimal);
   actionMap.set(EXIT_ACTION, exit);
+  actionMap.set(SURFACE_SWITCH_ACTION, surfaceSwitch);
 
   app.handleRequest(actionMap);
 });

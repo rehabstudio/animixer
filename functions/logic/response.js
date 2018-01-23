@@ -34,6 +34,15 @@ function animalResponse(app, context) {
 }
 
 /**
+ * Create switch screen message
+ */
+function screenSwitch(app) {
+  let text = 'We have discovered a new animal, would you like to see it?';
+  let notif = 'Your unique animal!';
+  app.askForNewSurface(text, notif, [app.SurfaceCapabilities.SCREEN_OUTPUT]);
+}
+
+/**
  * Send the animal not found response to the chat bot
  */
 function notFoundResponse(app) {
@@ -78,5 +87,6 @@ module.exports = {
   animalResponse,
   exitResponse,
   notFoundResponse,
+  screenSwitch,
   unknownAnimalResponse
 };

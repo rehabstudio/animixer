@@ -118,7 +118,7 @@ function renderAnimals() {
     // Get all walk comps
     var walkComps = getComps('_walk');
     errorStr = '';
-    var batchSize = 250;
+    var batchSize = 50;
     var batch = 0;
     var skipExisting = true;
 
