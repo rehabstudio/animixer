@@ -28,7 +28,16 @@ function animalResponse(app, context) {
     '</speak>';
   let card = new BasicCard()
     .setTitle(animalName)
-    .setImage(context.imageUrl, animalName);
+    .setImage(context.imageUrl, animalName)
+    .setBodyText(
+      `Head of ${context.animalHead}, body of ${
+        context.animalBody
+      } and legs of ${context.animalLegs}`
+    )
+    .addButton(
+      'share',
+      `https://animixer.beta.rehab/animal/?animal=${animalName}`
+    );
   resp = new RichResponse().addBasicCard(card).addSimpleResponse(simpleResp);
   app.ask(resp);
 }

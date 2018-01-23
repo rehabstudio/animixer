@@ -76,7 +76,7 @@ const Text = styled.p`
 `;
 
 type Props = {
-  error: ?Error,
+  error: ?Error
 };
 
 class ErrorPage extends React.Component<any, Props, any> {
@@ -118,7 +118,7 @@ class ErrorPage extends React.Component<any, Props, any> {
               Go back
             </a>
             , or head over to the&nbsp;
-            <Link href="/">home page</Link>
+            <Link href="/">home page </Link>
             to choose a new direction.
           </Text>
         </Main>
