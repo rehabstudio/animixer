@@ -14,6 +14,14 @@ const Container = styled.div`
 
 const AnimalImg = styled.img``;
 
+const AnimalText = styled.h5`
+  margin: 10px auto;
+`;
+
+const AnimalContainer = styled.div`
+  padding: 10px;
+`;
+
 class Animal extends React.Component<{}> {
   constructor(props) {
     super(props);
@@ -24,7 +32,7 @@ class Animal extends React.Component<{}> {
     };
   }
 
-  componentWillUnmount() {
+  componentDidMount() {
     this.animalImg.src = this.state.imgUrl;
   }
 
@@ -34,12 +42,10 @@ class Animal extends React.Component<{}> {
         <Container className="container">
           <div id="main-wrapper">
             <div className="row">
-              <div className="col s8 offset-s2">
+              <AnimalContainer className="col s8 offset-s2">
                 <AnimalImg innerRef={ele => (this.animalImg = ele)} className="col s12 responsive-img" />
-                <div>
-                  <p>You have discovered the: {this.state.animalName}</p>
-                </div>
-              </div>
+                <AnimalText className="center-align">You have discovered the: {this.state.animalName}</AnimalText>
+              </AnimalContainer>
             </div>
           </div>
         </Container>

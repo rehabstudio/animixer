@@ -36,7 +36,7 @@ function animalResponse(app, context) {
     )
     .addButton(
       'share',
-      `https://animixer.beta.rehab/animal/?name=${animalName}&imageUrl=${imageName}`
+      `https://animixer.beta.rehab/animal/?animalName=${animalName}&imageUrl=${imageName}`
     );
   resp = new RichResponse().addBasicCard(card).addSimpleResponse(simpleResp);
   app.ask(resp);
