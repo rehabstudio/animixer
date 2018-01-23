@@ -1,7 +1,7 @@
 {
   "name": "app",
   "version": "0.0.0",
-  "homepage" : "https://animixer-1d266.firebaseapp.com/",
+  "homepage": "https://animixer-1d266.firebaseapp.com/",
   "private": true,
   "dependencies": {
     "@firebase/app": "^0.1.4",
@@ -13,7 +13,7 @@
     "lodash": "^4.17.4",
     "material-ui": "1.0.0-beta.24",
     "prop-types": "^15.5.10",
-    "query-string": "^5.0.0",
+    "query-string": "^5.0.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-relay": "^1.3.0",

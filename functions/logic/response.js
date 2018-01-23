@@ -19,7 +19,7 @@ function animalResponse(app, context) {
   );
   let success_msg_1 = `Congratulations, you’ve found the wild ${animalName}! This is what is sounds like…`;
   let success_msg_2 = `Congratulations, you’ve just discovered the mysterious ${animalName}! Hear it...`;
-
+  let imageName = context.imageUrlsplit('/')[context.imageUrlsplit('/').length - 1];
   simpleResp.speech =
     '<speak>' +
     utils.randomSelection([success_msg_1, success_msg_2]) +
@@ -36,7 +36,7 @@ function animalResponse(app, context) {
     )
     .addButton(
       'share',
-      `https://animixer.beta.rehab/animal/?animal=${animalName}`
+      `https://animixer.beta.rehab/animal/?name=${animalName}&imageUrl=${imageName}`
     );
   resp = new RichResponse().addBasicCard(card).addSimpleResponse(simpleResp);
   app.ask(resp);

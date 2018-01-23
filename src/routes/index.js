@@ -20,10 +20,10 @@ const routes = [
   },
   {
     path: '/animal',
-    components: () => [import(/* webpackChunkName: 'about' */ './Animal')],
-    render: ({ user, components: [Animal] }) => ({
+    components: () => [import(/* webpackChunkName: 'animal' */ './Animal')],
+    render: ({ user, location, components: [Animal] }) => ({
       title: 'Animal • Animixer',
-      body: <Animal user={user} />
+      body: <Animal user={user} location={location}/>
     })
   },
   {

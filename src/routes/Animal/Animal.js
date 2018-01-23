@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import Card from 'material-ui/Card';
-import Typography from 'material-ui/Typography';
+import qs from 'query-string';
+import ErrorPage from '../ErrorPage'
 
 const Container = styled.div`
   height: calc(100vh - 180px);
@@ -9,21 +9,45 @@ const Container = styled.div`
   height: -webkit-calc(100vh - 180px); /* google, safari */
   height: -moz-calc(100vh - 180px); /* firefox */
   overflow-y: auto;
+  background-color: white;
 `;
 
+const AnimalImg = styled.img``;
+
 class Animal extends React.Component<{}> {
+  constructor(props) {
+    super(props);
+    const parsed = qs.parse(props.location.search);
+    this.state = {
+      animalName: parsed.animalName,
+      imgUrl: 'https://storage.googleapis.com/animixer-1d266.appspot.com/' + parsed.imageUrl
+    };
+  }
+
+  componentWillUnmount() {
+    this.animalImg.src = this.state.imgUrl;
+  }
+
   render() {
-    return (
-      <Container innerRef={ele => (this.chatDiv = ele)} className="container">
-        <div id="main-wrapper">
-          <div className="row">
-            <div className="col s12">
-              <img src="https://storage.googleapis.com/animixer-1d266.appspot.com/elephant_chicken_crocodile_render.gif" />
+    if (this.state.animalName && this.state.imgUrl){
+      return (
+        <Container className="container">
+          <div id="main-wrapper">
+            <div className="row">
+              <div className="col s8 offset-s2">
+                <AnimalImg innerRef={ele => (this.animalImg = ele)} className="col s12 responsive-img" />
+                <div>
+                  <p>You have discovered the: {this.state.animalName}</p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </Container>
-    );
+        </Container>
+      );
+    }
+    else {
+      return <ErrorPage error={{ status: 404 }}/>;
+    }
   }
 }
 
