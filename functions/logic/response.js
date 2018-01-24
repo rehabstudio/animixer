@@ -17,14 +17,21 @@ function animalResponse(app, context) {
     context.animalBody,
     context.animalLegs
   );
-  let success_msg_1 = `Congratulations, you’ve found the wild ${animalName}! This is what is sounds like…`;
-  let success_msg_2 = `Congratulations, you’ve just discovered the mysterious ${animalName}! Hear it...`;
-  let imageName = context.imageUrlsplit('/')[context.imageUrlsplit('/').length - 1];
+  let success1 = `Congratulations, you’ve found the wild ${animalName}! This is what is sounds like…`;
+  let success2 = `Congratulations, you’ve just discovered the mysterious ${animalName}! Hear it...`;
+  let rediscover1 =
+    'What an unusual animal. Would you like to discover another one?';
+  let rediscover2 =
+    'There are lots more hiding. Would you like to find another animal?';
+
+  let imageName = context.imageUrlsplit('/')[
+    context.imageUrlsplit('/').length - 1
+  ];
   simpleResp.speech =
     '<speak>' +
-    utils.randomSelection([success_msg_1, success_msg_2]) +
+    utils.randomSelection([success1, success2]) +
     `<audio src="${context.audioUrl}"></audio>` +
-    'What an unusual animal. Would you like to discover another one?' +
+    utils.randomSelection([rediscover1, rediscover2]) +
     '</speak>';
   let card = new BasicCard()
     .setTitle(animalName)
@@ -45,8 +52,13 @@ function animalResponse(app, context) {
 /**
  * Create switch screen message
  */
-function screenSwitch(app) {
-  let text = 'We have discovered a new animal, would you like to see it?';
+function screenSwitch(app, context) {
+  let animalName = utils.makeAnimalName(
+    context.animalHead,
+    context.animalBody,
+    context.animalLegs
+  );
+  let text = `Would you like me to send a picture of the ${animalName} to your phone?`;
   let notif = 'Your unique animal!';
   app.askForNewSurface(text, notif, [app.SurfaceCapabilities.SCREEN_OUTPUT]);
 }

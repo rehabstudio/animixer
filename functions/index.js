@@ -46,7 +46,7 @@ function unknownAnimal(app) {
 /**
  * If we don't have a screen ask a user to switch to phone
  */
-function shouldSwitchScreen(app) {
+function shouldSwitchScreen(app, context) {
   let hasScreen;
   let screenAvailable;
   try {
@@ -60,7 +60,7 @@ function shouldSwitchScreen(app) {
   }
 
   if (!hasScreen && screenAvailable) {
-    response.screenSwitch(app);
+    response.screenSwitch(app, context);
     return true;
   }
   return false;
@@ -70,17 +70,18 @@ function shouldSwitchScreen(app) {
  * Handle generate animal request
  */
 function generateAnimal(app, skipSwitchScreen) {
-  // If we don't have a screen ask to switch device
-  skipSwitchScreen = skipSwitchScreen || false;
-  if (!skipSwitchScreen && shouldSwitchScreen(app)) {
-    return;
-  }
-
   let context = generateContext(app, [
     ANIMAL1_ARGUMENT,
     ANIMAL2_ARGUMENT,
     ANIMAL3_ARGUMENT
   ]);
+
+  // If we don't have a screen ask to switch device
+  skipSwitchScreen = skipSwitchScreen || false;
+  if (!skipSwitchScreen && shouldSwitchScreen(app, context)) {
+    return;
+  }
+
   let imageName =
     context.animalHead +
     '_' +
