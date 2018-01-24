@@ -101,7 +101,7 @@ class Animal extends React.Component<{}> {
                     onError={this.handleImageErrored.bind(this)}
                   />
                   <AnimalText className="center-align">
-                    You have discovered the: {this.state.animalName}
+                    You have discovered the {this.state.animalName}!
                   </AnimalText>
                 </AnimalContainer>
               </div>
