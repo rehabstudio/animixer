@@ -1,11 +1,13 @@
 process.env.DEBUG = 'actions-on-google:*';
 const App = require('actions-on-google').DialogflowApp;
+const cors = require('cors')({ origin: true });
 const functions = require('firebase-functions');
 const firebase = require('firebase');
 const rp = require('request-promise');
 
 const { config } = require('./config');
 const response = require('./logic/response');
+const utils = require('./logic/utils');
 
 firebase.initializeApp(config);
 
@@ -158,6 +160,23 @@ const animixer = functions.https.onRequest((request, response) => {
   app.handleRequest(actionMap);
 });
 
+/**
+ * Simple endpoint to generate animal name from list of animals
+ */
+const animalName = functions.https.onRequest((request, response) => {
+  const animal1 = request.query.animal1;
+  const animal2 = request.query.animal2;
+  const animal3 = request.query.animal3;
+  let animalName = utils.makeAnimalName(animal1, animal2, animal3);
+
+  cors(request, response, () => {
+    response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+    response.set('Content-Type', 'application/json');
+    response.status(200).send(JSON.stringify({ animalName }));
+  });
+});
+
 module.exports = {
-  animixer
+  animixer,
+  animalName
 };

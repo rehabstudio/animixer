@@ -24,8 +24,8 @@ function animalResponse(app, context) {
   let rediscover2 =
     'There are lots more hiding. Would you like to find another animal?';
 
-  let imageName = context.imageUrlsplit('/')[
-    context.imageUrlsplit('/').length - 1
+  let imageName = context.imageUrl.split('/')[
+    context.imageUrl.split('/').length - 1
   ];
   simpleResp.speech =
     '<speak>' +
