@@ -37,7 +37,7 @@ def merge_sounds(audio_list, skip_existing=False):
     if(os.path.exists(output_path)) and skip_existing:
         return output_path
 
-    sample_length = 30000
+    sample_length = 35000
     print("Loading Audio_1")
     aud1, enc1 = load_encoding(audio_1, sample_length)
     print("Loading Audio_2")
@@ -107,5 +107,5 @@ def upload_to_cloud():
 
 if __name__ == '__main__':
     skip_existing = False
-    #generate_sounds(skip_existing)
+    generate_sounds(skip_existing)
     upload_to_cloud()
