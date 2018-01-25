@@ -16,10 +16,12 @@ const GENERATE_ACTION = 'generate_animal';
 const UNKNOWN_ACTION = 'unknown';
 const EXIT_ACTION = 'exit';
 const SURFACE_SWITCH_ACTION = 'new_surface_intent';
+const CHANGE_ANIMAL_ACTION = 'change_value';
 // the parameters that are parsed from the generate_animal intent
 const ANIMAL1_ARGUMENT = 'animalHead';
 const ANIMAL2_ARGUMENT = 'animalBody';
 const ANIMAL3_ARGUMENT = 'animalLegs';
+const ANIMAL_CHANGED_ARGUMENT = 'changed';
 const UNKNOWN_ARGUMENT = 'noun';
 
 /**
@@ -142,6 +144,22 @@ function surfaceSwitch(app) {
   }
 }
 
+function changeAnimal(app) {
+  let context = generateContext(app, [
+    ANIMAL1_ARGUMENT,
+    ANIMAL2_ARGUMENT,
+    ANIMAL3_ARGUMENT,
+    ANIMAL_CHANGED_ARGUMENT
+  ]);
+  // if have all animals treat as generate animal response
+  if (context.animalHead && context.animalBody && context.animalLegs) {
+    return generateAnimal(app);
+  } else {
+    // else return response to continue journey
+    return response.changeAnimal(app, context);
+  }
+}
+
 /**
  * Actions on google mapping of handlers to actions
  */
@@ -156,6 +174,7 @@ const animixer = functions.https.onRequest((request, response) => {
   actionMap.set(UNKNOWN_ACTION, unknownAnimal);
   actionMap.set(EXIT_ACTION, exit);
   actionMap.set(SURFACE_SWITCH_ACTION, surfaceSwitch);
+  actionMap.set(CHANGE_ANIMAL_ACTION, changeAnimal);
 
   app.handleRequest(actionMap);
 });

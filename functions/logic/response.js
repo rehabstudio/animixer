@@ -24,9 +24,6 @@ function animalResponse(app, context) {
   let rediscover2 =
     'There are lots more hiding. Would you like to find another animal?';
 
-  let imageName = context.imageUrl.split('/')[
-    context.imageUrl.split('/').length - 1
-  ];
   simpleResp.speech =
     '<speak>' +
     utils.randomSelection([success1, success2]) +
@@ -105,8 +102,38 @@ function unknownAnimalResponse(app, noun) {
   });
 }
 
+/**
+ * Return response asking for next value depending on missing arguments
+ */
+function changeAnimal(app, context) {
+  let simpleResp = {};
+  let animalMap = {
+    head: 'animalHead',
+    body: 'animalBody',
+    legs: 'animalLegs'
+  };
+  let response = `I was mistaken, looks like the ${
+    context.changed
+  } was actually the ${context[animalMap[context.changed]]}! `;
+  console.log('context.animalHead', context.animalHead);
+  console.log('context.animalBody', context.animalBody);
+  console.log('context.animalLegs', context.animalLegs);
+
+  if (!context.animalHead) {
+    response += 'Now I can see its head but what is it?';
+  } else if (!context.animalBody) {
+    response += 'Now I can see its body but what is it?';
+  } else if (!context.animalLegs) {
+    response += 'Now I can see its legs but what are they?';
+  }
+  simpleResp.speech = `<speak>${response}</speak>`;
+  let resp = new RichResponse().addSimpleResponse(simpleResp);
+  app.ask(resp);
+}
+
 module.exports = {
   animalResponse,
+  changeAnimal,
   exitResponse,
   notFoundResponse,
   screenSwitch,
