@@ -26,6 +26,34 @@ const animalSyllables = {
   zebra: ['zeb', 'ebra', 'bra']
 };
 
+const animalVerbs = {
+  antelope: ['bleet'],
+  buffalo: ['moo'],
+  chicken: ['cock-a-doodle-doo'],
+  crocodile: ['snap'],
+  dog: ['bark'],
+  duck: ['quack'],
+  elephant: ['trumpet'],
+  flamingo: ['squawk'],
+  frog: ['ribbit'],
+  giraffe: ['hum'],
+  gorilla: ['chatter'],
+  hippo: ['grunt'],
+  hyena: ['laugh'],
+  leopard: ['growl'],
+  lion: ['roar'],
+  ostrich: ['squawk'],
+  pony: ['neigh'],
+  puma: ['growl'],
+  pussycat: ['meow'],
+  rhinoceros: ['snuffle'],
+  tiger: ['growl'],
+  tortoise: ['mutter'],
+  warthog: ['oink'],
+  wildebeest: ['bellow'],
+  zebra: ['neigh']
+};
+
 function randomSelection(values) {
   return values[Math.floor(Math.random() * values.length)];
 }
@@ -45,6 +73,7 @@ function makeAnimalName(head, body, legs) {
 }
 
 module.exports = {
+  animalVerbs,
   makeAnimalName,
   randomSelection
 };

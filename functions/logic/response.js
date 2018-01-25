@@ -6,6 +6,15 @@ const utils = require('./utils');
 const knowledgeGraph = require('./knowledgeGraph');
 
 /**
+ * Invalid animals recieved response
+ */
+function animalsNotValid(app, context) {
+  return app.ask(
+    "I've never seen an animal with the same head body or legs, would you like to look again?"
+  );
+}
+
+/**
  * Send the generated animal response back to the chat bot
  */
 function animalResponse(app, context) {
@@ -17,8 +26,15 @@ function animalResponse(app, context) {
     context.animalBody,
     context.animalLegs
   );
-  let success1 = `Congratulations, you’ve found the wild ${animalName}! This is what is sounds like…`;
-  let success2 = `Congratulations, you’ve just discovered the mysterious ${animalName}! Hear it...`;
+  let animalVerb;
+  try {
+    animalVerb = utils.animalVerbs[context.animalHead][0];
+  } catch (err) {
+    animalVerb = '';
+  }
+
+  let success1 = `Congratulations, you’ve found the wild ${animalName}! This is what is sounds like… `;
+  let success2 = `Congratulations, you’ve just discovered the mysterious ${animalName}! Hear it ${animalVerb}... `;
   let rediscover1 =
     'What an unusual animal. Would you like to discover another one?';
   let rediscover2 =
@@ -115,9 +131,6 @@ function changeAnimal(app, context) {
   let response = `I was mistaken, looks like the ${
     context.changed
   } was actually the ${context[animalMap[context.changed]]}! `;
-  console.log('context.animalHead', context.animalHead);
-  console.log('context.animalBody', context.animalBody);
-  console.log('context.animalLegs', context.animalLegs);
 
   if (!context.animalHead) {
     response += 'Now I can see its head but what is it?';
@@ -132,6 +145,7 @@ function changeAnimal(app, context) {
 }
 
 module.exports = {
+  animalsNotValid,
   animalResponse,
   changeAnimal,
   exitResponse,

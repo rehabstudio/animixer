@@ -1,4 +1,4 @@
-﻿/*
+/*
   @Author: Noel Wilson
   @company: Rehab
 
@@ -22,6 +22,10 @@ String.prototype.endsWith = function( str ) {
 
 String.prototype.startsWith = function( str ) {
     return this.substring( 0, str.length ) === str;
+};
+
+Array.prototype.insert = function ( item, index) {
+    this.splice( index, 0, item );
 };
 
 function remove(array, element) {
@@ -117,6 +121,7 @@ function renderAnimals() {
 
     // Get all walk comps
     var walkComps = getComps('_walk');
+    //var walkComps = ['antelope_walk', 'dog_walk', 'zebra_walk'];
     errorStr = '';
     var batchSize = 50;
     var batch = 0;
@@ -127,7 +132,10 @@ function renderAnimals() {
 
         // Generate all possible combinations for target comp
         var permutations = permutator(walkComps, 3);
-        var comps = [];
+        var original = walkComps[0].duplicate();
+        var animal = original.name.replace('_walk', '') ;
+        original.name = animal + '_' + animal + '_' + animal + '_render';
+        var comps = [original];
 
         for(var i=0;i<permutations.length;i++){
             try {
@@ -145,6 +153,7 @@ function renderAnimals() {
             catch(err) {
                 errorStr +='Error missing element / badly named element, skipping animal: ' + permutations[i][0].name + ' ' + permutations[i][1].name + ' ' + permutations[i][2].name + '\n';
                 errorStr += 'Error: ' + err + '\n';
+                $.writeln(errorStr);
             }
 
             if(batch >= batchSize) {
@@ -217,7 +226,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
     var compName = head + '_' + body + '_' + legs + '_render';
     var existing = getComps(compName)[0];
     var folderName = 'Animixes';
-    var folderPath = 'C:/Users/rehabstudio/animixer/' + compName;
+    var folderPath = '~/animixer/' + compName;
     var filepath = folderPath + '/' + compName;
 
     // Skip if files already exist
