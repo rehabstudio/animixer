@@ -1,11 +1,13 @@
 process.env.DEBUG = 'actions-on-google:*';
 const App = require('actions-on-google').DialogflowApp;
+const cors = require('cors')({ origin: true });
 const functions = require('firebase-functions');
 const firebase = require('firebase');
 const rp = require('request-promise');
 
 const { config } = require('./config');
 const response = require('./logic/response');
+const utils = require('./logic/utils');
 
 firebase.initializeApp(config);
 
@@ -46,7 +48,7 @@ function unknownAnimal(app) {
 /**
  * If we don't have a screen ask a user to switch to phone
  */
-function shouldSwitchScreen(app) {
+function shouldSwitchScreen(app, context) {
   let hasScreen;
   let screenAvailable;
   try {
@@ -60,7 +62,7 @@ function shouldSwitchScreen(app) {
   }
 
   if (!hasScreen && screenAvailable) {
-    response.screenSwitch(app);
+    response.screenSwitch(app, context);
     return true;
   }
   return false;
@@ -70,17 +72,18 @@ function shouldSwitchScreen(app) {
  * Handle generate animal request
  */
 function generateAnimal(app, skipSwitchScreen) {
-  // If we don't have a screen ask to switch device
-  skipSwitchScreen = skipSwitchScreen || false;
-  if (!skipSwitchScreen && shouldSwitchScreen(app)) {
-    return;
-  }
-
   let context = generateContext(app, [
     ANIMAL1_ARGUMENT,
     ANIMAL2_ARGUMENT,
     ANIMAL3_ARGUMENT
   ]);
+
+  // If we don't have a screen ask to switch device
+  skipSwitchScreen = skipSwitchScreen || false;
+  if (!skipSwitchScreen && shouldSwitchScreen(app, context)) {
+    return;
+  }
+
   let imageName =
     context.animalHead +
     '_' +
@@ -157,6 +160,23 @@ const animixer = functions.https.onRequest((request, response) => {
   app.handleRequest(actionMap);
 });
 
+/**
+ * Simple endpoint to generate animal name from list of animals
+ */
+const animalName = functions.https.onRequest((request, response) => {
+  const animal1 = request.query.animal1;
+  const animal2 = request.query.animal2;
+  const animal3 = request.query.animal3;
+  let animalName = utils.makeAnimalName(animal1, animal2, animal3);
+
+  cors(request, response, () => {
+    response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+    response.set('Content-Type', 'application/json');
+    response.status(200).send(JSON.stringify({ animalName }));
+  });
+});
+
 module.exports = {
-  animixer
+  animixer,
+  animalName
 };

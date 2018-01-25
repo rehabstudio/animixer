@@ -36,7 +36,7 @@ def merge_sounds(audio_list, skip_existing=False):
     output_name = ''.join(sorted([audio_name_1 , audio_name_2]))
     output_path = 'output_data{}{}.wav'.format(SEPARATOR, output_name)
 
-    if(os.path.exists(output_path)) and skip_existing:
+    if(os.path.exists(output_path)) and skip_existing):
         return output_path
 
     sample_length = 35000
@@ -114,4 +114,8 @@ def upload_to_cloud():
 if __name__ == '__main__':
     skip_existing = False
     generate_sounds(skip_existing)
+<<<<<<< HEAD
     upload_to_cloud()
+=======
+    upload_to_cloud(skip_existing)
+>>>>>>> cffd7200909bae28c0c08a5104545bb1941a4436
