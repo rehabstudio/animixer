@@ -2,6 +2,7 @@
 
 import os
 import itertools
+import platform
 
 from google.cloud import storage
 import numpy as np
@@ -17,6 +18,7 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output_data')
 MAX_PROCESS = 4
 MODEL = 'models/model.ckpt-200000'
 ASYNC = False
+SEPARATOR = '\\' if platform.system() == 'Windows' else '/'
 
 
 def load_encoding(fname, sample_length=None, sr=16000, ckpt=MODEL):
@@ -29,19 +31,23 @@ def merge_sounds(audio_list, skip_existing=False):
     audio_1 = audio_list[0]
     audio_2 = audio_list[1]
     print('Merging sounds "{}" and "{}"'.format(audio_1, audio_2))
-    audio_name_1 = audio_1.split('/')[-1].split('.')[0]
-    audio_name_2 = audio_2.split('/')[-1].split('.')[0]
+    audio_name_1 = audio_1.split(SEPARATOR)[-1].split('.')[0]
+    audio_name_2 = audio_2.split(SEPARATOR)[-1].split('.')[0]
     output_name = ''.join(sorted([audio_name_1 , audio_name_2]))
-    output_path = 'output_data/{}.wav'.format(output_name)
+    output_path = 'output_data{}{}.wav'.format(SEPARATOR, output_name)
 
     if(os.path.exists(output_path)) and skip_existing:
         return output_path
 
-    sample_length = 30000
-    print("Loading Audio_1")
-    aud1, enc1 = load_encoding(audio_1, sample_length)
-    print("Loading Audio_2")
-    aud2, enc2 = load_encoding(audio_2, sample_length)
+    sample_length = 35000
+    try:
+        print("Loading Audio_1")
+        aud1, enc1 = load_encoding(audio_1, sample_length)
+        print("Loading Audio_2")
+        aud2, enc2 = load_encoding(audio_2, sample_length)
+    except Exception as e:
+        print(str(e))
+        raise 
 
     enc_mix = (enc1 + enc2) / 2.0
 
@@ -82,7 +88,7 @@ def generate_sounds(skip_existing=False):
             try:
                 output_files.append(merge_sounds(combo, skip_existing))
             except Exception as e:
-                print('Erro skipping combo: {}, Error: {}'.format(str(combo), str(e)))
+                print('Erro skipping combo: {},\nError: {}'.format(str(combo), str(e)))
                 continue
 
     return output_files
@@ -107,5 +113,5 @@ def upload_to_cloud():
 
 if __name__ == '__main__':
     skip_existing = False
-    #generate_sounds(skip_existing)
+    generate_sounds(skip_existing)
     upload_to_cloud()

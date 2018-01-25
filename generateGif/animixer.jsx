@@ -1,4 +1,4 @@
-/*
+﻿/*
   @Author: Noel Wilson
   @company: Rehab
 
@@ -217,7 +217,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
     var compName = head + '_' + body + '_' + legs + '_render';
     var existing = getComps(compName)[0];
     var folderName = 'Animixes';
-    var folderPath = '~/animixer/' + compName;
+    var folderPath = 'C:/Users/rehabstudio/animixer/' + compName;
     var filepath = folderPath + '/' + compName;
 
     // Skip if files already exist

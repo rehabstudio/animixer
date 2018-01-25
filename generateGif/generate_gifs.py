@@ -1,6 +1,8 @@
 #!/ bin/python3
 
 import os
+import platform
+
 from google.cloud import storage
 import imageio
 from oauth2client.service_account import ServiceAccountCredentials
@@ -8,8 +10,10 @@ import requests
 from tqdm import tqdm
 
 ROOT_DIR = os.path.join(os.environ['HOME'], 'animixer')
+SEPARATOR = '\\' if platform.system() == 'Windows' else '/'
 
-def generate_gifs():
+
+def generate_gifs(skip_existing=True):
     gif_paths = []
     subdirs = [
         os.path.join(ROOT_DIR, d) for d in os.listdir(ROOT_DIR)
@@ -17,10 +21,10 @@ def generate_gifs():
 
     print('Generating Gifs')
     for subdir in tqdm(subdirs):
-        subdir_name = subdir.split('/')[-1]
+        subdir_name = subdir.split(SEPARATOR)[-1]
         gif_path = os.path.join(subdir, (subdir_name + '.gif'))
 
-        if(os.path.exists(gif_path)):
+        if(os.path.exists(gif_path) and skip_existing):
             gif_paths.append(gif_path)
             continue
 
@@ -51,7 +55,7 @@ def upload_to_cloud(file_paths, skip_existing=True):
 
     print('Uploading to cloud')
     for gif in tqdm(file_paths):
-        file_name = gif.split('/')[-1]
+        file_name = gif.split(SEPARATOR)[-1]
         if file_name in blobs and skip_existing:
             continue
         blob = bucket.blob(file_name)
