@@ -131,10 +131,9 @@ function renderAnimals() {
 
         // Generate all possible combinations for target comp
         var permutations = permutator(walkComps, 3);
-        var original = walkComps[0].duplicate();
-        var animal = original.name.replace('_walk', '') ;
-        original.name = animal + '_' + animal + '_' + animal + '_render';
-        var comps = [original];
+        // Render original
+        permutations.insert([walkComps[0], walkComps[0], walkComps[0]], 0);
+        var comps = [];
 
         for(var i=0;i<permutations.length;i++){
             try {
@@ -202,6 +201,19 @@ function placeLegs(bodyMarkers, legsMarkers, legLayer) {
     }
 }
 
+/**
+ * Place the body of the new animal lower if head is tall
+ */
+function placeBodyTallHead(headLayer, bodyLayer) {
+    // Find center of body
+    var center = bodyLayer.transform.position.value;
+
+    // Make body if head is tall
+    if (headLayer.name.endsWith('_tall') === true) {
+         bodyLayer.transform.position.setValueAtTime(0, [center[0], center[1] + 150]);
+    }
+}
+
 function folderExists(folderPath) {
     var folder = new Folder(folderPath);
     return folder.exists;
@@ -210,6 +222,19 @@ function folderExists(folderPath) {
 function fileExists(filePath) {
     var folder = new File(filePath);
     return folder.exists;
+}
+
+function renderComposition(renderComp, folderPath, filepath)
+{
+    var renderItem = app.project.renderQueue.items.add(renderComp);
+    var output = renderItem.outputModule(1);
+
+    Folder(folderPath).create();
+    output.file = new File(filepath);
+
+    output.applyTemplate('TIFF Sequence with Alpha');
+
+    return renderItem
 }
 
 /**
@@ -225,7 +250,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
     var compName = head + '_' + body + '_' + legs + '_render';
     var existing = getComps(compName)[0];
     var folderName = 'Animixes';
-    var folderPath = 'D:/' + folderName + '/' + compName;
+    var folderPath = '~/animixer/' + compName;
     var filepath = folderPath + '/' + compName;
 
     // Skip if files already exist
@@ -296,18 +321,16 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
     // Parent head and tail to body
     renderHeadLayer.parent = renderBodyLayer;
     renderTailLayer.parent = renderBodyLayer;
+    renderLegsLayer.parent = renderBodyLayer;
+
+    // Move tall heads
+    placeBodyTallHead(renderHeadLayer, renderBodyLayer);
 
     // Scale comp
     scaleComp(renderComp, 0.25);
 
     // render
-    var renderItem = app.project.renderQueue.items.add(renderComp);
-    var output = renderItem.outputModule(1);
-
-    Folder(folderPath).create();
-    output.file = new File(filepath);
-
-    output.applyTemplate('TIFF Sequence with Alpha');
+    var renderItem = renderComposition(renderComp, folderPath, filepath);
 
     return [renderComp, renderItem];
 }
