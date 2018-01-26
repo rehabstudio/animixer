@@ -115,7 +115,10 @@ class Animal extends React.Component<{}> {
                   <AnimalImg
                     innerRef={ele => (this.animalImg = ele)}
                     className="col s12 responsive-img"
-                    style={{ 'max-height': '70vh' }}
+                    style={{
+                      'max-height': '65vh',
+                      'margin-bottom': '10px'
+                    }}
                     onLoad={this.handleImageLoaded.bind(this)}
                     onError={this.handleImageErrored.bind(this)}
                   />
