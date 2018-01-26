@@ -71,6 +71,20 @@ function shouldSwitchScreen(app, context) {
 }
 
 /**
+ * Return True if an animal of the same type is found
+ */
+function checkAnimalsValid(context) {
+  if (
+    context.animalHead === context.animalBody ||
+    context.animalBody === context.animalLegs ||
+    context.animalLegs === context.animalHead
+  ) {
+    return false;
+  }
+  return true;
+}
+
+/**
  * Handle generate animal request
  */
 function generateAnimal(app, skipSwitchScreen) {
@@ -79,6 +93,10 @@ function generateAnimal(app, skipSwitchScreen) {
     ANIMAL2_ARGUMENT,
     ANIMAL3_ARGUMENT
   ]);
+
+  if (!checkAnimalsValid(context)) {
+    return response.animalsNotValid(app, context);
+  }
 
   // If we don't have a screen ask to switch device
   skipSwitchScreen = skipSwitchScreen || false;
