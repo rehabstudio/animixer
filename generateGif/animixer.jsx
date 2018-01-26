@@ -1,4 +1,4 @@
-/*
+﻿/*
   @Author: Noel Wilson
   @company: Rehab
 
@@ -120,7 +120,7 @@ function renderAnimals() {
     //app.beginUndoGroup('XXX');
 
     // Get all walk comps
-    var walkComps = getComps('_walk');
+    var walkComps = getComps('_walk').reverse();
     errorStr = '';
     var batchSize = 50;
     var batch = 0;
@@ -250,7 +250,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
     var compName = head + '_' + body + '_' + legs + '_render';
     var existing = getComps(compName)[0];
     var folderName = 'Animixes';
-    var folderPath = '~/animixer/' + compName;
+    var folderPath = 'D:/' + folderName + '/' + compName;
     var filepath = folderPath + '/' + compName;
 
     // Skip if files already exist
