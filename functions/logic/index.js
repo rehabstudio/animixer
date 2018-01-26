@@ -1,9 +1,11 @@
-import response from './response';
+import context from './context';
 import knowledgeGraph from './knowledgeGraph';
+import response from './response';
 import utils from './utils';
 
 module.exports = {
-  response,
+  context,
   knowledgeGraph,
+  response,
   utils
 };

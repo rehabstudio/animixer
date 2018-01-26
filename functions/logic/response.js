@@ -15,6 +15,34 @@ function animalsNotValid(app, context) {
 }
 
 /**
+ * Invalid animals recieved response
+ */
+function animalsIdentical(app, context) {
+  console.log('1');
+  let animalName = context.animalHead;
+  let imageUrl = utils.getImageUrl(context);
+  let simpleResp = {};
+  simpleResp.speech =
+    '<speak>' +
+    `Congratulations, you’ve just discovered… a ${animalName}! There are some amazing mixed up animals here. Let’s see what else is hiding.` +
+    'To start, what head does your animal have?' +
+    '</speak>';
+  let card = new BasicCard()
+    .setTitle(animalName)
+    .setImage(imageUrl, animalName)
+    .setBodyText(`The ${context.animalHead}!`)
+    .addButton(
+      'share',
+      `https://animixer.beta.rehab/animal/?animal1=${context.animalHead}` +
+        `&animal2=${context.animalBody}&animal3=${context.animalLegs}`
+    );
+  let resp = new RichResponse()
+    .addBasicCard(card)
+    .addSimpleResponse(simpleResp);
+  app.ask(resp);
+}
+
+/**
  * Send the generated animal response back to the chat bot
  */
 function animalResponse(app, context) {
@@ -30,6 +58,7 @@ function animalResponse(app, context) {
   try {
     animalVerb = utils.animalVerbs[context.animalHead][0];
   } catch (err) {
+    console.log('Animal verb not found for ' + context.animalHead);
     animalVerb = '';
   }
 
@@ -128,16 +157,17 @@ function changeAnimal(app, context) {
     body: 'animalBody',
     legs: 'animalLegs'
   };
-  let response = `I was mistaken, looks like the ${
+  let verb = context.changed === 'legs' ? 'were' : 'was';
+  let response = `Yes, I can see it now! Looks like the ${
     context.changed
-  } was actually the ${context[animalMap[context.changed]]}! `;
+  } ${verb} actually the ${context[animalMap[context.changed]]}! `;
 
   if (!context.animalHead) {
-    response += 'Now I can see its head but what is it?';
+    response += 'And what head does it have?';
   } else if (!context.animalBody) {
-    response += 'Now I can see its body but what is it?';
+    response += 'And what body does it have?';
   } else if (!context.animalLegs) {
-    response += 'Now I can see its legs but what are they?';
+    response += 'And what legs does it have?';
   }
   simpleResp.speech = `<speak>${response}</speak>`;
   let resp = new RichResponse().addSimpleResponse(simpleResp);
@@ -145,6 +175,7 @@ function changeAnimal(app, context) {
 }
 
 module.exports = {
+  animalsIdentical,
   animalsNotValid,
   animalResponse,
   changeAnimal,

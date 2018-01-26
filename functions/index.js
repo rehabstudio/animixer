@@ -6,6 +6,7 @@ const firebase = require('firebase');
 const rp = require('request-promise');
 
 const { config } = require('./config');
+const contextFn = require('./logic/context');
 const response = require('./logic/response');
 const utils = require('./logic/utils');
 
@@ -25,25 +26,10 @@ const ANIMAL_CHANGED_ARGUMENT = 'changed';
 const UNKNOWN_ARGUMENT = 'noun';
 
 /**
- * Generate a context object for all responses gathering arguments
- */
-function generateContext(app, args) {
-  let context = {};
-  // Refresh context
-  for (let i = 0; i < args.length; i++) {
-    context[args[i]] = app.getArgument(args[i]);
-    if (!context[args[i]]) {
-      console.warn('Missing expected argument: ' + args[i]);
-    }
-  }
-  return context;
-}
-
-/**
  * Handle unknown animal request
  */
 function unknownAnimal(app) {
-  let context = generateContext(app, [UNKNOWN_ARGUMENT]);
+  let context = contextFn.generateContext(app, [UNKNOWN_ARGUMENT]);
   response.unknownAnimalResponse(app, context.noun);
 }
 
@@ -71,64 +57,43 @@ function shouldSwitchScreen(app, context) {
 }
 
 /**
- * Return True if an animal of the same type is found
- */
-function checkAnimalsValid(context) {
-  if (
-    context.animalHead === context.animalBody ||
-    context.animalBody === context.animalLegs ||
-    context.animalLegs === context.animalHead
-  ) {
-    return false;
-  }
-  return true;
-}
-
-/**
  * Handle generate animal request
  */
 function generateAnimal(app, skipSwitchScreen) {
-  let context = generateContext(app, [
+  let context = contextFn.generateContext(app, [
     ANIMAL1_ARGUMENT,
     ANIMAL2_ARGUMENT,
     ANIMAL3_ARGUMENT
   ]);
+  // If we don't have a screen ask to switch device
+  skipSwitchScreen = skipSwitchScreen || false;
 
-  if (!checkAnimalsValid(context)) {
+  // If only one animal selected
+  if (contextFn.animalsIdentical(context)) {
+    return response.animalsIdentical(app, context);
+  }
+
+  // If 2 of the same selected
+  if (contextFn.animalsInvalid(context)) {
     return response.animalsNotValid(app, context);
   }
 
-  // If we don't have a screen ask to switch device
-  skipSwitchScreen = skipSwitchScreen || false;
-  if (!skipSwitchScreen && shouldSwitchScreen(app, context)) {
-    return;
-  }
-
-  let imageName =
-    context.animalHead +
-    '_' +
-    context.animalBody +
-    '_' +
-    context.animalLegs +
-    '_render.gif';
-  let audioName =
-    [context.animalHead, context.animalBody].sort().join('') + '.wav';
-  let imageUrl = `https://storage.googleapis.com/${
-    config.storageBucket
-  }/${imageName}`;
-  let audioUrl = `https://storage.googleapis.com/${
-    config.storageBucket
-  }/${audioName}`;
+  context.imageUrl = utils.getImageUrl(context);
+  context.audioUrl = utils.getAudioUrl(context);
   // If image doesn't exist display animal not found dialog
-  let imagePromise = rp({ uri: imageUrl, resolveWithFullResponse: true });
-  //let audioPromise = rp({ uri: audioUrl, resolveWithFullResponse: true });
-  context.audioUrl = audioUrl;
-  context.imageUrl = imageUrl;
+  let imagePromise = rp({
+    uri: context.imageUrl,
+    resolveWithFullResponse: true
+  });
+  //let audioPromise = rp({ uri: context.audioUrl, resolveWithFullResponse: true });
 
   // Wait for assets to be found
-  Promise.all([imagePromise])
+  return Promise.all([imagePromise])
     .then(responses => {
-      if (responses[0].statusCode === 200 && responses[0].statusCode === 200) {
+      if (responses[0].statusCode === 200) {
+        if (!skipSwitchScreen && shouldSwitchScreen(app, context)) {
+          return;
+        }
         response.animalResponse(app, context);
       } else {
         throw 'Animal content not found';
@@ -136,7 +101,7 @@ function generateAnimal(app, skipSwitchScreen) {
     })
     .catch(err => {
       console.warn('Error: ' + err);
-      console.warn('Unable to return gif: ' + imageName);
+      console.warn('Unable to return gif: ' + context.imageUrl);
       response.notFoundResponse(app);
     });
 }
@@ -162,8 +127,11 @@ function surfaceSwitch(app) {
   }
 }
 
+/**
+ * Generate response if user requests to change one of the animal arguments
+ */
 function changeAnimal(app) {
-  let context = generateContext(app, [
+  let context = contextFn.generateContext(app, [
     ANIMAL1_ARGUMENT,
     ANIMAL2_ARGUMENT,
     ANIMAL3_ARGUMENT,

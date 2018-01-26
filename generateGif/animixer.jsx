@@ -121,7 +121,6 @@ function renderAnimals() {
 
     // Get all walk comps
     var walkComps = getComps('_walk');
-    //var walkComps = ['antelope_walk', 'dog_walk', 'zebra_walk'];
     errorStr = '';
     var batchSize = 50;
     var batch = 0;

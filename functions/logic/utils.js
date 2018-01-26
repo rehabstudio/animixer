@@ -1,3 +1,5 @@
+const { config } = require('./../config');
+
 const animalSyllables = {
   antelope: ['ant', 'elo', 'lope'],
   buffalo: ['buff', 'uffa', 'lo'],
@@ -46,7 +48,7 @@ const animalVerbs = {
   pony: ['neigh'],
   puma: ['growl'],
   pussycat: ['meow'],
-  rhinoceros: ['snuffle'],
+  rhino: ['snuffle'],
   tiger: ['growl'],
   tortoise: ['mutter'],
   warthog: ['oink'],
@@ -72,8 +74,39 @@ function makeAnimalName(head, body, legs) {
   return getSyllable(head, 0) + getSyllable(body, 1) + getSyllable(legs, 2);
 }
 
+/**
+ * Generate image url from context object
+ */
+function getImageUrl(context) {
+  let imageName =
+    context.animalHead +
+    '_' +
+    context.animalBody +
+    '_' +
+    context.animalLegs +
+    '_render.gif';
+  let imageUrl = `https://storage.googleapis.com/${
+    config.storageBucket
+  }/${imageName}`;
+  return imageUrl;
+}
+
+/**
+ * Generate audio url from context object
+ */
+function getAudioUrl(context) {
+  let audioName =
+    [context.animalHead, context.animalBody].sort().join('') + '.wav';
+  let audioUrl = `https://storage.googleapis.com/${
+    config.storageBucket
+  }/${audioName}`;
+  return audioUrl;
+}
+
 module.exports = {
   animalVerbs,
+  getAudioUrl,
+  getImageUrl,
   makeAnimalName,
   randomSelection
 };

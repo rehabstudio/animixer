@@ -123,7 +123,8 @@ class ChatBox extends React.Component<{}, {}> {
   }
 
   addTextAudio(textData, node) {
-    let speech = textData.simple_response.ssml;
+    let speech =
+      textData.simple_response.ssml || textData.simple_response.text_to_speech;
     let text = document.createElement('p');
     let audio = document.createElement('audio');
     let source = document.createElement('source');
