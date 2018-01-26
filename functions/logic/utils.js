@@ -103,8 +103,20 @@ function getAudioUrl(context) {
   return audioUrl;
 }
 
+/**
+ * Grammer helper function
+ */
+function getAOrAn(noun) {
+  let vowels = ['a', 'e', 'i', 'o', 'u'];
+  if (vowels.indexOf(noun[0].toLowerCase()) > -1) {
+    return 'an';
+  }
+  return 'a';
+}
+
 module.exports = {
   animalVerbs,
+  getAOrAn,
   getAudioUrl,
   getImageUrl,
   makeAnimalName,

@@ -38,6 +38,7 @@ class Animal extends React.Component<{}> {
       '_render.gif';
     this.state = {
       animalName: '',
+      animalNameText: '',
       imageUrl: imageUrl,
       animalExists: null
     };
@@ -69,6 +70,9 @@ class Animal extends React.Component<{}> {
       .then(
         function(animalNameResp) {
           let animalNameData = JSON.parse(animalNameResp);
+          animalNameData.animalNameText = `You have discovered the ${
+            animalNameData.animalName
+          }!`;
           this.setState(animalNameData);
         }.bind(this)
       )
@@ -101,7 +105,7 @@ class Animal extends React.Component<{}> {
                     onError={this.handleImageErrored.bind(this)}
                   />
                   <AnimalText className="center-align">
-                    You have discovered the {this.state.animalName}!
+                    {this.state.animalNameText}
                   </AnimalText>
                 </AnimalContainer>
               </div>

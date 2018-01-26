@@ -18,14 +18,22 @@ function animalsNotValid(app, context) {
  * Invalid animals recieved response
  */
 function animalsIdentical(app, context) {
-  console.log('1');
   let animalName = context.animalHead;
   let imageUrl = utils.getImageUrl(context);
   let simpleResp = {};
+  let aOrAn = utils.getAOrAn(animalName);
+  let success1 =
+    `Congratulations, you’ve just discovered… ${aOrAn} ${animalName}! ` +
+    'There are some amazing mixed up animals here. Let’s see what else is hiding.';
+  let success2 =
+    `There’s something hiding over there. It’s… ${aOrAn} ${animalName}! ` +
+    'There are some really unusual animals on this safari. Let’s find a new one.';
+  let restart = 'To start, what head does your animal have?';
+
   simpleResp.speech =
     '<speak>' +
-    `Congratulations, you’ve just discovered… a ${animalName}! There are some amazing mixed up animals here. Let’s see what else is hiding.` +
-    'To start, what head does your animal have?' +
+    utils.randomSelection([success1, success2]) +
+    restart +
     '</speak>';
   let card = new BasicCard()
     .setTitle(animalName)
@@ -58,7 +66,7 @@ function animalResponse(app, context) {
   try {
     animalVerb = utils.animalVerbs[context.animalHead][0];
   } catch (err) {
-    console.log('Animal verb not found for ' + context.animalHead);
+    console.error('Animal verb not found for ' + context.animalHead);
     animalVerb = '';
   }
 
@@ -135,11 +143,12 @@ function unknownAnimalResponse(app, noun) {
     let simpleResp = {};
     let resp;
     let unknownResponse;
+    let aOrAn = utils.getAOrAn(replacement);
 
     if (found) {
-      unknownResponse = `I haven’t seen a wild ${noun} on this safari. How about the ${replacement}?`;
+      unknownResponse = `I haven’t seen a wild ${noun} on this safari. How about ${aOrAn} ${replacement}?`;
     } else {
-      unknownResponse = `That doesn’t seem to be an animal. How about the ${replacement}?`;
+      unknownResponse = `That doesn’t seem to be an animal. How about ${aOrAn} ${replacement}?`;
     }
     simpleResp.speech = `<speak>${unknownResponse}</speak>`;
     resp = new RichResponse().addSimpleResponse(simpleResp);
@@ -158,9 +167,11 @@ function changeAnimal(app, context) {
     legs: 'animalLegs'
   };
   let verb = context.changed === 'legs' ? 'were' : 'was';
-  let response = `Yes, I can see it now! Looks like the ${
-    context.changed
-  } ${verb} actually the ${context[animalMap[context.changed]]}! `;
+  let newValue = context[animalMap[context.changed]];
+  let aOrAn = utils.getAOrAn(newValue);
+  let response =
+    'Yes, I can see it now! Looks like the ' +
+    `${context.changed} ${verb} actually ${aOrAn} ${newValue}!`;
 
   if (!context.animalHead) {
     response += 'And what head does it have?';
