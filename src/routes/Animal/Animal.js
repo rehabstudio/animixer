@@ -40,7 +40,8 @@ class Animal extends React.Component<{}> {
       animalName: '',
       animalNameText: '',
       imageUrl: imageUrl,
-      animalExists: null
+      animalExists: null,
+      mobile: false
     };
 
     this.getAnimalName(parsed);
@@ -49,6 +50,16 @@ class Animal extends React.Component<{}> {
   componentDidMount() {
     if (this.animalImg) {
       this.animalImg.src = this.state.imageUrl;
+    }
+    window.addEventListener('resize', this.mobileCheck.bind(this));
+    this.mobileCheck();
+  }
+
+  mobileCheck() {
+    if (window.innerWidth <= 600) {
+      this.setState({ mobile: true });
+    } else {
+      this.setState({ mobile: false });
     }
   }
 
@@ -89,10 +100,14 @@ class Animal extends React.Component<{}> {
       return <ErrorPage error={{ status: 404 }} />;
     } else {
       return (
-        <Container className="container">
+        <Container
+          className={
+            this.state.mobile ? 'container valign-wrapper' : 'container'
+          }
+        >
           <div
             id="main-wrapper"
-            className={!this.state.animalExists ? 'hidden' : ''}
+            className={!this.state.animalExists ? 'hidden' : 'valign'}
           >
             <div className="row">
               <div className="col s12 m8 offset-m2">
