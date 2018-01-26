@@ -101,4 +101,4 @@ if __name__ == '__main__':
     if ASYNC:
         async_upload(gif_paths, skip_existing=False)
     else:
-        upload_to_cloud(gif_paths, False)
+        upload_to_cloud(gif_paths, skip_existing=False)

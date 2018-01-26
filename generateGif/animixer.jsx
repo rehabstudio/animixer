@@ -116,7 +116,7 @@ function renderAnimals() {
     //app.beginUndoGroup('XXX');
 
     // Get all walk comps
-    var walkComps = getComps('_walk');
+    var walkComps = getComps('_walk').reverse();
     errorStr = '';
     var batchSize = 50;
     var batch = 0;
@@ -217,7 +217,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
     var compName = head + '_' + body + '_' + legs + '_render';
     var existing = getComps(compName)[0];
     var folderName = 'Animixes';
-    var folderPath = 'C:/Users/rehabstudio/animixer/' + compName;
+    var folderPath = 'D:/' + folderName + '/' + compName;
     var filepath = folderPath + '/' + compName;
 
     // Skip if files already exist
@@ -233,7 +233,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
     if (renderFolder === undefined) {
         renderFolder = app.project.items.addFolder(folderName);
     }
-    var renderComp = app.project.items.addComp(compName, 1800, 1800, 1, 0.7 , 25);
+    var renderComp = app.project.items.addComp(compName, 3200, 1800, 1, 0.7 , 25);
     renderComp.parentFolder = renderFolder;
 
     // Get BG layer
