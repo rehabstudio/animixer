@@ -41,7 +41,7 @@ def merge_sounds(audio_list, skip_existing=True):
 
     print('Merging sounds "{}" and "{}"'.format(audio_1, audio_2))
 
-    sample_length = 18000
+    sample_length = 35000
     try:
         print("Loading Audio_1")
         aud1, enc1 = load_encoding(audio_1, sample_length)
