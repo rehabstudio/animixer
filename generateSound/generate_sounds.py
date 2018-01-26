@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 INPUT_DIR = os.path.join(os.path.dirname(__file__), 'input_data', 'animals')
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output_data')
-MAX_PROCESS = 4
+MAX_PROCESS = 2
 MODEL = 'models/model.ckpt-200000'
 ASYNC = False
 SEPARATOR = '\\' if platform.system() == 'Windows' else '/'
@@ -27,32 +27,33 @@ def load_encoding(fname, sample_length=None, sr=16000, ckpt=MODEL):
     return audio, encoding
 
 
-def merge_sounds(audio_list, skip_existing=False):
+def merge_sounds(audio_list, skip_existing=True):
     audio_1 = audio_list[0]
     audio_2 = audio_list[1]
-    print('Merging sounds "{}" and "{}"'.format(audio_1, audio_2))
     audio_name_1 = audio_1.split(SEPARATOR)[-1].split('.')[0]
     audio_name_2 = audio_2.split(SEPARATOR)[-1].split('.')[0]
     output_name = ''.join(sorted([audio_name_1 , audio_name_2]))
     output_path = 'output_data{}{}.wav'.format(SEPARATOR, output_name)
 
-    if(os.path.exists(output_path)) and skip_existing):
+    if(os.path.exists(output_path) and skip_existing):
+        print('Skipping sounds "{}" and "{}"'.format(audio_1, audio_2))
         return output_path
 
-    sample_length = 35000
+    print('Merging sounds "{}" and "{}"'.format(audio_1, audio_2))
+
+    sample_length = 18000
     try:
         print("Loading Audio_1")
         aud1, enc1 = load_encoding(audio_1, sample_length)
         print("Loading Audio_2")
         aud2, enc2 = load_encoding(audio_2, sample_length)
+
+        enc_mix = (enc1 + enc2) / 2.0
+
+        print("Synthesizing new audio: {}".format(output_name))
+        fastgen.synthesize(enc_mix, checkpoint_path=MODEL, save_paths=[output_path])
     except Exception as e:
-        print(str(e))
-        raise 
-
-    enc_mix = (enc1 + enc2) / 2.0
-
-    print("Synthesizing new audio: {}".format(output_name))
-    fastgen.synthesize(enc_mix, checkpoint_path=MODEL, save_paths=[output_path])
+        print('Erro skipping combo: {},\nError: {}'.format(str(output_name), str(e)))
 
     return output_path
 
@@ -61,7 +62,7 @@ def unique_combinations(file_list):
     return [x for x in itertools.combinations(file_list, 2)]
 
 
-def generate_sounds(skip_existing=False):
+def generate_sounds(skip_existing=True):
     print('Generating Sounds')
     output_files = []
     filenames = [
@@ -85,11 +86,7 @@ def generate_sounds(skip_existing=False):
                     output_files.append(value)
     else:
         for combo in tqdm(combinations):
-            try:
-                output_files.append(merge_sounds(combo, skip_existing))
-            except Exception as e:
-                print('Erro skipping combo: {},\nError: {}'.format(str(combo), str(e)))
-                continue
+            output_files.append(merge_sounds(combo, skip_existing))
 
     return output_files
 
@@ -112,10 +109,6 @@ def upload_to_cloud():
 
 
 if __name__ == '__main__':
-    skip_existing = False
+    skip_existing = True
     generate_sounds(skip_existing)
-<<<<<<< HEAD
     upload_to_cloud()
-=======
-    upload_to_cloud(skip_existing)
->>>>>>> cffd7200909bae28c0c08a5104545bb1941a4436
