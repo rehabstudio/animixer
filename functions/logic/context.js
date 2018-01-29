@@ -1,3 +1,5 @@
+`use strict`;
+
 /**
  * Generate a context object for all responses gathering arguments
  */
