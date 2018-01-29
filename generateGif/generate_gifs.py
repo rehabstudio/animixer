@@ -43,7 +43,12 @@ def generate_gifs(skip_existing=True):
             if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.tif')]
         images = []
         for filename in sorted(filenames):
-            images.append(imageio.imread(filename))
+            try:
+                images.append(imageio.imread(filename))
+            except Exception as e:
+                print('Error: filename {} failed, skipping'.format(filename))
+                print(str(e))
+                continue
 
         if len(images) == 0:
             print("Missing images for: {}".format(gif_path))
