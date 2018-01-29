@@ -2,6 +2,8 @@
 
 A google assistant chat bot to combine animals to create new ones.
 
+https://animixer.beta.rehab/
+
 Setup:
 
 ```
