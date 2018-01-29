@@ -1,5 +1,3 @@
-`use strict`;
-
 process.env.DEBUG = 'actions-on-google:*';
 const App = require('actions-on-google').DialogflowApp;
 const cors = require('cors')({ origin: true });
