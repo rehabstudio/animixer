@@ -46,8 +46,6 @@ class Footer extends React.Component<{}> {
       <Container>
         <Copyright css="padding-right: 0.5em">&copy; 2018-present</Copyright>
         <ExtLink href="https://beta.rehab/">Rehab</ExtLink>
-        <Separator>|</Separator>
-        <ExtLink href="/privacy">Privacy Policy</ExtLink>
       </Container>
     );
   }
