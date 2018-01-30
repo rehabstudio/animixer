@@ -10,11 +10,9 @@ import React from 'react';
 import AppBar from 'material-ui/AppBar';
 import MuiToolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
 import styled from 'styled-components';
 
 import history from '../../history';
-import Link from '../../components/Link';
 
 const Title = styled(Typography)`
   && {
@@ -38,11 +36,6 @@ class Toolbar extends React.Component<{}, {}> {
           <Title type="title" color="inherit" onClick={goHome}>
             Animixer
           </Title>
-          <React.Fragment>
-            <Button color="inherit" href="/about" onClick={Link.handleClick}>
-              About Us
-            </Button>
-          </React.Fragment>
         </MuiToolbar>
       </AppBar>
     );

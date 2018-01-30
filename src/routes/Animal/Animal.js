@@ -10,6 +10,7 @@ const Container = styled.div`
   height: -o-calc(100vh - 150px); /* opera */
   height: -webkit-calc(100vh - 150px); /* google, safari */
   height: -moz-calc(100vh - 150px); /* firefox */
+  min-height: 70vh;
   overflow-y: auto;
   background-color: white;
 `;
@@ -100,17 +101,14 @@ class Animal extends React.Component<{}> {
       return <ErrorPage error={{ status: 404 }} />;
     } else {
       return (
-        <Container
-          className={
-            this.state.mobile ? 'container valign-wrapper' : 'container'
-          }
-        >
+        <Container className="container valign-wrapper">
           <div
             id="main-wrapper"
             className={!this.state.animalExists ? 'hidden' : 'valign'}
+            style={{ width: '100%' }}
           >
             <div className="row">
-              <div className="col s12 m8 offset-m2">
+              <div className="col s12 m10 offset-m1">
                 <AnimalContainer>
                   <AnimalImg
                     innerRef={ele => (this.animalImg = ele)}

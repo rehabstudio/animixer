@@ -4,9 +4,9 @@ const config = {
   databaseURL: 'https://animixer-1d266.firebaseio.com',
   projectId: 'animixer-1d266',
   storageBucket: 'animixer-1d266.appspot.com',
-  messagingSenderId: '74799871575',
+  messagingSenderId: '74799871575'
 };
 
 module.exports = {
-  config,
+  config
 };

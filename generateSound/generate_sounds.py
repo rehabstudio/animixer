@@ -18,7 +18,8 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output_data', 'animals_pro
 MAX_PROCESS = 2
 MODEL = 'models/model.ckpt-200000'
 ASYNC = False
-SEPARATOR = '\\' if platform.system() == 'Windows' else '/'
+SEPARATOR = '\\' if platform.system() == 'Windows' else '/' # Replace with os library
+SKIP_EXISTING = True
 
 
 def load_encoding(fname, sample_length=None, sr=16000, ckpt=MODEL):
@@ -51,9 +52,11 @@ def merge_sounds(audio_list, skip_existing=True):
         enc_mix = (enc1 + enc2) / 2.0
 
         print("Synthesizing new audio: {}".format(output_name))
-        fastgen.synthesize(enc_mix, checkpoint_path=MODEL, save_paths=[output_path])
+        fastgen.synthesize(
+            enc_mix, checkpoint_path=MODEL, save_paths=[output_path])
     except Exception as e:
-        print('Erro skipping combo: {},\nError: {}'.format(str(output_name), str(e)))
+        print('Erro skipping combo: {},\nError: {}'.format(
+            str(output_name), str(e)))
 
     return output_path
 
@@ -81,7 +84,8 @@ def generate_sounds(skip_existing=True):
         with Pool(processes=MAX_PROCESS) as p:
             with tqdm(total=len(combinations)) as pbar:
                 for i, value in tqdm(
-                        enumerate(p.imap_unordered(merge_sounds, combinations))):
+                        enumerate(
+                            p.imap_unordered(merge_sounds, combinations))):
                     pbar.update()
                     output_files.append(value)
     else:
@@ -109,6 +113,6 @@ def upload_to_cloud():
 
 
 if __name__ == '__main__':
-    skip_existing = True
+    skip_existing = SKIP_EXISTING
     generate_sounds(skip_existing)
     upload_to_cloud()

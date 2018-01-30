@@ -11,14 +11,20 @@ from oauth2client.service_account import ServiceAccountCredentials
 import requests
 from tqdm import tqdm
 
-#ROOT_DIR = os.path.join(os.environ['HOME'], 'animixer')
+ROOT_DIR = os.path.join(os.environ['HOME'], 'animixer')
 ROOT_DIR = 'D:/Animixes'
-SEPARATOR = '\\' if platform.system() == 'Windows' else '/'
-MAX_PROCESS = 5
 ASYNC = True
+CLOUD_BUCKET = 'animixer-1d266.appspot.com'
+MAX_PROCESS = 5
+SEPARATOR = '\\' if platform.system() == 'Windows' else '/'
+SKIP_EXISTING = False
 
 
 def generate_gifs(skip_existing=True):
+    """
+    Process folders of tif images and generate gifs to same folder, return
+    list of gif paths.
+    """
     gif_paths = []
     subdirs = [
         os.path.join(ROOT_DIR, d) for d in os.listdir(ROOT_DIR)
@@ -39,7 +45,8 @@ def generate_gifs(skip_existing=True):
         images = []
         for filename in sorted(filenames):
             try:
-                images.append(imageio.imread(filename))
+                gif_file = imageio.imread(filename)
+                images.append(gif_file)
             except Exception as e:
                 print('Error: filename {} failed, skipping'.format(filename))
                 print(str(e))
@@ -49,12 +56,16 @@ def generate_gifs(skip_existing=True):
             print("Missing images for: {}".format(gif_path))
             continue
 
-        imageio.mimsave(gif_path, images, fps=25)
+        imageio.mimsave(gif_path, images, fps=25) # wrap me
         gif_paths.append(gif_path)
 
     return gif_paths
 
+
 def storage_file_exists(gcs_file):
+    """
+    Return True if google cloud storage file exists
+    """
     try:
         file = gcs.open(gcs_file,'r')
         file.close()
@@ -65,9 +76,12 @@ def storage_file_exists(gcs_file):
 
 
 def upload_to_cloud(file_paths, skip_existing=True, position=0):
+    """
+    Upload file paths to cloud bucket defined in globals
+    """
     #print('Starting Upload to cloud')
     client = storage.Client()
-    bucket = client.get_bucket('animixer-1d266.appspot.com')
+    bucket = client.get_bucket(CLOUD_BUCKET)
     #print('Getting list of files from server')
     blobs = [b.name for b in bucket.list_blobs()]
 
@@ -95,6 +109,9 @@ def batch_args(iterable, n=1, skip_existing=True):
 
 
 def async_upload(file_paths, batch_size=1000, skip_existing=True):
+    """
+    Launch multiple processes to speed up upload of gifs to GCS
+    """
     num_processes = math.ceil(len(file_paths) / batch_size)
     with Pool(processes=MAX_PROCESS) as p:
         with tqdm(total=num_processes, position=0, desc='Processes Complete:') as pbar:
@@ -110,6 +127,6 @@ def async_upload(file_paths, batch_size=1000, skip_existing=True):
 if __name__ == '__main__':
     gif_paths = generate_gifs()
     if ASYNC:
-        async_upload(gif_paths, skip_existing=False)
+        async_upload(gif_paths, skip_existing=SKIP_EXISTING)
     else:
-        upload_to_cloud(gif_paths, skip_existing=False)
+        upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING)
