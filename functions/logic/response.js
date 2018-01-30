@@ -70,7 +70,7 @@ function animalResponse(app, context) {
     animalVerb = '';
   }
 
-  let success1 = `Congratulations, you’ve found the wild ${animalName}! This is what is sounds like… `;
+  let success1 = `Congratulations, you’ve found the wild ${animalName}! This is what it sounds like… `;
   let success2 = `Congratulations, you’ve just discovered the mysterious ${animalName}! Hear it ${animalVerb}... `;
   let rediscover1 =
     'What an unusual animal. Would you like to discover another one?';

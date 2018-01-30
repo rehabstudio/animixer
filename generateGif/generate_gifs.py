@@ -44,7 +44,8 @@ def generate_gifs(skip_existing=True):
         images = []
         for filename in sorted(filenames):
             try:
-                images.append(imageio.imread(filename))
+                gif_file = imageio.imread(filename)
+                images.append(gif_file) # break me up
             except Exception as e:
                 print('Error: filename {} failed, skipping'.format(filename))
                 print(str(e))
@@ -54,7 +55,7 @@ def generate_gifs(skip_existing=True):
             print("Missing images for: {}".format(gif_path))
             continue
 
-        imageio.mimsave(gif_path, images, fps=25)
+        imageio.mimsave(gif_path, images, fps=25) # wrap me
         gif_paths.append(gif_path)
 
     return gif_paths
@@ -85,12 +86,17 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0):
 
     #print('Uploading {} files to cloud'.format(len(file_paths)))
     for gif in tqdm(file_paths, position=position, desc='Process: {}'.format(position)):
-        file_name = gif.split(SEPARATOR)[-1]
-        if file_name in blobs and skip_existing:
+        try:
+            file_name = gif.split(SEPARATOR)[-1]
+            if file_name in blobs and skip_existing:
+                continue
+            blob = bucket.blob(file_name)
+            blob.upload_from_filename(gif)
+            blob.make_public()
+        except Exception as e:
+            print('Error: unable to upload file: {}'.format(gif))
+            print(str(e))
             continue
-        blob = bucket.blob(file_name)
-        blob.upload_from_filename(gif)
-        blob.make_public()
 
 
 def batch_args(iterable, n=1, skip_existing=True):

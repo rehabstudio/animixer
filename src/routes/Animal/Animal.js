@@ -100,11 +100,7 @@ class Animal extends React.Component<{}> {
       return <ErrorPage error={{ status: 404 }} />;
     } else {
       return (
-        <Container
-          className={
-            this.state.mobile ? 'container valign-wrapper' : 'container'
-          }
-        >
+        <Container className="container valign-wrapper">
           <div
             id="main-wrapper"
             className={!this.state.animalExists ? 'hidden' : 'valign'}

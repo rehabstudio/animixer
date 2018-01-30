@@ -18,7 +18,7 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output_data')
 MAX_PROCESS = 2
 MODEL = 'models/model.ckpt-200000'
 ASYNC = False
-SEPARATOR = '\\' if platform.system() == 'Windows' else '/'
+SEPARATOR = '\\' if platform.system() == 'Windows' else '/' # Replace with os library
 SKIP_EXISTING = True
 
 
