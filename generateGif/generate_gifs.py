@@ -11,7 +11,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 import requests
 from tqdm import tqdm
 
-ROOT_DIR = os.path.join(os.environ['HOME'], 'animixer')
+#ROOT_DIR = os.path.join(os.environ['HOME'], 'animixer')
+ROOT_DIR = 'D:/Animixes'
 SEPARATOR = '\\' if platform.system() == 'Windows' else '/'
 MAX_PROCESS = 5
 ASYNC = True
@@ -37,7 +38,12 @@ def generate_gifs(skip_existing=True):
             if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.tif')]
         images = []
         for filename in sorted(filenames):
-            images.append(imageio.imread(filename))
+            try:
+                images.append(imageio.imread(filename))
+            except Exception as e:
+                print('Error: filename {} failed, skipping'.format(filename))
+                print(str(e))
+                continue
 
         if len(images) == 0:
             print("Missing images for: {}".format(gif_path))
@@ -67,12 +73,17 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0):
 
     #print('Uploading {} files to cloud'.format(len(file_paths)))
     for gif in tqdm(file_paths, position=position, desc='Process: {}'.format(position)):
-        file_name = gif.split(SEPARATOR)[-1]
-        if file_name in blobs and skip_existing:
+        try:
+            file_name = gif.split(SEPARATOR)[-1]
+            if file_name in blobs and skip_existing:
+                continue
+            blob = bucket.blob(file_name)
+            blob.upload_from_filename(gif)
+            blob.make_public()
+        except Exception as e:
+            print('Error: unable to upload file: {}'.format(gif))
+            print(str(e))
             continue
-        blob = bucket.blob(file_name)
-        blob.upload_from_filename(gif)
-        blob.make_public()
 
 
 def batch_args(iterable, n=1, skip_existing=True):
@@ -93,7 +104,7 @@ def async_upload(file_paths, batch_size=1000, skip_existing=True):
                         upload_to_cloud,
                         batch_args(file_paths, batch_size, skip_existing)))):
                 pbar.update()
-    print "Async upload of files complete"
+    print("Async upload of files complete")
 
 
 if __name__ == '__main__':

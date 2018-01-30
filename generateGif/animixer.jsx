@@ -120,7 +120,7 @@ function renderAnimals() {
     //app.beginUndoGroup('XXX');
 
     // Get all walk comps
-    var walkComps = getComps('_walk').reverse();
+    var walkComps = getComps('_walk');
     errorStr = '';
     var batchSize = 50;
     var batch = 0;
@@ -164,6 +164,8 @@ function renderAnimals() {
         // remove target comp from list of comps
         walkComps.shift();
     }
+
+    renderClear(app, comps);
 
     // Show errors
     if (errorStr) {

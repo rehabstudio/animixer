@@ -13,8 +13,8 @@ from magenta.models.nsynth.wavenet import fastgen
 from IPython.display import Audio
 from tqdm import tqdm
 
-INPUT_DIR = os.path.join(os.path.dirname(__file__), 'input_data', 'animals')
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output_data')
+INPUT_DIR = os.path.join(os.path.dirname(__file__), 'input_data', 'animals_processed')
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output_data', 'animals_processed')
 MAX_PROCESS = 2
 MODEL = 'models/model.ckpt-200000'
 ASYNC = False
@@ -33,7 +33,7 @@ def merge_sounds(audio_list, skip_existing=True):
     audio_name_1 = audio_1.split(SEPARATOR)[-1].split('.')[0]
     audio_name_2 = audio_2.split(SEPARATOR)[-1].split('.')[0]
     output_name = ''.join(sorted([audio_name_1 , audio_name_2]))
-    output_path = 'output_data{}{}.wav'.format(SEPARATOR, output_name)
+    output_path = '{}{}{}.wav'.format(OUTPUT_DIR, SEPARATOR, output_name)
 
     if(os.path.exists(output_path) and skip_existing):
         print('Skipping sounds "{}" and "{}"'.format(audio_1, audio_2))
