@@ -18,6 +18,16 @@ Deploying:
 $ make deploy
 ```
 
+## Authentication
+
+For deploying this sounds and gifs this project uses a service private generated from:
+https://console.cloud.google.com/apis/credentials?project=animixer-1d266
+
+save the key at the root of this project with the name:
+animixer-pk.json
+
+The Makefiles in generateGif and generateSound have commands with the env vars required which will need to be updated.
+
 
 ## Overview
 
@@ -65,3 +75,19 @@ This used the actions-on-google SDK.
 ## Firebase starter project
 
 Built using the react firebase starter project: https://github.com/kriasoft/react-firebase-starter
+
+# TODO:
+
+Feedback after reviewing project:
+
+generateGif / generateSound - python
+
+- Use std libraries to handle OS separators
+- Add docstrings
+- Add arguments for command Linked
+
+generateGif - animixer.jsx
+
+- Break up into smaller files
+- Bad naming change renderComp -> buildComp
+- Break up functions so each does one thing
