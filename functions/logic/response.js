@@ -20,6 +20,7 @@ function animalsNotValid(app, context) {
 function animalsIdentical(app, context) {
   let animalName = context.animalHead;
   let imageUrl = utils.getImageUrl(context);
+  let audioUrl = utils.getAudioUrl(context);
   let simpleResp = {};
   let aOrAn = utils.getAOrAn(animalName);
   let success1 =
@@ -33,6 +34,7 @@ function animalsIdentical(app, context) {
   simpleResp.speech =
     '<speak>' +
     utils.randomSelection([success1, success2]) +
+    `<audio src="${audioUrl}"></audio>` +
     restart +
     '</speak>';
   let card = new BasicCard()

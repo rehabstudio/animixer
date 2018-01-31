@@ -11,8 +11,10 @@ from multiprocessing import Pool
 from magenta.models.nsynth import utils
 from magenta.models.nsynth.wavenet import fastgen
 from IPython.display import Audio
+from shutil import copyfile
 from tqdm import tqdm
 
+FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 INPUT_DIR = os.path.join(os.path.dirname(__file__), 'input_data', 'animals_processed')
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output_data', 'animals_processed')
 MAX_PROCESS = 2
@@ -65,15 +67,18 @@ def unique_combinations(file_list):
     return [x for x in itertools.combinations(file_list, 2)]
 
 
-def generate_sounds(skip_existing=True):
-    print('Generating Sounds')
-    output_files = []
-    filenames = [
-        os.path.join(INPUT_DIR, f) for f in os.listdir(INPUT_DIR)
-        if os.path.isfile(os.path.join(INPUT_DIR, f)) and
+def get_audio_files(directory):
+    return [
+        os.path.join(directory, f) for f in os.listdir(directory)
+        if os.path.isfile(os.path.join(directory, f)) and
         (f.endswith('.wav') or f.endswith('.mp3')) and
         f.startswith('_') is False ]
 
+
+def generate_sounds(skip_existing=True):
+    print('Generating Sounds')
+    output_files = []
+    filenames = get_audio_files(INPUT_DIR)
     combinations = unique_combinations(filenames)
 
     print('Generated animal combinations: ')
@@ -94,19 +99,36 @@ def generate_sounds(skip_existing=True):
 
     return output_files
 
+def add_original(skip_existing=True):
+    '''
+    Add original sounds to output folder
+    '''
+    print('Copying original sounds to output dir')
+    filenames = get_audio_files(INPUT_DIR)
+    for filepath in tqdm(filenames):
+        animal_name, ext = filepath.split('/')[-1].split('.')
+        filename = animalName + animalName + '.' + ext
+        dest_path = os.path.join(FILE_DIR, OUTPUT_DIR, filename)
 
-def upload_to_cloud():
+        if os.path.exists(dest_path) and skip_existing:
+            continue
+
+        copyfile(
+            os.path.join(FILE_DIR, filename),
+            dest_path)
+
+
+def upload_to_cloud(skip_existing=True):
     client = storage.Client()
     bucket = client.get_bucket('animixer-1d266.appspot.com')
-    file_paths = [
-        os.path.join(OUTPUT_DIR, f) for f in os.listdir(OUTPUT_DIR)
-        if os.path.isfile(os.path.join(OUTPUT_DIR, f)) and
-        (f.endswith('.wav') or f.endswith('.mp3')) and
-        f.startswith('_') is False ]
+    file_paths = get_audio_files(OUTPUT_DIR)
+    blobs = [b.name for b in bucket.list_blobs()]
 
     print('Uploading to cloud')
     for sound in tqdm(file_paths):
         file_name = sound.split('/')[-1]
+        if file_name in blobs and skip_existing:
+            continue
         blob = bucket.blob(file_name)
         blob.upload_from_filename(sound)
         blob.make_public()
@@ -115,4 +137,5 @@ def upload_to_cloud():
 if __name__ == '__main__':
     skip_existing = SKIP_EXISTING
     generate_sounds(skip_existing)
-    upload_to_cloud()
+    add_original(skip_existing)
+    upload_to_cloud(skip_existing)

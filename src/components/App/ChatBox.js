@@ -126,6 +126,7 @@ class ChatBox extends React.Component<{}, {}> {
     let speech =
       textData.simple_response.ssml || textData.simple_response.text_to_speech;
     let text = document.createElement('p');
+    let audioDiv = document.createElement('div');
     let audio = document.createElement('audio');
     let source = document.createElement('source');
     let audioContent = /<audio(.*?)<\/audio>/g.exec(speech);
@@ -134,17 +135,20 @@ class ChatBox extends React.Component<{}, {}> {
       let audioSrc = /src="(.*?)"/g.exec(audioContent[1])[1];
       let audioExt = audioSrc.split('.').pop();
       audio.setAttribute('controls', '');
+      audio.style.width = '100%';
       source.src = audioSrc;
       source.setAttribute('type', 'audio/' + audioExt);
+      audioDiv.className = 'col s8 offset-m2';
     }
 
     text.innerHTML = /<speak>(.*?)<\/speak>/g
       .exec(speech)[1]
       .replace(audio, '');
 
+    audioDiv.appendChild(audio);
     audio.appendChild(source);
     node.appendChild(text);
-    node.appendChild(audio);
+    node.appendChild(audioDiv);
   }
 
   setResponseOnNode(response, node) {
