@@ -29,35 +29,50 @@ class Animal extends React.Component<{}> {
   constructor(props) {
     super(props);
     const parsed = qs.parse(props.location.search);
-    const imageUrl =
-      'https://storage.googleapis.com/animixer-1d266.appspot.com/' +
-      parsed.animal1 +
-      '_' +
-      parsed.animal2 +
-      '_' +
-      parsed.animal3 +
-      '_render.gif';
-    const audioUrl =
-      'https://storage.googleapis.com/animixer-1d266.appspot.com/' +
-      parsed.animal1 +
-      parsed.animal2 +
-      '.wav';
+    const imageUrl = this.generateImageUrl(parsed);
+    const audioUrl = this.generateAudio(parsed);
     this.state = {
       animalName: '',
       animalNameText: '',
       audioUrl: audioUrl,
       imageUrl: imageUrl,
       animalExists: null,
-      mobile: false
+      mobile: false,
+      qs: parsed
     };
+  }
 
-    this.getAnimalName(parsed);
+  generateAudio(qs) {
+    let animals = [qs.animal1, qs.animal2].sort().join('');
+    return (
+      'https://storage.googleapis.com/animixer-1d266.appspot.com/' +
+      animals +
+      '.wav'
+    );
+  }
+
+  generateImageUrl(qs) {
+    return (
+      'https://storage.googleapis.com/animixer-1d266.appspot.com/' +
+      qs.animal1 +
+      '_' +
+      qs.animal2 +
+      '_' +
+      qs.animal3 +
+      '_render.gif'
+    );
   }
 
   componentDidMount() {
+    // Get animal name from API
+    this.getAnimalName(this.state.qs);
+
+    // If we have an image url load it
     if (this.animalImg) {
       this.animalImg.src = this.state.imageUrl;
     }
+
+    // Add check for mobile size for style
     window.addEventListener('resize', this.mobileCheck.bind(this));
     this.mobileCheck();
   }
@@ -79,8 +94,13 @@ class Animal extends React.Component<{}> {
   }
 
   getAnimalName(parsedArgs) {
-    if ((parsedArgs.animal1 === parsedArgs.animal2) === parsedArgs.animal3) {
-      return parsedArgs.animal1;
+    if (
+      parsedArgs.animal1 === parsedArgs.animal2 &&
+      parsedArgs.animal2 === parsedArgs.animal3
+    ) {
+      return this.setState({
+        animalNameText: `You have discovered the ${parsedArgs.animal1}!`
+      });
     }
 
     let animalNameUrl =
@@ -124,8 +144,8 @@ class Animal extends React.Component<{}> {
                     innerRef={ele => (this.animalImg = ele)}
                     className="col s12 responsive-img"
                     style={{
-                      'max-height': '65vh',
-                      'margin-bottom': '10px'
+                      maxHeight: '65vh',
+                      marginBottom: '10px'
                     }}
                     onLoad={this.handleImageLoaded.bind(this)}
                     onError={this.handleImageErrored.bind(this)}
