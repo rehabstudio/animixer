@@ -21,11 +21,6 @@ const Copyright = styled.span`
   padding-right: 0.5em;
 `;
 
-const Separator = styled.span`
-  padding-right: 0.5em;
-  padding-left: 0.5em;
-`;
-
 const ExtLink = styled.a`
   &,
   &:hover,

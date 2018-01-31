@@ -37,9 +37,15 @@ class Animal extends React.Component<{}> {
       '_' +
       parsed.animal3 +
       '_render.gif';
+    const audioUrl =
+      'https://storage.googleapis.com/animixer-1d266.appspot.com/' +
+      parsed.animal1 +
+      parsed.animal2 +
+      '.wav';
     this.state = {
       animalName: '',
       animalNameText: '',
+      audioUrl: audioUrl,
       imageUrl: imageUrl,
       animalExists: null,
       mobile: false
@@ -73,6 +79,10 @@ class Animal extends React.Component<{}> {
   }
 
   getAnimalName(parsedArgs) {
+    if ((parsedArgs.animal1 === parsedArgs.animal2) === parsedArgs.animal3) {
+      return parsedArgs.animal1;
+    }
+
     let animalNameUrl =
       'https://us-central1-animixer-1d266.cloudfunctions.net/animalName/?animal1=' +
       `${parsedArgs.animal1}&animal2=${parsedArgs.animal2}&animal3=${
@@ -120,7 +130,16 @@ class Animal extends React.Component<{}> {
                     onLoad={this.handleImageLoaded.bind(this)}
                     onError={this.handleImageErrored.bind(this)}
                   />
-                  <AnimalText className="center-align">
+                  <div className="col s8 offset-s2">
+                    <audio
+                      controls
+                      src={this.state.audioUrl}
+                      style={{
+                        width: '100%'
+                      }}
+                    />
+                  </div>
+                  <AnimalText className="clearfix center-align">
                     {this.state.animalNameText}
                   </AnimalText>
                 </AnimalContainer>
