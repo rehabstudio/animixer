@@ -27,6 +27,10 @@ function goHome() {
   history.push('/');
 }
 
+function goMixipedia() {
+  history.push('/mixipedia');
+}
+
 class Toolbar extends React.Component<{}, {}> {
   state = {};
 
@@ -37,6 +41,11 @@ class Toolbar extends React.Component<{}, {}> {
           <Title type="title" color="inherit" onClick={goHome}>
             Animixer
           </Title>
+          <React.Fragment>
+            <Button color="inherit" onClick={goMixipedia}>
+              Mixipedia
+            </Button>
+          </React.Fragment>
           <React.Fragment>
             <Button color="inherit" href="https://beta.rehab/">
               About Us
