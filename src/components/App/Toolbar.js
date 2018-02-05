@@ -14,7 +14,6 @@ import Button from 'material-ui/Button';
 import styled from 'styled-components';
 
 import history from '../../history';
-import Link from '../../components/Link';
 
 const Title = styled(Typography)`
   && {
@@ -39,7 +38,7 @@ class Toolbar extends React.Component<{}, {}> {
             Animixer
           </Title>
           <React.Fragment>
-            <Button color="inherit" href="/about" onClick={Link.handleClick}>
+            <Button color="inherit" href="https://beta.rehab/">
               About Us
             </Button>
           </React.Fragment>

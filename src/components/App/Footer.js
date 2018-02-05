@@ -35,6 +35,11 @@ const ExtLink = styled.a`
   }
 `;
 
+const Separator = styled.span`
+  padding-right: 0.5em;
+  padding-left: 0.5em;
+`;
+
 class Footer extends React.Component<{}> {
   render() {
     return (
@@ -42,7 +47,7 @@ class Footer extends React.Component<{}> {
         <Copyright css="padding-right: 0.5em">&copy; 2018-present</Copyright>
         <ExtLink href="https://beta.rehab/">Rehab</ExtLink>
         <Separator>|</Separator>
-        <ExtLink href="/privacy">Privacy Policy</ExtLink>
+        <ExtLink href="http://beta.rehab/terms">Terms & Conditions</ExtLink>
       </Container>
     );
   }

@@ -91,3 +91,13 @@ generateGif - animixer.jsx
 - Break up into smaller files
 - Bad naming change renderComp -> buildComp
 - Break up functions so each does one thing
+
+react app
+
+- Remove unused files
+- remove graphQL
+- Write tests for chatbox
+
+functions
+
+- Move response strings to separate file.

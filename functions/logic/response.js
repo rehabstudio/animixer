@@ -2,8 +2,13 @@ const {
   RichResponse,
   BasicCard
 } = require('actions-on-google/response-builder');
+const fs = require('fs');
+const yaml = require('js-yaml');
 const utils = require('./utils');
 const knowledgeGraph = require('./knowledgeGraph');
+const responseData = yaml.safeLoad(
+  fs.readFileSync('./../copy/response.yaml', 'utf-8')
+);
 
 /**
  * Invalid animals recieved response
