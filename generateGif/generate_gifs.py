@@ -59,9 +59,12 @@ def generate_tiffs_ae(skip_existing=True):
                 FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE), shell=True)
     else:
         windows_script = (
-            "var scriptPath = '%s' + '\\' + '%s';" + 
+            "var scriptPath = '%s' + '/' + '%s';" + 
             "$.evalFile(scriptPath);renderAnimals('%s', '%s');") % (
-                FILE_DIR, 'animixer.jsx', PROJECT_FILE, PERMUTATIONS_FILE)
+                FILE_DIR.replace('\\', '/'),
+                'animixer.jsx',
+                PROJECT_FILE.replace('\\', '/'),
+                PERMUTATIONS_FILE.replace('\\', '/'))
         ae = subprocess.call(
             'C:\Program Files\Adobe\Adobe After Effects CC 2018\Support Files\AfterFX.exe ' +
             '-s "%s"' % windows_script)
