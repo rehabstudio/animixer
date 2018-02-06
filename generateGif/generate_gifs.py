@@ -1,5 +1,6 @@
 #!/ bin/python3
 
+import itertools
 import json
 import math
 from multiprocessing import Pool
@@ -36,7 +37,7 @@ SKIP_EXISTING = False
 
 
 def generate_permuations(number_animals):
-    return [[0,0,0]]
+    return list(itertools.permutations(range(number_animals), 3))
 
 
 def generate_tiffs_ae(skip_existing=True):
