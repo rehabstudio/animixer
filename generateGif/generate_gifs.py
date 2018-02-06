@@ -58,9 +58,13 @@ def generate_tiffs_ae(skip_existing=True):
             '%s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\')"' % (
                 FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE), shell=True)
     else:
+        windows_script = (
+            "var scriptPath = '%s' + '\\' + '%s';" + 
+            "$.evalFile(scriptPath);renderAnimals('%s', '%s');") % (
+                FILE_DIR, 'animixer.jsx', PROJECT_FILE, PERMUTATIONS_FILE)
         ae = subprocess.call(
-            'afterfx -r %s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\')"' (
-                FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE), shell=True)
+            'C:\Program Files\Adobe\Adobe After Effects CC 2018\Support Files\AfterFX.exe ' +
+            '-s "%s"' % windows_script)
 
 
 def generate_gifs(skip_existing=True):
