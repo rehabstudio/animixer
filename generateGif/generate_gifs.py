@@ -3,7 +3,8 @@
 import math
 from multiprocessing import Pool
 import os
-import platform
+from sys import platform
+import subprocess
 
 from google.cloud import storage
 import imageio
@@ -11,13 +12,41 @@ from oauth2client.service_account import ServiceAccountCredentials
 import requests
 from tqdm import tqdm
 
-ROOT_DIR = os.path.join(os.environ['HOME'], 'animixer')
-ROOT_DIR = 'D:/Animixes'
+if platform == "linux" or platform == "linux2" or platform == "darwin":
+    # linux
+    # OS X
+    ROOT_DIR = os.path.join(os.environ['HOME'], 'animixer')
+    SEPARATOR = '/'
+    OS = 'unix'
+
+elif platform == "win32":
+    # Windows...
+    ROOT_DIR = 'D:/Animixes'
+    SEPARATOR = '\\'
+    OS = 'win'
+
+FILE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_FILE = os.path.join(FILE_DIR, 'ae_project', 'animixer_anim.aep')
 ASYNC = True
 CLOUD_BUCKET = 'animixer-1d266.appspot.com'
 MAX_PROCESS = 5
-SEPARATOR = '\\' if platform.system() == 'Windows' else '/'
 SKIP_EXISTING = False
+
+
+def generate_tiffs_ae(skip_existing=True):
+    """
+    generate tiffs for gifs in AE
+    """
+    if OS == 'unix':
+        # Mac call
+        ae = subprocess.call(
+            'arch -x86_64 osascript ./ASfile.scpt '
+            '%s%sanimixer.jsx "renderAnimals(\'%s\')"' % (
+                FILE_DIR, SEPARATOR, PROJECT_FILE), shell=True)
+    else:
+        ae = subprocess.call(
+            'afterfx -r %s%sanimixer.jsx' "%s" (
+                FILE_DIR, SEPARATOR, PROJECT_FILE), shell=True)
 
 
 def generate_gifs(skip_existing=True):
@@ -125,8 +154,11 @@ def async_upload(file_paths, batch_size=1000, skip_existing=True):
 
 
 if __name__ == '__main__':
+    generate_tiffs_ae()
+    '''
     gif_paths = generate_gifs()
     if ASYNC:
         async_upload(gif_paths, skip_existing=SKIP_EXISTING)
     else:
         upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING)
+    '''
