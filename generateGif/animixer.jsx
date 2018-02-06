@@ -34,24 +34,21 @@ function remove(array, element) {
   array.splice(index, 1);
 }
 
-function permutator(list, maxLen) {
+function permutator(list, maxLen, permutationsFile) {
   // Copy initial values as arrays
-  /**
-        var perm = list.map(function(val) {
-        return [val];
-    });
-    */
-  var permFile = new File(rootDir + 'permutations.json');
-  var existingData;
-  try {
-    permFile.open("r");
-    existingData = JSON.parse(permFile.read());
-    permFile.close();
-  } catch (err) {}
+  if (permutationsFile) {
+    var permFile = new File(permutationsFile);
+    var existingData;
+    try {
+      permFile.open("r");
+      existingData = JSON.parse(permFile.read());
+      permFile.close();
+    } catch (err) {}
 
-  if (existingData) {
-    $.writeln('Using existing permuation data');
-    return existingData;
+    if (existingData) {
+      $.writeln('Using existing permuation data');
+      return existingData;
+    }
   }
 
   var perm = [];
@@ -78,12 +75,7 @@ function permutator(list, maxLen) {
     return generate(perm, maxLen, currLen + 1);
   };
   // Start with size 1 because of initial values
-  var permuations = generate(perm, maxLen, 1);
-  var permFile = new File(rootDir + 'permutations.json');
-  permFile.open("w");
-  permFile.write(JSON.stringify({'permuations': permuations}));
-  permFile.close();
-  return permuations;
+  return generate(perm, maxLen, 1);
 };
 
 // ------------------------------------------------------------------
@@ -139,78 +131,6 @@ function renderClear(app, comps) {
     var comp = comps.shift();
     comp.remove();
   }
-}
-
-function renderAnimals(projectPath) {
-  //app.beginUndoGroup('XXX');
-  if (projectPath) {
-    var project = new File(projectPath);
-    app.open(project);
-  }
-
-  // Get all walk comps
-  var walkComps = getComps('_walk');
-  errorStr = '';
-  var batchSize = 50;
-  var batch = 0;
-  var skipExisting = true;
-
-  // While there are walk comps to process
-  while (walkComps.length > 0) {
-
-    // Generate all possible combinations for target comp
-    var permutations = permutator(walkComps, 3);
-    // Render original
-    permutations.insert([
-      0, 0, 0
-    ], 0);
-    var comps = [];
-
-    for (var i = 0; i < permutations.length; i++) {
-      try {
-        var walk_cmp_1 = walkComps[permutations[i][0]];
-        var walk_cmp_2 = walkComps[permutations[i][1]];
-        var walk_cmp_3 = walkComps[permutations[i][2]];
-        var renderCompItem = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, skipExisting);
-        if (renderCompItem) {
-          $.writeln('Composed animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
-          comps.push(renderCompItem[0]);
-          batch++;
-        } else {
-          $.writeln('Skipping animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
-        }
-
-      } catch (err) {
-        errorStr += 'Error missing element / badly named element, skipping animal.\n';
-        errorStr += 'Error: ' + err + '\n';
-        $.writeln(errorStr);
-      }
-
-      if (batch >= batchSize) {
-        renderClear(app, comps);
-        batch = 0;
-        comps = [];
-      }
-    }
-
-    // remove target comp from list of comps
-    walkComps.shift();
-  }
-
-  renderClear(app, comps);
-
-  // Show errors
-  if (errorStr) {
-    errorStr = 'Error Report:\n' + errorStr;
-    $.writeln(errorStr);
-    alert(errorStr);
-  }
-
-  $.writeln('Render animals complete');
-
-  //app.endUndoGroup();
-  app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);
-  app.quit();
 }
 
 function getMarkerWidth(markers) {
@@ -443,6 +363,84 @@ function scaleAllCameraZooms(theComp, scaleBy) {
       }
     }
   }
+}
+
+/**
+ * Render Animals in AE, will load a project file if given and then look
+ * for comps to build animals with then render, will quit after completion.
+ *
+ * @param  {string} projectPath      Optional will load project before rendering
+ * @param  {list} permutationsFile Optional list of list of indexs of animals to load
+                                     for use by external process to batch render animals
+ */
+function renderAnimals(projectPath, permutationsFile) {
+  //app.beginUndoGroup('XXX');
+  if (projectPath) {
+    var project = new File(projectPath);
+    app.open(project);
+  }
+
+  // Get all walk comps
+  var walkComps = getComps('_walk');
+  errorStr = '';
+  var batchSize = 50;
+  var batch = 0;
+  var skipExisting = true;
+  var comps = [];
+
+  // Generate all possible combinations for target comp or load from file
+  var permutations = permutator(walkComps, 3, permutationsFile);
+
+  // Render originals
+  for(var i=0; i<walkComps.length; i++){
+    permutations.insert([i, i, i], 0);
+  }
+
+  // While there are walk comps to process
+  while (permutations.length > 0) {
+    try {
+      var walk_cmp_1 = walkComps[permutations[0][0]];
+      var walk_cmp_2 = walkComps[permutations[0][1]];
+      var walk_cmp_3 = walkComps[permutations[0][2]];
+      var renderCompItem = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, skipExisting);
+      if (renderCompItem) {
+        $.writeln('Composed animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
+        comps.push(renderCompItem[0]);
+        batch++;
+      } else {
+        $.writeln('Skipping animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
+      }
+
+    } catch (err) {
+      errorStr += 'Error missing element / badly named element, skipping animal.\n';
+      errorStr += 'Error: ' + err + '\n';
+      $.writeln(errorStr);
+    }
+
+    if (batch >= batchSize) {
+      renderClear(app, comps);
+      batch = 0;
+      comps = [];
+    }
+
+    // remove target permutation from list of permutations
+    permutations.shift();
+  }
+
+  renderClear(app, comps);
+
+  // Show errors
+  if (errorStr) {
+    errorStr = 'Error Report:\n' + errorStr;
+    $.writeln(errorStr);
+    alert(errorStr);
+  }
+
+  $.writeln('Render animals complete');
+
+  //app.endUndoGroup();
+  app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);
+  app.quit();
 }
 
 // ------------------------------------------------------------------

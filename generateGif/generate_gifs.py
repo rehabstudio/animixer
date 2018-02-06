@@ -1,10 +1,11 @@
 #!/ bin/python3
 
+import json
 import math
 from multiprocessing import Pool
 import os
-from sys import platform
 import subprocess
+from sys import platform
 
 from google.cloud import storage
 import imageio
@@ -27,26 +28,39 @@ elif platform == "win32":
 
 FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_FILE = os.path.join(FILE_DIR, 'ae_project', 'animixer_anim.aep')
+PERMUTATIONS_FILE = os.path.join(FILE_DIR, 'ae_project', 'permutations.json')
 ASYNC = True
 CLOUD_BUCKET = 'animixer-1d266.appspot.com'
 MAX_PROCESS = 5
 SKIP_EXISTING = False
 
 
+def generate_permuations(number_animals):
+    return [[0,0,0]]
+
+
 def generate_tiffs_ae(skip_existing=True):
     """
     generate tiffs for gifs in AE
     """
+    # Generate permutations file
+    permutations_file = None
+    number_animals = 30
+
+    with open(PERMUTATIONS_FILE, 'w') as fp:
+        permutations = generate_permuations(number_animals)
+        fp.write(json.dumps(permutations))
+
     if OS == 'unix':
         # Mac call
         ae = subprocess.call(
             'arch -x86_64 osascript ./ASfile.scpt '
-            '%s%sanimixer.jsx "renderAnimals(\'%s\')"' % (
-                FILE_DIR, SEPARATOR, PROJECT_FILE), shell=True)
+            '%s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\')"' % (
+                FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE), shell=True)
     else:
         ae = subprocess.call(
-            'afterfx -r %s%sanimixer.jsx' "%s" (
-                FILE_DIR, SEPARATOR, PROJECT_FILE), shell=True)
+            'afterfx -r %s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\')"' (
+                FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE), shell=True)
 
 
 def generate_gifs(skip_existing=True):
