@@ -1,4 +1,4 @@
-/*
+﻿/*
   @Author: Noel Wilson
   @company: Rehab
 
@@ -447,4 +447,4 @@ function renderAnimals(projectPath, permutationsFile) {
 // Main
 // ------------------------------------------------------------------
 
-//renderAnimals();
+//renderAnimals(undefined, 'C:/Users/rehabstudio/Projects/animixer/generateGif/ae_project/permutations.json');
