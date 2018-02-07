@@ -1,0 +1,34 @@
+animals_not_valid:
+  text: I've never seen an animal with the same head body or legs, would you like to look again?
+
+animals_idential:
+  success_1: Congratulations, you’ve just discovered… ${0} ${1}! There are some amazing mixed up animals here. Let’s see what else is hiding.
+  success_2: There’s something hiding over there. It’s… ${0} ${1}! There are some really unusual animals on this safari. Let’s find a new one.
+  restart: To start, what head does your animal have?
+
+animal_response:
+  success_1: Congratulations, you’ve found the wild ${0}! This is what it sounds like…
+  success_2: Congratulations, you’ve just discovered the mysterious ${0}! Hear it ${1}...
+  rediscover_1: What an unusual animal. Would you like to discover another one?
+  rediscover_2: There are lots more hiding. Would you like to find another animal?
+  body: Head of ${0}, body of ${1} and legs of ${2}
+
+screen_switch:
+  text: Would you like me to send a picture of the ${0} to your phone?
+  notif: Your unique animal!
+
+not_found:
+  text: I haven’t discovered that animal yet on this safari. Would you like to try a different combination?
+
+exit:
+  text: Come back to the Animixer safari any time.
+
+unknownAnimalResponse:
+  unknown_1: I haven’t seen a wild ${0} on this safari. How about ${1} ${2}?
+  unknown_2: That doesn’t seem to be an animal. How about ${0} ${1}?
+
+changeAnimal:
+  text: Yes, I can see it now! Looks like the ${0} ${1} actually ${2} ${3}!
+  missing_head: And what head does it have?
+  missing_body: And what body does it have?
+  missing_legs: And what legs does it have?

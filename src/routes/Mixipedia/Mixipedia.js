@@ -8,43 +8,84 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import Card from 'material-ui/Card';
-import Typography from 'material-ui/Typography';
+//import Gallery from './../../components/Mixipedia/AnimalGallery';
+import Gallery from 'react-grid-gallery';
+
+const Title = styled.h5`
+  text-align: center;
+`;
 
 const Container = styled.div`
-  max-width: 600px;
   box-sizing: border-box;
   margin: 0 auto;
+  background-color: white;
+  width: 80vw;
+  height: calc(100vh - 180px);
+  height: -o-calc(100vh - 180px); /* opera */
+  height: -webkit-calc(100vh - 180px); /* google, safari */
+  height: -moz-calc(100vh - 180px); /* firefox */
+  overflow-y: auto;
 `;
 
-const Content = styled(Card)`
-  padding: 1em 2em;
-  margin: 2em 0;
-`;
+class Mixipedia extends React.Component<{}> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      images: []
+    };
+  }
 
-class About extends React.Component<{}> {
+  componentDidMount() {
+    this.getAnimals();
+  }
+
+  /**
+   * Get enough found animals to fill the screen
+   */
+  getAnimals() {
+    let images = [
+      {
+        src: 'https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg',
+        thumbnail:
+          'https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_n.jpg',
+        thumbnailWidth: 320,
+        thumbnailHeight: 174,
+        thumbnailCaption: 'After Rain (Jeshu John - designerspics.com)',
+        caption: 'After Rain (Jeshu John - designerspics.com)'
+      },
+      {
+        src: 'https://c2.staticflickr.com/9/8356/28897120681_3b2c0f43e0_b.jpg',
+        thumbnail:
+          'https://c2.staticflickr.com/9/8356/28897120681_3b2c0f43e0_n.jpg',
+        thumbnailWidth: 320,
+        thumbnailHeight: 212,
+        thumbnailCaption: 'Boats (Jeshu John - designerspics.com)',
+        caption: 'Boats (Jeshu John - designerspics.com)'
+      },
+      {
+        src: 'https://c4.staticflickr.com/9/8887/28897124891_98c4fdd82b_b.jpg',
+        thumbnail:
+          'https://c4.staticflickr.com/9/8887/28897124891_98c4fdd82b_n.jpg',
+        thumbnailWidth: 320,
+        thumbnailHeight: 212,
+        thumbnailCaption: '8H',
+        caption: '8H'
+      }
+    ];
+    // make API call to get animals
+    this.setState({
+      images: images
+    });
+  }
+
   render() {
     return (
       <Container>
-        <Content>
-          <Typography type="headline" gutterBottom>
-            Mixipedia
-          </Typography>
-          <Typography type="body1" paragraph>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with desktop publishing software like Aldus
-            PageMaker including versions of Lorem Ipsum.
-          </Typography>
-        </Content>
+        <Title>Discovered Animals</Title>
+        <Gallery images={this.state.images} />
       </Container>
     );
   }
 }
 
-export default About;
+export default Mixipedia;

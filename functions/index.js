@@ -181,7 +181,15 @@ const animalName = functions.https.onRequest((request, response) => {
   });
 });
 
+/**
+ * Mixipedia API endpoint to either get found animals data or POST a newly
+ * found animal to update list of found animals
+ * @type {Object} actions on google response
+ */
+const mixipedia = functions.https.onRequest((request, response) => {});
+
 module.exports = {
   animixer,
-  animalName
+  animalName,
+  mixipedia
 };

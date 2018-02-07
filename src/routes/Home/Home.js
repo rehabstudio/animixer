@@ -23,11 +23,21 @@ const Content = styled(Card)`
 `;
 
 class Home extends React.Component<{}> {
+  constructor(props) {
+    super(props);
+    let prodToken = '35806a855ec547b28ce01e07815569e4';
+    let devToken = '1966938d12d44294989f5dae8ceae940';
+
+    this.state = {
+      accessToken: devToken
+    };
+  }
+
   render() {
     return (
       <Container>
         <Content>
-          <ChatBox accessToken="35806a855ec547b28ce01e07815569e4" />
+          <ChatBox accessToken={this.state.accessToken} />
         </Content>
       </Container>
     );

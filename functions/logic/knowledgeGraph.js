@@ -1,31 +1,14 @@
+const fs = require('fs');
 const rp = require('request-promise');
 const utils = require('./utils');
+const yaml = require('js-yaml');
 
 // Animal type lookup
-const acceptableTypes = ['Animal', 'Bird', 'Primate', 'Reptile'];
-const replacementAnimals = {
-  Animal: [
-    'antelope',
-    'buffalo',
-    'dog',
-    'elephant',
-    'giraffe',
-    'hippo',
-    'hyena',
-    'leopard',
-    'lion',
-    'pony',
-    'puma',
-    'rhinoceros',
-    'tiger',
-    'warthog',
-    'wildebeest',
-    'zebra'
-  ],
-  Bird: ['chicken', 'flamingo', 'duck', 'ostrich'],
-  Primate: ['gorilla'],
-  Reptile: ['crocodile', 'frog', 'tortoise']
-};
+const animalData = yaml.safeLoad(
+  fs.readFileSync('./copy/animals.yaml', 'utf-8')
+);
+const acceptableTypes = Object.keys(animalData.types);
+const replacementAnimals = animalData.types;
 
 function replacementAnimal(animalName) {
   let resultArray = [];

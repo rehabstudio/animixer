@@ -7,16 +7,28 @@ const yaml = require('js-yaml');
 const utils = require('./utils');
 const knowledgeGraph = require('./knowledgeGraph');
 const responseData = yaml.safeLoad(
-  fs.readFileSync('./../copy/response.yaml', 'utf-8')
+  fs.readFileSync('./copy/response.yaml', 'utf-8')
 );
+const animalData = yaml.safeLoad(
+  fs.readFileSync('./copy/animals.yaml', 'utf-8')
+);
+
+/**
+ * Used for formating response strings
+ * @return {string} formated string with replaces variables
+ */
+String.prototype.format = function() {
+  var args = arguments;
+  return this.replace(/\$\{(\d)\}/g, function(match, id) {
+    return args[id];
+  });
+};
 
 /**
  * Invalid animals recieved response
  */
 function animalsNotValid(app, context) {
-  return app.ask(
-    "I've never seen an animal with the same head body or legs, would you like to look again?"
-  );
+  return app.ask(responseData.animals_not_valid.text);
 }
 
 /**
@@ -28,17 +40,15 @@ function animalsIdentical(app, context) {
   let audioUrl = utils.getAudioUrl(context);
   let simpleResp = {};
   let aOrAn = utils.getAOrAn(animalName);
-  let success1 =
-    `Congratulations, you’ve just discovered… ${aOrAn} ${animalName}! ` +
-    'There are some amazing mixed up animals here. Let’s see what else is hiding.';
-  let success2 =
-    `There’s something hiding over there. It’s… ${aOrAn} ${animalName}! ` +
-    'There are some really unusual animals on this safari. Let’s find a new one.';
-  let restart = 'To start, what head does your animal have?';
+  let respData = responseData.animals_idential;
+  let success = utils
+    .randomSelection([respData.success_1, respData.success_2])
+    .format(aOrAn, animalName);
+  let restart = respData.restart;
 
   simpleResp.speech =
     '<speak>' +
-    utils.randomSelection([success1, success2]) +
+    success +
     `<audio src="${audioUrl}"></audio>` +
     restart +
     '</speak>';
@@ -70,33 +80,37 @@ function animalResponse(app, context) {
     context.animalLegs
   );
   let animalVerb;
+  let respData = responseData.animal_response;
   try {
-    animalVerb = utils.animalVerbs[context.animalHead][0];
+    animalVerb = animalData.verbs[context.animalHead];
   } catch (err) {
     console.error('Animal verb not found for ' + context.animalHead);
     animalVerb = '';
   }
 
-  let success1 = `Congratulations, you’ve found the wild ${animalName}! This is what it sounds like… `;
-  let success2 = `Congratulations, you’ve just discovered the mysterious ${animalName}! Hear it ${animalVerb}... `;
-  let rediscover1 =
-    'What an unusual animal. Would you like to discover another one?';
-  let rediscover2 =
-    'There are lots more hiding. Would you like to find another animal?';
+  let success = utils
+    .randomSelection([respData.success_1, respData.success_2])
+    .format(animalName, animalVerb);
+  let rediscover = utils.randomSelection([
+    respData.rediscover_1,
+    respData.rediscover_2
+  ]);
 
   simpleResp.speech =
     '<speak>' +
-    utils.randomSelection([success1, success2]) +
+    success +
     `<audio src="${context.audioUrl}"></audio>` +
-    utils.randomSelection([rediscover1, rediscover2]) +
+    rediscover +
     '</speak>';
   let card = new BasicCard()
     .setTitle(animalName)
     .setImage(context.imageUrl, animalName)
     .setBodyText(
-      `Head of ${context.animalHead}, body of ${
-        context.animalBody
-      } and legs of ${context.animalLegs}`
+      respData.body.format(
+        context.animalHead,
+        context.animalBody,
+        context.animalLegs
+      )
     )
     .addButton(
       'share',
@@ -116,8 +130,9 @@ function screenSwitch(app, context) {
     context.animalBody,
     context.animalLegs
   );
-  let text = `Would you like me to send a picture of the ${animalName} to your phone?`;
-  let notif = 'Your unique animal!';
+  let respData = responseData.screen_switch.format(animalName);
+  let text = responseData.text;
+  let notif = responseData.notif;
   app.askForNewSurface(text, notif, [app.SurfaceCapabilities.SCREEN_OUTPUT]);
 }
 
@@ -127,7 +142,8 @@ function screenSwitch(app, context) {
 function notFoundResponse(app) {
   let simpleResp = {};
   let resp;
-  simpleResp.speech = `<speak>I haven’t discovered that animal yet on this safari. Would you like to try a different combination?</speak>`;
+  let respData = responseData.screen_switch;
+  simpleResp.speech = `<speak>${respData.text}</speak>`;
   resp = new RichResponse().addSimpleResponse(simpleResp);
 
   app.ask(resp);
@@ -137,7 +153,7 @@ function notFoundResponse(app) {
  * Send the exit response and close the conversation with the bot
  */
 function exitResponse(app) {
-  app.tell('Come back to the Animixer safari any time.');
+  app.tell(responseData.exit.text);
 }
 
 /**
@@ -149,13 +165,14 @@ function unknownAnimalResponse(app, noun) {
     let replacement = results[1];
     let simpleResp = {};
     let resp;
+    let respData = responseData.unknownAnimalResponse;
     let unknownResponse;
     let aOrAn = utils.getAOrAn(replacement);
 
     if (found) {
-      unknownResponse = `I haven’t seen a wild ${noun} on this safari. How about ${aOrAn} ${replacement}?`;
+      unknownResponse = respData.unknown_1.format(noun, aOrAn, replacement);
     } else {
-      unknownResponse = `That doesn’t seem to be an animal. How about ${aOrAn} ${replacement}?`;
+      unknownResponse = respData.unknown_2.format(aOrAn, replacement);
     }
     simpleResp.speech = `<speak>${unknownResponse}</speak>`;
     resp = new RichResponse().addSimpleResponse(simpleResp);
@@ -173,19 +190,23 @@ function changeAnimal(app, context) {
     body: 'animalBody',
     legs: 'animalLegs'
   };
+  let respData = responseData.changeAnimal;
   let verb = context.changed === 'legs' ? 'were' : 'was';
   let newValue = context[animalMap[context.changed]];
   let aOrAn = utils.getAOrAn(newValue);
-  let response =
-    'Yes, I can see it now! Looks like the ' +
-    `${context.changed} ${verb} actually ${aOrAn} ${newValue}!`;
+  let response = responseData.text.format(
+    context.changed,
+    verb,
+    aOrAn,
+    newValue
+  );
 
   if (!context.animalHead) {
-    response += 'And what head does it have?';
+    response += respData.missing_head;
   } else if (!context.animalBody) {
-    response += 'And what body does it have?';
+    response += respData.missing_body;
   } else if (!context.animalLegs) {
-    response += 'And what legs does it have?';
+    response += respData.missing_legs;
   }
   simpleResp.speech = `<speak>${response}</speak>`;
   let resp = new RichResponse().addSimpleResponse(simpleResp);
