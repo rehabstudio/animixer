@@ -7,6 +7,11 @@ const animalData = yaml.safeLoad(
 );
 const animalSyllables = animalData.syllables;
 
+/**
+ * Randomly return one item from array
+ * @param  {array} values array of values to pick from
+ * @return {any} randomly selected values from array
+ */
 function randomSelection(values) {
   return values[Math.floor(Math.random() * values.length)];
 }
@@ -16,8 +21,6 @@ function randomSelection(values) {
  */
 function makeAnimalName(head, body, legs) {
   function getSyllable(animal, index) {
-    console.log('here');
-    console.log(animalSyllables[animal]);
     if (animalSyllables[animal] !== undefined) {
       return animalSyllables[animal][index];
     } else {

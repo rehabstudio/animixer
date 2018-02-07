@@ -1,5 +1,9 @@
 /**
  * Generate a context object for all responses gathering arguments
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {array} args     List of values to check for and Return
+ * @return {Object}         Object of expected values from dialog flow
  */
 function generateContext(app, args) {
   let context = {};
@@ -14,7 +18,13 @@ function generateContext(app, args) {
 }
 
 /**
+ *
+ */
+/**
  * Return True if an animal of the same type is found
+ *
+ * @param  {Object} context   parsed values from dialog flow
+ * @return {boolean}
  */
 function animalsIdentical(context) {
   if (
@@ -28,6 +38,9 @@ function animalsIdentical(context) {
 
 /**
  * Return True if an animal of the same type is found
+ *
+ * @param  {Object} context   parsed values from dialog flow
+ * @return {boolean}
  */
 function animalsInvalid(context) {
   if (

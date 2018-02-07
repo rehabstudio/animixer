@@ -1,11 +1,13 @@
 const {
-  RichResponse,
-  BasicCard
+  BasicCard,
+  RichResponse
 } = require('actions-on-google/response-builder');
 const fs = require('fs');
 const yaml = require('js-yaml');
-const utils = require('./utils');
-const knowledgeGraph = require('./knowledgeGraph');
+
+const utils = require('./../../common/utils');
+const knowledgeGraph = require('./../logic/knowledgeGraph');
+
 const responseData = yaml.safeLoad(
   fs.readFileSync('./copy/response.yaml', 'utf-8')
 );
@@ -26,6 +28,9 @@ String.prototype.format = function() {
 
 /**
  * Invalid animals recieved response
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {Object} context parsed values from dialog flow
  */
 function animalsNotValid(app, context) {
   return app.ask(responseData.animals_not_valid.text);
@@ -33,6 +38,9 @@ function animalsNotValid(app, context) {
 
 /**
  * Invalid animals recieved response
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {Object} context parsed values from dialog flow
  */
 function animalsIdentical(app, context) {
   let animalName = context.animalHead;
@@ -69,6 +77,9 @@ function animalsIdentical(app, context) {
 
 /**
  * Send the generated animal response back to the chat bot
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {Object} context parsed values from dialog flow
  */
 function animalResponse(app, context) {
   let simpleResp = {};
@@ -123,6 +134,9 @@ function animalResponse(app, context) {
 
 /**
  * Create switch screen message
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {Object} context parsed values from dialog flow
  */
 function screenSwitch(app, context) {
   let animalName = utils.makeAnimalName(
@@ -130,14 +144,24 @@ function screenSwitch(app, context) {
     context.animalBody,
     context.animalLegs
   );
-  let respData = responseData.screen_switch.format(animalName);
-  let text = responseData.text;
+  let text = responseData.text.format(animalName);
   let notif = responseData.notif;
   app.askForNewSurface(text, notif, [app.SurfaceCapabilities.SCREEN_OUTPUT]);
 }
 
 /**
+ * Send the exit response and close the conversation with the bot
+ *
+ * @param  {Object} app     app actions on google app object
+ */
+function exitResponse(app) {
+  app.tell(responseData.exit.text);
+}
+
+/**
  * Send the animal not found response to the chat bot
+ *
+ * @param  {Object} app     app actions on google app object
  */
 function notFoundResponse(app) {
   let simpleResp = {};
@@ -150,38 +174,10 @@ function notFoundResponse(app) {
 }
 
 /**
- * Send the exit response and close the conversation with the bot
- */
-function exitResponse(app) {
-  app.tell(responseData.exit.text);
-}
-
-/**
- * Use knowledge graph to generate an unknown animal response
- */
-function unknownAnimalResponse(app, noun) {
-  return knowledgeGraph.replacementAnimal(noun).then(results => {
-    let found = results[0];
-    let replacement = results[1];
-    let simpleResp = {};
-    let resp;
-    let respData = responseData.unknownAnimalResponse;
-    let unknownResponse;
-    let aOrAn = utils.getAOrAn(replacement);
-
-    if (found) {
-      unknownResponse = respData.unknown_1.format(noun, aOrAn, replacement);
-    } else {
-      unknownResponse = respData.unknown_2.format(aOrAn, replacement);
-    }
-    simpleResp.speech = `<speak>${unknownResponse}</speak>`;
-    resp = new RichResponse().addSimpleResponse(simpleResp);
-    app.ask(resp);
-  });
-}
-
-/**
  * Return response asking for next value depending on missing arguments
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {Object} context parsed values from dialog flow
  */
 function changeAnimal(app, context) {
   let simpleResp = {};
@@ -211,6 +207,33 @@ function changeAnimal(app, context) {
   simpleResp.speech = `<speak>${response}</speak>`;
   let resp = new RichResponse().addSimpleResponse(simpleResp);
   app.ask(resp);
+}
+
+/**
+ * Use knowledge graph to generate an unknown animal response
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {string} noun    noun from user input
+ */
+function unknownAnimalResponse(app, noun) {
+  return knowledgeGraph.replacementAnimal(noun).then(results => {
+    let found = results[0];
+    let replacement = results[1];
+    let simpleResp = {};
+    let resp;
+    let respData = responseData.unknownAnimalResponse;
+    let unknownResponse;
+    let aOrAn = utils.getAOrAn(replacement);
+
+    if (found) {
+      unknownResponse = respData.unknown_1.format(noun, aOrAn, replacement);
+    } else {
+      unknownResponse = respData.unknown_2.format(aOrAn, replacement);
+    }
+    simpleResp.speech = `<speak>${unknownResponse}</speak>`;
+    resp = new RichResponse().addSimpleResponse(simpleResp);
+    app.ask(resp);
+  });
 }
 
 module.exports = {

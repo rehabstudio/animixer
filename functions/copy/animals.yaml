@@ -75,7 +75,7 @@ types:
     - wildebeest
     - zebra
   bird:
-    chicken
+    - chicken
     - flamingo
     - duck
     - ostrich
