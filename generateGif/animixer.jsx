@@ -11,7 +11,7 @@
 // ------------------------------------------------------------------
 
 var errorStr = '';
-var rootDir = '~/';
+var rootDir = 'D:/';
 
 String.prototype.trim = function(str) {
   return this.replace(/^\s+|\s+$/gm, '');
