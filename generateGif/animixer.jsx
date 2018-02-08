@@ -1,4 +1,4 @@
-/*
+﻿/*
   @Author: Noel Wilson
   @company: Rehab
 
@@ -222,6 +222,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting, outputPath
   var foldersPath = outputPath || rootDir + 'Animixes';
   var folderPath = foldersPath + '/' + compName;
   var filepath = folderPath + '/' + compName;
+  var AEFolderName = 'Animixes';
 
   // Skip if files already exist
   if (skipExisting && fileExists(folderPath + '/' + compName + '_00000.tif')) {
@@ -232,9 +233,9 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting, outputPath
     existing.remove();
   }
 
-  var renderFolder = getFolder(folderPath)[0];
+  var renderFolder = getFolder(AEFolderName)[0];
   if (renderFolder === undefined) {
-    renderFolder = app.project.items.addFolder(folderPath);
+    renderFolder = app.project.items.addFolder(AEFolderName);
   }
   var renderComp = app.project.items.addComp(compName, 3200, 1800, 1, 0.7, 25);
   renderComp.parentFolder = renderFolder;
