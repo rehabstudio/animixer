@@ -52,6 +52,7 @@ function permutator(list, maxLen, permutationsFile) {
   }
 
   var perm = [];
+  
   for (var i = 0; i < list.length; i++) {
     perm.push([i]);
   }
@@ -75,7 +76,14 @@ function permutator(list, maxLen, permutationsFile) {
     return generate(perm, maxLen, currLen + 1);
   };
   // Start with size 1 because of initial values
-  return generate(perm, maxLen, 1);
+  var retArray = generate(perm, maxLen, 1);
+  
+  // Render originals
+  for(var i=0; i<list.length; i++){
+    retArray.insert([i, i, i], 0);
+  }
+   
+   return retArray;
 };
 
 // ------------------------------------------------------------------
@@ -390,11 +398,6 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
 
   // Generate all possible combinations for target comp or load from file
   var permutations = permutator(walkComps, 3, permutationsFile);
-
-  // Render originals
-  for(var i=0; i<walkComps.length; i++){
-    permutations.insert([i, i, i], 0);
-  }
 
   // While there are walk comps to process
   while (permutations.length > 0) {

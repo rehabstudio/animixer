@@ -39,7 +39,9 @@ SKIP_EXISTING = False
 
 
 def generate_permuations(number_animals):
-    return list(itertools.permutations(range(number_animals), 3))
+    # generate originals
+    originals = [[x, x, x] for x in range(number_animals)]
+    return originals + list(itertools.permutations(range(number_animals), 3))
 
 
 def batch(iterable, n=1):
