@@ -1,5 +1,5 @@
-const api = require('./core');
+const app = require('./core');
 
 module.exports = {
-  api
+  app
 };

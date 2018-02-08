@@ -13,6 +13,24 @@ const ANIMAL_CHANGED_ARGUMENT = 'changed';
 const UNKNOWN_ARGUMENT = 'noun';
 
 /**
+ * Make animal found POST request to api return promise
+ * @param  {Object} context dialog flow context with convo values
+ * @return {Promise}        request promise for post request
+ */
+function animalFoundPost(context) {
+  return rp({
+    uri: 'http://localhost:5000/animixer-1d266/us-central1/api/mixipedia',
+    method: 'POST',
+    body: {
+      animal1: context[ANIMAL1_ARGUMENT],
+      animal2: context[ANIMAL2_ARGUMENT],
+      animal3: context[ANIMAL3_ARGUMENT]
+    },
+    json: true
+  });
+}
+
+/**
  * Handle unknown animal request
  * @param  {Object} app actions on google app object
  */
@@ -38,7 +56,10 @@ function generateAnimal(app, skipSwitchScreen) {
 
   // If only one animal selected
   if (contextFn.animalsIdentical(context)) {
-    return responses.animalsIdentical(app, context);
+    let animalFoundPromise = animalFoundPost(context);
+    return Promise.resolve(animalFoundPromise).then(resp => {
+      return responses.animalsIdentical(app, context);
+    });
   }
 
   // If 2 of the same selected
@@ -54,11 +75,15 @@ function generateAnimal(app, skipSwitchScreen) {
     resolveWithFullResponse: true
   });
   //let audioPromise = rp({ uri: context.audioUrl, resolveWithFullResponse: true });
+  let animalFoundPromise = animalFoundPost(context);
 
   // Wait for assets to be found
-  return Promise.all([imagePromise])
+  return Promise.all([imagePromise, animalFoundPromise])
     .then(responseData => {
-      if (responseData[0].statusCode === 200) {
+      if (
+        responseData[0].statusCode === 200 &&
+        responseData[0].statusCode === 200
+      ) {
         if (!skipSwitchScreen && surface.shouldSwitchScreen(app, context)) {
           return;
         }

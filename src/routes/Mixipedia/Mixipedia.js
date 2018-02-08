@@ -10,6 +10,8 @@ import React from 'react';
 import styled from 'styled-components';
 //import Gallery from './../../components/Mixipedia/AnimalGallery';
 import Gallery from 'react-grid-gallery';
+import rp from 'request-promise';
+import history from '../../history';
 
 const Title = styled.h5`
   text-align: center;
@@ -37,52 +39,73 @@ class Mixipedia extends React.Component<{}> {
 
   componentDidMount() {
     this.getAnimals();
+    this.gallery.addEventListener('scroll', this.trackScrolling);
   }
+
+  trackScrolling = () => {
+    if (this.isBottom(this.gallery)) {
+      console.log('header bottom reached');
+    }
+  };
 
   /**
    * Get enough found animals to fill the screen
    */
   getAnimals() {
-    let images = [
-      {
-        src: 'https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg',
-        thumbnail:
-          'https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_n.jpg',
-        thumbnailWidth: 320,
-        thumbnailHeight: 174,
-        thumbnailCaption: 'After Rain (Jeshu John - designerspics.com)',
-        caption: 'After Rain (Jeshu John - designerspics.com)'
-      },
-      {
-        src: 'https://c2.staticflickr.com/9/8356/28897120681_3b2c0f43e0_b.jpg',
-        thumbnail:
-          'https://c2.staticflickr.com/9/8356/28897120681_3b2c0f43e0_n.jpg',
-        thumbnailWidth: 320,
-        thumbnailHeight: 212,
-        thumbnailCaption: 'Boats (Jeshu John - designerspics.com)',
-        caption: 'Boats (Jeshu John - designerspics.com)'
-      },
-      {
-        src: 'https://c4.staticflickr.com/9/8887/28897124891_98c4fdd82b_b.jpg',
-        thumbnail:
-          'https://c4.staticflickr.com/9/8887/28897124891_98c4fdd82b_n.jpg',
-        thumbnailWidth: 320,
-        thumbnailHeight: 212,
-        thumbnailCaption: '8H',
-        caption: '8H'
-      }
-    ];
     // make API call to get animals
-    this.setState({
-      images: images
-    });
+    rp({
+      uri:
+        'http://localhost:5000/animixer-1d266/us-central1/api/mixipedia?limit=8',
+      resolveWithFullResponse: true,
+      json: true
+    }).then(
+      function(resp) {
+        let imagesData = resp.body;
+        let imageKeys = Object.keys(imagesData);
+        let images = imageKeys.map(function(imageKey) {
+          let image = imagesData[imageKey];
+          return {
+            src: image.gif_url,
+            thumbnail: image.gif_url,
+            thumbnailWidth: 320,
+            thumbnailHeight: 174,
+            thumbnailCaption: image.name,
+            caption: image.name,
+            animal1: image.animal1,
+            animal2: image.animal2,
+            animal3: image.animal3
+          };
+        });
+        this.setState({
+          images: images.reverse()
+        });
+      }.bind(this)
+    );
+  }
+
+  clickThumbnail(index) {
+    let imageData = this.props.item;
+    let url =
+      '/animal?animal1=' +
+      imageData.animal1 +
+      '&animal2=' +
+      imageData.animal2 +
+      '&animal3=' +
+      imageData.animal3;
+    history.push(url);
   }
 
   render() {
     return (
       <Container>
         <Title>Discovered Animals</Title>
-        <Gallery images={this.state.images} />
+        <Gallery
+          images={this.state.images}
+          enableImageSelection={false}
+          enableLightbox={false}
+          onClickThumbnail={this.clickThumbnail}
+          innerRef={ele => (this.gallery = ele)}
+        />
       </Container>
     );
   }

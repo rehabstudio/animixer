@@ -1,4 +1,5 @@
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const express = require('express');
 
 const animalNameApi = require('./controllers/animalName');
@@ -8,7 +9,8 @@ const app = express();
 
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 // Add middleware to authenticate requests
 //app.use(myMiddleware);
 

@@ -104,7 +104,7 @@ class Animal extends React.Component<{}> {
     }
 
     let animalNameUrl =
-      'https://us-central1-animixer-1d266.cloudfunctions.net/animalName/?animal1=' +
+      'http://localhost:5000/animixer-1d266/us-central1/api/animalName?animal1=' +
       `${parsedArgs.animal1}&animal2=${parsedArgs.animal2}&animal3=${
         parsedArgs.animal3
       }`;

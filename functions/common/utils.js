@@ -27,7 +27,11 @@ function makeAnimalName(head, body, legs) {
       return animal;
     }
   }
-  return getSyllable(head, 0) + getSyllable(body, 1) + getSyllable(legs, 2);
+  if (head === body && body === legs) {
+    return head;
+  } else {
+    return getSyllable(head, 0) + getSyllable(body, 1) + getSyllable(legs, 2);
+  }
 }
 
 /**
