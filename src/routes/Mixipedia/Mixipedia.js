@@ -7,6 +7,7 @@
 /* @flow */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 //import Gallery from './../../components/Mixipedia/AnimalGallery';
 import Gallery from 'react-grid-gallery';
@@ -38,27 +39,54 @@ class Mixipedia extends React.Component<{}> {
   }
 
   componentDidMount() {
+    const container = ReactDOM.findDOMNode(this.refs.container);
     this.getAnimals();
-    this.gallery.addEventListener('scroll', this.trackScrolling);
+    container.addEventListener('scroll', this.handleScroll.bind(this));
   }
 
-  trackScrolling = () => {
-    if (this.isBottom(this.gallery)) {
-      console.log('header bottom reached');
+  componentWillUnmount() {
+    const container = ReactDOM.findDOMNode(this.refs.container);
+    container.removeEventListener('scroll', this.handleScroll.bind(this));
+  }
+
+  handleScroll(event) {
+    if (this.isBottom()) {
+      this.getAnimals(true);
     }
-  };
+  }
+
+  isBottom() {
+    const container = ReactDOM.findDOMNode(this.refs.container);
+    return (
+      container.scrollTop === container.scrollHeight - container.offsetHeight
+    );
+  }
+
+  getImageUrl(appendImages) {
+    let limit = 12;
+    let url = 'http://localhost:5000/animixer-1d266/us-central1/api/mixipedia';
+    if (appendImages && this.state.images.length > 0) {
+      let lastImage = this.state.images[this.state.images.length - 1];
+      url +=
+        '?limit=' + (limit + 1) + '&start=' + lastImage.data.date_found_inv;
+    } else {
+      url += '?limit=' + limit;
+    }
+    return url;
+  }
 
   /**
    * Get enough found animals to fill the screen
    */
-  getAnimals() {
-    // make API call to get animals
-    rp({
-      uri:
-        'http://localhost:5000/animixer-1d266/us-central1/api/mixipedia?limit=8',
+  getAnimals(appendImages) {
+    appendImages = appendImages || false;
+    let postOptions = {
+      uri: this.getImageUrl(appendImages),
       resolveWithFullResponse: true,
       json: true
-    }).then(
+    };
+    // make API call to get animals
+    rp(postOptions).then(
       function(resp) {
         let imagesData = resp.body;
         let imageKeys = Object.keys(imagesData);
@@ -71,14 +99,22 @@ class Mixipedia extends React.Component<{}> {
             thumbnailHeight: 174,
             thumbnailCaption: image.name,
             caption: image.name,
-            animal1: image.animal1,
-            animal2: image.animal2,
-            animal3: image.animal3
+            data: image
           };
         });
-        this.setState({
-          images: images.reverse()
-        });
+
+        if (appendImages) {
+          if (images.length > 1) {
+            let existingImages = this.state.images;
+            this.setState({
+              images: existingImages.concat(images.reverse().shift())
+            });
+          }
+        } else {
+          this.setState({
+            images: images.reverse()
+          });
+        }
       }.bind(this)
     );
   }
@@ -87,24 +123,24 @@ class Mixipedia extends React.Component<{}> {
     let imageData = this.props.item;
     let url =
       '/animal?animal1=' +
-      imageData.animal1 +
+      imageData.data.animal1 +
       '&animal2=' +
-      imageData.animal2 +
+      imageData.data.animal2 +
       '&animal3=' +
-      imageData.animal3;
+      imageData.data.animal3;
     history.push(url);
   }
 
   render() {
     return (
-      <Container>
+      <Container ref="container">
         <Title>Discovered Animals</Title>
         <Gallery
           images={this.state.images}
           enableImageSelection={false}
           enableLightbox={false}
           onClickThumbnail={this.clickThumbnail}
-          innerRef={ele => (this.gallery = ele)}
+          ref="gallery"
         />
       </Container>
     );
