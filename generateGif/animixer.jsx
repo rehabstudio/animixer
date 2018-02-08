@@ -200,7 +200,7 @@ function renderComposition(renderComp, folderPath, filepath) {
 /**
  * Move currently displayed Render layers to correct places then render this comp
  */
-function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
+function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting, outputPath) {
   // Create render comp for animal
   skipExisting = skipExisting || false;
   var head = headComp.name.replace('_walk', '');
@@ -209,8 +209,8 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
   var legs = legsComp.name.replace('_walk', '');
   var compName = head + '_' + body + '_' + legs + '_render';
   var existing = getComps(compName)[0];
-  var folderName = 'Animixes';
-  var folderPath = rootDir + folderName + '/' + compName;
+  var foldersPath = outputPath || rootDir + 'Animixes';
+  var folderPath = foldersPath + '/' + compName;
   var filepath = folderPath + '/' + compName;
 
   // Skip if files already exist
@@ -373,7 +373,7 @@ function scaleAllCameraZooms(theComp, scaleBy) {
  * @param  {list} permutationsFile Optional list of list of indexs of animals to load
                                      for use by external process to batch render animals
  */
-function renderAnimals(projectPath, permutationsFile) {
+function renderAnimals(projectPath, permutationsFile, outputPath) {
   //app.beginUndoGroup('XXX');
   if (projectPath) {
     var project = new File(projectPath);
@@ -402,7 +402,7 @@ function renderAnimals(projectPath, permutationsFile) {
       var walk_cmp_1 = walkComps[permutations[0][0]];
       var walk_cmp_2 = walkComps[permutations[0][1]];
       var walk_cmp_3 = walkComps[permutations[0][2]];
-      var renderCompItem = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, skipExisting);
+      var renderCompItem = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, skipExisting, outputPath);
       if (renderCompItem) {
         $.writeln('Composed animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
         comps.push(renderCompItem[0]);
@@ -447,4 +447,4 @@ function renderAnimals(projectPath, permutationsFile) {
 // Main
 // ------------------------------------------------------------------
 
-//renderAnimals(undefined, 'C:/Users/rehabstudio/Projects/animixer/generateGif/ae_project/permutations.json');
+//renderAnimals(undefined, 'C:/Users/rehabstudio/Projects/animixer/generateGif/ae_project/permutations.json', undefined);
