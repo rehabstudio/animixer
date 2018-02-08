@@ -9,9 +9,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-//import Gallery from './../../components/Mixipedia/AnimalGallery';
 import Gallery from 'react-grid-gallery';
 import rp from 'request-promise';
+
 import history from '../../history';
 
 const Title = styled.h5`
@@ -20,7 +20,7 @@ const Title = styled.h5`
 
 const Container = styled.div`
   box-sizing: border-box;
-  margin: 0 auto;
+  margin: 30px auto;
   background-color: white;
   width: 80vw;
   height: calc(100vh - 180px);

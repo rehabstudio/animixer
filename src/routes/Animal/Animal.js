@@ -2,14 +2,22 @@ import React from 'react';
 import styled from 'styled-components';
 import qs from 'query-string';
 import rp from 'request-promise';
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  GooglePlusShareButton,
+  GooglePlusIcon,
+  TwitterShareButton,
+  TwitterIcon
+} from 'react-share';
 
 import ErrorPage from '../ErrorPage';
 
 const Container = styled.div`
-  height: calc(100vh - 150px);
-  height: -o-calc(100vh - 150px); /* opera */
-  height: -webkit-calc(100vh - 150px); /* google, safari */
-  height: -moz-calc(100vh - 150px); /* firefox */
+  height: calc(100vh - 125px);
+  height: -o-calc(100vh - 125px); /* opera */
+  height: -webkit-calc(100vh - 125px); /* google, safari */
+  height: -moz-calc(100vh - 125px); /* firefox */
   min-height: 70vh;
   overflow-y: auto;
   background-color: white;
@@ -127,6 +135,9 @@ class Animal extends React.Component<{}> {
   }
 
   render() {
+    const shareUrl = window.location.href;
+    const title = this.state.animalNameText;
+
     if (this.state.animalExists === false) {
       return <ErrorPage error={{ status: 404 }} />;
     } else {
@@ -138,31 +149,55 @@ class Animal extends React.Component<{}> {
             style={{ width: '100%' }}
           >
             <div className="row">
-              <div className="col s12 m10 offset-m1">
-                <AnimalContainer>
-                  <AnimalImg
-                    innerRef={ele => (this.animalImg = ele)}
-                    className="col s12 responsive-img"
+              <AnimalContainer className="col s12 m10 offset-m1 image-div">
+                <AnimalImg
+                  innerRef={ele => (this.animalImg = ele)}
+                  className="col s12 responsive-img"
+                  style={{
+                    maxHeight: '65vh',
+                    marginBottom: '10px'
+                  }}
+                  onLoad={this.handleImageLoaded.bind(this)}
+                  onError={this.handleImageErrored.bind(this)}
+                />
+                <div className="audio-div">
+                  <audio
+                    controls
+                    src={this.state.audioUrl}
                     style={{
-                      maxHeight: '65vh',
-                      marginBottom: '10px'
+                      width: '100%'
                     }}
-                    onLoad={this.handleImageLoaded.bind(this)}
-                    onError={this.handleImageErrored.bind(this)}
                   />
-                  <div className="col s8 offset-s2">
-                    <audio
-                      controls
-                      src={this.state.audioUrl}
-                      style={{
-                        width: '100%'
-                      }}
-                    />
-                  </div>
-                  <AnimalText className="clearfix center-align">
-                    {this.state.animalNameText}
-                  </AnimalText>
-                </AnimalContainer>
+                </div>
+              </AnimalContainer>
+            </div>
+            <div className="row">
+              <div className="col s12 m8 offset-m2">
+                <AnimalText className="col s8 clearfix center-align">
+                  {this.state.animalNameText}
+                </AnimalText>
+                <div className="col s4">
+                  <FacebookShareButton
+                    url={shareUrl}
+                    quote={title}
+                    className="share-button"
+                  >
+                    <FacebookIcon size={32} round />
+                  </FacebookShareButton>
+                  <TwitterShareButton
+                    url={shareUrl}
+                    title={title}
+                    className="share-button"
+                  >
+                    <TwitterIcon size={32} round />
+                  </TwitterShareButton>
+                  <GooglePlusShareButton
+                    url={shareUrl}
+                    className="share-button"
+                  >
+                    <GooglePlusIcon size={32} round />
+                  </GooglePlusShareButton>
+                </div>
               </div>
             </div>
           </div>
