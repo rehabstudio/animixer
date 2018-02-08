@@ -66,9 +66,11 @@ def generate_tiffs_ae(skip_existing=True):
     permutations_file = None
     number_animals = 30
     permutations = generate_permuations(number_animals)
+    batch_size = 500
+    jobs = math.ceil(len(permutations) / batch_size)
 
     # Batch render animals and restart AE between batches
-    for perms in tqdm(batch(permutations, 500)):
+    for perms in tqdm(batch(permutations, batch_size), total=jobs):
         with open(PERMUTATIONS_FILE, 'w') as fp:
             fp.write(json.dumps(perms))
 
