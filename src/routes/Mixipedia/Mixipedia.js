@@ -34,24 +34,36 @@ class Mixipedia extends React.Component<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      images: []
+      images: [],
+      postInProgress: false
     };
   }
 
   componentDidMount() {
-    const container = ReactDOM.findDOMNode(this.refs.container);
     this.getAnimals();
-    container.addEventListener('scroll', this.handleScroll.bind(this));
+    this.addScrollListener();
   }
 
   componentWillUnmount() {
+    this.removeScrollListener();
+  }
+
+  removeScrollListener() {
     const container = ReactDOM.findDOMNode(this.refs.container);
     container.removeEventListener('scroll', this.handleScroll.bind(this));
   }
 
+  addScrollListener() {
+    const container = ReactDOM.findDOMNode(this.refs.container);
+    container.addEventListener('scroll', this.handleScroll.bind(this));
+  }
+
   handleScroll(event) {
-    if (this.isBottom()) {
-      this.getAnimals(true);
+    if (this.isBottom() && !this.state.postInProgress) {
+      this.setState({ postInProgress: true });
+      this.getAnimals(true).then(resp => {
+        this.setState({ postInProgress: false });
+      });
     }
   }
 
@@ -86,37 +98,35 @@ class Mixipedia extends React.Component<{}> {
       json: true
     };
     // make API call to get animals
-    rp(postOptions).then(
-      function(resp) {
-        let imagesData = resp.body;
-        let imageKeys = Object.keys(imagesData);
-        let images = imageKeys.map(function(imageKey) {
-          let image = imagesData[imageKey];
-          return {
-            src: image.gif_url,
-            thumbnail: image.gif_url,
-            thumbnailWidth: 320,
-            thumbnailHeight: 174,
-            thumbnailCaption: image.name,
-            caption: image.name,
-            data: image
-          };
-        });
+    return rp(postOptions).then(resp => {
+      let imagesData = resp.body;
+      let imageKeys = Object.keys(imagesData);
+      let images = imageKeys.map(function(imageKey) {
+        let image = imagesData[imageKey];
+        return {
+          src: image.gif_url,
+          thumbnail: image.gif_url,
+          thumbnailWidth: 320,
+          thumbnailHeight: 174,
+          thumbnailCaption: image.name,
+          caption: image.name,
+          data: image
+        };
+      });
 
-        if (appendImages) {
-          if (images.length > 1) {
-            let existingImages = this.state.images;
-            this.setState({
-              images: existingImages.concat(images.reverse().shift())
-            });
-          }
-        } else {
+      if (appendImages) {
+        if (images.length > 1) {
+          let existingImages = this.state.images;
           this.setState({
-            images: images.reverse()
+            images: existingImages.concat(images.reverse().shift())
           });
         }
-      }.bind(this)
-    );
+      } else {
+        this.setState({
+          images: images.reverse()
+        });
+      }
+    });
   }
 
   clickThumbnail(index) {
