@@ -10,6 +10,7 @@ import React from 'react';
 import styled from 'styled-components';
 // Compiled with babel in node_modules for build process
 import { ApiAiClient } from '.lib/api-ai-javascript';
+import Dictation from './Dictation';
 
 const ENTER_KEY_CODE = 13;
 
@@ -50,7 +51,10 @@ class ChatBox extends React.Component<{}, {}> {
 
     let value = this.inputField.value;
     this.inputField.value = '';
+    this.userInput(value);
+  }
 
+  userInput(value) {
     this.createQueryNode(value);
     let responseNode = this.createResponseNode();
 
@@ -184,10 +188,15 @@ class ChatBox extends React.Component<{}, {}> {
           <div className="row">
             <div className="col s12">
               <div ref={ele => (this.resultDiv = ele)} id="result" />
+            </div>
+          </div>
+          <Dictation callback={this.userInput.bind(this)} />
+          <div className="row">
+            <div className="col s12">
               <div className="input-field">
                 <input
                   ref={ele => (this.inputField = ele)}
-                  placeholder="Hey, ask me something..."
+                  placeholder="Or type here, ask me something..."
                   id="q"
                   type="text"
                 />
