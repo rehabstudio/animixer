@@ -1,11 +1,15 @@
 const fs = require('fs');
+const path = require('path');
 const rp = require('request-promise');
 const utils = require('./../../common/utils');
 const yaml = require('js-yaml');
 
 // Animal type lookup
 const animalData = yaml.safeLoad(
-  fs.readFileSync('./copy/animals.yaml', 'utf-8')
+  fs.readFileSync(
+    path.join(__dirname, '..', '..', 'copy/animals.yaml'),
+    'utf-8'
+  )
 );
 const acceptableTypes = Object.keys(animalData.types);
 const replacementAnimals = animalData.types;

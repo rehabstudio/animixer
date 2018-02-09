@@ -8,6 +8,7 @@
     "@firebase/auth": "^0.3.0",
     "@firebase/firestore": "^0.2.1",
     "api-ai-javascript": "^2.0.0-beta.21",
+    "artyom.js": "^1.0.6",
     "classnames": "^2.2.5",
     "history": "^4.7.2",
     "lodash": "^4.17.4",

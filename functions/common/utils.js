@@ -1,9 +1,10 @@
 const { config } = require('./../config');
 const fs = require('fs');
+const path = require('path');
 const yaml = require('js-yaml');
 
 const animalData = yaml.safeLoad(
-  fs.readFileSync('./copy/animals.yaml', 'utf-8')
+  fs.readFileSync(path.join(__dirname, '..', 'copy/animals.yaml'), 'utf-8')
 );
 const animalSyllables = animalData.syllables;
 
