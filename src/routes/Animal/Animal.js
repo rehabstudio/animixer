@@ -121,22 +121,28 @@ class Animal extends React.Component<{}> {
       `${parsedArgs.animal1}&animal2=${parsedArgs.animal2}&animal3=${
         parsedArgs.animal3
       }`;
-    return rp(animalNameUrl)
-      .then(
-        function(animalNameResp) {
-          let animalNameData = JSON.parse(animalNameResp);
-          animalNameData.animalNameText = `You have discovered the ${
-            animalNameData.animalName
-          }!`;
-          this.setState(animalNameData);
-        }.bind(this)
-      )
-      .catch(
-        function(err) {
-          console.log('Error: Unable to retrieve animal name.');
-          this.setState({ animalExists: false });
-        }.bind(this)
-      );
+    let animalFactUrl =
+      APIHost +
+      '/api/animalFact?animal1=' +
+      `${parsedArgs.animal1}&animal2=${parsedArgs.animal2}&animal3=${
+        parsedArgs.animal3
+      }`;
+    let namePromise = rp(animalNameUrl);
+    let factPromise = rp(animalFactUrl);
+    return Promise.all([namePromise, factPromise])
+      .then(responses => {
+        let animalNameData = JSON.parse(responses[0]);
+        animalNameData.animalNameText = `You have discovered the ${
+          animalNameData.animalName
+        }!`;
+        let animalFactData = JSON.parse(responses[1]);
+        animalNameData.animalFactText = animalFactData.animalFact;
+        this.setState(animalNameData);
+      })
+      .catch(err => {
+        console.log('Error: Unable to retrieve animal name.');
+        this.setState({ animalExists: false });
+      });
   }
 
   render() {
@@ -151,15 +157,20 @@ class Animal extends React.Component<{}> {
           <div
             id="main-wrapper"
             className={!this.state.animalExists ? 'hidden' : 'valign'}
-            style={{ width: '100%' }}
+            style={{ width: '100%', height: '100%' }}
           >
+            <div className="row">
+              <AnimalText className="col s12 clearfix center-align">
+                {this.state.animalNameText}
+              </AnimalText>
+            </div>
             <div className="row">
               <AnimalContainer className="col s12 m10 offset-m1 image-div">
                 <AnimalImg
                   innerRef={ele => (this.animalImg = ele)}
                   className="col s12 responsive-img"
                   style={{
-                    maxHeight: '65vh',
+                    maxHeight: '55vh',
                     marginBottom: '10px'
                   }}
                   onLoad={this.handleImageLoaded.bind(this)}
@@ -179,7 +190,7 @@ class Animal extends React.Component<{}> {
             <div className="row">
               <div className="col s12 m8 offset-m2">
                 <AnimalText className="col s8 clearfix center-align">
-                  {this.state.animalNameText}
+                  {this.state.animalFactText}
                 </AnimalText>
                 <div className="col s4">
                   <FacebookShareButton

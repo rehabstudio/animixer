@@ -45,6 +45,12 @@ class Dictation extends React.Component<{}> {
     }
   }
 
+  componentWillUnmount() {
+    if (this.state.recording) {
+      this.state.dictation.stop();
+    }
+  }
+
   startDictation() {
     this.state.dictation.start();
   }
