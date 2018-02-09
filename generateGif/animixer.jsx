@@ -391,6 +391,10 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
     app.open(project);
   }
 
+  // Clear cache
+  $.writeln('Cleared cache.');
+  app.executeCommand(10200);
+
   // Get all walk comps
   var walkComps = getComps('_walk');
   errorStr = '';
