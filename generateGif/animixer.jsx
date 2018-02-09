@@ -392,8 +392,8 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
   }
 
   // Clear cache
-  $.writeln('Cleared cache.');
-  app.executeCommand(10200);
+  $.writeln('Clearing cache.');
+  app.purge(PurgeTarget.ALL_CACHES);
 
   // Get all walk comps
   var walkComps = getComps('_walk');
