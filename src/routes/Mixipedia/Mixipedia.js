@@ -31,8 +31,8 @@ const Container = styled.div`
 `;
 
 const APIHost = window.location.href.startsWith('http://localhost')
-  ? 'http://localhost:5000'
-  : 'https://us-central1-animixer-1d266';
+  ? 'http://localhost:5000/animixer-1d266/us-central1'
+  : 'https://us-central1-animixer-1d266.cloudfunctions.net';
 
 class Mixipedia extends React.Component<{}> {
   constructor(props) {
@@ -80,7 +80,7 @@ class Mixipedia extends React.Component<{}> {
 
   getImageUrl(appendImages) {
     let limit = 12;
-    let url = APIHost + '/animixer-1d266/us-central1/api/mixipedia';
+    let url = APIHost + '/api/mixipedia';
     if (appendImages && this.state.images.length > 0) {
       let lastImage = this.state.images[this.state.images.length - 1];
       url +=

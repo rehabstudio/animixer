@@ -34,8 +34,8 @@ const AnimalContainer = styled.div`
 `;
 
 const APIHost = window.location.href.startsWith('http://localhost')
-  ? 'http://localhost:5000'
-  : 'https://us-central1-animixer-1d266';
+  ? 'http://localhost:5000/animixer-1d266/us-central1'
+  : 'https://us-central1-animixer-1d266.cloudfunctions.net';
 
 class Animal extends React.Component<{}> {
   constructor(props) {
@@ -117,7 +117,7 @@ class Animal extends React.Component<{}> {
 
     let animalNameUrl =
       APIHost +
-      '/animixer-1d266/us-central1/api/animalName?animal1=' +
+      '/api/animalName?animal1=' +
       `${parsedArgs.animal1}&animal2=${parsedArgs.animal2}&animal3=${
         parsedArgs.animal3
       }`;
