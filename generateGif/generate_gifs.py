@@ -159,6 +159,10 @@ def generate_thumbnails(skip_existing=True):
         filenames = [
             os.path.join(subdir, f) for f in os.listdir(subdir)
             if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.tif')]
+        
+        if not filenames:
+            print('Skipping folder: {}'.format(subdir))
+            continue
         try:
             basewidth = 320
             img = Image.open(filenames[0])
