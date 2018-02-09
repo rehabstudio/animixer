@@ -4,6 +4,7 @@ const contextFn = require('./../logic/context');
 const responses = require('./responses');
 const utils = require('./../../common/utils');
 const surface = require('./surface');
+const { APIHost } = require('./../../config');
 
 // the parameters that are parsed from the generate_animal intent
 const ANIMAL1_ARGUMENT = 'animalHead';
@@ -19,7 +20,7 @@ const UNKNOWN_ARGUMENT = 'noun';
  */
 function animalFoundPost(context) {
   return rp({
-    uri: 'http://localhost:5000/animixer-1d266/us-central1/api/mixipedia',
+    uri: APIHost + '/api/mixipedia',
     method: 'POST',
     body: {
       animal1: context[ANIMAL1_ARGUMENT],
