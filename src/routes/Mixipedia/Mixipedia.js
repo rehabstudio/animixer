@@ -117,8 +117,10 @@ class Mixipedia extends React.Component<{}> {
       if (appendImages) {
         if (images.length > 1) {
           let existingImages = this.state.images;
+          images = images.reverse();
+          images.shift();
           this.setState({
-            images: existingImages.concat(images.reverse().shift())
+            images: existingImages.concat(images)
           });
         }
       } else {
