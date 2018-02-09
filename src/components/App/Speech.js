@@ -18,7 +18,7 @@ class Speech extends React.Component<{}> {
     super(props);
 
     if (!props.artyom) {
-      throw 'Expecting Artyom instance in props';
+      throw new Error('Expecting Artyom instance in props');
     }
 
     this.artyom = props.artyom || new Artyom();

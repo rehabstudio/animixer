@@ -22,14 +22,16 @@ const Content = styled(Card)`
   margin: 2em 0;
 `;
 
+const token = window.location.href.startsWith('http://localhost')
+  ? '1966938d12d44294989f5dae8ceae940' // local
+  : '35806a855ec547b28ce01e07815569e4'; // prod
+
 class Home extends React.Component<{}> {
   constructor(props) {
     super(props);
-    let prodToken = '35806a855ec547b28ce01e07815569e4';
-    let devToken = '1966938d12d44294989f5dae8ceae940';
 
     this.state = {
-      accessToken: devToken
+      accessToken: token
     };
   }
 
