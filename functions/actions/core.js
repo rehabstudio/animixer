@@ -17,8 +17,8 @@ const CHANGE_ANIMAL_ACTION = 'change_value';
 const actionsFn = function(request, response) {
   response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
   const app = new App({ request, response });
-  console.debug('Request headers: ' + JSON.stringify(request.headers));
-  console.debug('Request body: ' + JSON.stringify(request.body));
+  console.log('Request headers: ' + JSON.stringify(request.headers));
+  console.log('Request body: ' + JSON.stringify(request.body));
   // build an action map, which maps intent names to functions
   let actionMap = new Map();
   actionMap.set(GENERATE_ACTION, controllers.animals.generateAnimal);
