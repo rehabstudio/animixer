@@ -23,23 +23,15 @@ const routes = [
     components: () => [import(/* webpackChunkName: 'animal' */ './Animal')],
     render: ({ user, location, components: [Animal] }) => ({
       title: 'Animal • Animixer',
-      body: <Animal user={user} location={location}/>
+      body: <Animal user={user} location={location} />
     })
   },
   {
-    path: '/about',
-    components: () => [import(/* webpackChunkName: 'about' */ './About')],
-    render: ({ user, components: [About] }) => ({
-      title: 'About Us • Animixer',
-      body: <About user={user} />
-    })
-  },
-  {
-    path: '/privacy',
-    components: () => [import(/* webpackChunkName: 'privacy' */ './Privacy')],
-    render: ({ user, components: [Privacy] }) => ({
-      title: 'Privacy Policy • Animixer',
-      body: <Privacy user={user} />
+    path: '/mixipedia',
+    components: () => [import(/* webpackChunkName: 'about' */ './Mixipedia')],
+    render: ({ user, components: [Mixipedia] }) => ({
+      title: 'Mixipedia • Animixer',
+      body: <Mixipedia user={user} />
     })
   },
   {
