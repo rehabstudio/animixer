@@ -99,10 +99,11 @@ def generate_gifs(skip_existing=True):
     Process folders of tif images and generate gifs to same folder, return
     list of gif paths.
     """
+    images_dir = os.path.join(ROOT_DIR, 'images')
     gif_paths = []
     subdirs = [
-        os.path.join(ROOT_DIR, d) for d in os.listdir(ROOT_DIR)
-        if os.path.isdir(os.path.join(ROOT_DIR, d))]
+        os.path.join(images_dir, d) for d in os.listdir(images_dir)
+        if os.path.isdir(os.path.join(images_dir, d))]
 
     print('Generating Gifs')
     for subdir in tqdm(subdirs):
@@ -140,14 +141,15 @@ def generate_thumbnails(skip_existing=True):
     """
     Generate thumbnails for animals
     """
+    images_dir = os.path.join(ROOT_DIR, 'images')
     thumbnail_paths = []
     subdirs = [
-        os.path.join(ROOT_DIR, d) for d in os.listdir(ROOT_DIR)
-        if os.path.isdir(os.path.join(ROOT_DIR, d))]
+        os.path.join(images_dir, d) for d in os.listdir(images_dir)
+        if os.path.isdir(os.path.join(images_dir, d))]
 
     print('Generating thumbnails')
     for subdir in tqdm(subdirs):
-        subdir_name = subdir.split(SEPARATOR)[-1]
+        subdir_name = subdir.split(SEPARATOR)[-1].replace('_render', '_thumbnail')
         thumbnail_path = os.path.join(ROOT_DIR, 'thumbnails', (subdir_name + '.tif'))
 
         if(os.path.exists(thumbnail_path) and skip_existing):
@@ -233,11 +235,13 @@ def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None):
 
 
 if __name__ == '__main__':
-    generate_tiffs_ae()
-    '''
-    gif_paths = generate_gifs()
+    skip_existing = True
+    #generate_tiffs_ae(skip_existing)
+    thumb_nails = generate_thumbnails(skip_existing)
+    gif_paths = generate_gifs(skip_existing)
     if ASYNC:
-        async_upload(gif_paths, skip_existing=SKIP_EXISTING)
+        async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
+        async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
     else:
-        upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING)
-    '''
+        upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
+        upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
