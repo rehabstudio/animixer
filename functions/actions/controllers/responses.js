@@ -3,16 +3,23 @@ const {
   RichResponse
 } = require('actions-on-google/response-builder');
 const fs = require('fs');
+const path = require('path');
 const yaml = require('js-yaml');
 
 const utils = require('./../../common/utils');
 const knowledgeGraph = require('./../logic/knowledgeGraph');
 
 const responseData = yaml.safeLoad(
-  fs.readFileSync('./copy/response.yaml', 'utf-8')
+  fs.readFileSync(
+    path.join(__dirname, '..', '..', 'copy/response.yaml'),
+    'utf-8'
+  )
 );
 const animalData = yaml.safeLoad(
-  fs.readFileSync('./copy/animals.yaml', 'utf-8')
+  fs.readFileSync(
+    path.join(__dirname, '..', '..', 'copy/animals.yaml'),
+    'utf-8'
+  )
 );
 
 /**
