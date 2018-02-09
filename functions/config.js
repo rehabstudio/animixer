@@ -15,6 +15,7 @@ const APIHost =
     : 'https://us-central1-animixer-1d266.cloudfunctions.net';
 
 module.exports = {
+  APIHost,
   ENV,
   config
 };
