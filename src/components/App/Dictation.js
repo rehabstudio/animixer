@@ -1,11 +1,3 @@
-/**
- * React Starter Kit for Firebase and GraphQL
- * https://github.com/kriasoft/react-firebase-starter
- * Copyright (c) 2015-present Kriasoft | MIT License
- */
-
-/* @flow */
-
 import Artyom from 'artyom.js';
 import React from 'react';
 import styled from 'styled-components';
@@ -30,15 +22,27 @@ class Dictation extends React.Component<{}> {
       onStart: this.onStart.bind(this),
       onEnd: this.onEnd.bind(this)
     };
-    this.artyom = new Artyom();
+
+    this.artyom = props.artyom || new Artyom();
     this.placeHolderText = 'Click to speak to animixer';
-    this.callback = props.callback || function(text) {};
+    this.userInput = props.userInput || function(text) {};
+    this.awaitingInput = props.awaitingInput || function(text) {};
     this.state = {
       dictation: this.artyom.newDictation(dictationConfig),
       text: this.placeHolderText,
       recording: false,
       currentPhrase: ''
     };
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.disable !== this.props.disable) {
+      if (newProps.disable && this.state.recording) {
+        this.stopDictation();
+      } else if (!newProps.disable && this.state.recording) {
+        this.startDictation();
+      }
+    }
   }
 
   startDictation() {
@@ -67,10 +71,13 @@ class Dictation extends React.Component<{}> {
   onResult(text) {
     if (this.state.recording) {
       if (text) {
+        // callback to let chatbox know we're receiving input
+        this.awaitingInput();
         this.setState({ currentPhrase: text });
       } else {
+        // Once a user stops talking we send text
         let phrase = this.state.currentPhrase;
-        this.callback(phrase);
+        this.userInput(phrase);
         this.setState({
           text: phrase,
           currentPhrase: ''
@@ -89,23 +96,21 @@ class Dictation extends React.Component<{}> {
 
   render() {
     return (
-      <div className="row">
-        <div className="col s2 offset-s4">
-          <MicIcon
-            className="valign-wrapper"
-            onClick={this.toggleDictation.bind(this)}
+      <div className="col s2">
+        <MicIcon
+          className="valign-wrapper"
+          onClick={this.toggleDictation.bind(this)}
+        >
+          <i
+            className="center-align medium material-icons"
+            style={{ width: '100%' }}
+            ref={ele => (this.icon = ele)}
           >
-            <i
-              className="center-align medium material-icons"
-              style={{ width: '100%' }}
-              ref={ele => (this.icon = ele)}
-            >
-              mic
-            </i>
-          </MicIcon>
-        </div>
-        <div className="col s4">
-          <p>{this.state.text}</p>
+            mic
+          </i>
+        </MicIcon>
+        <div>
+          <p>Click here to enable microphone</p>
         </div>
       </div>
     );

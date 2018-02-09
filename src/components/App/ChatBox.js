@@ -5,12 +5,13 @@
  */
 
 /* @flow */
-
+import Artyom from 'artyom.js';
 import React from 'react';
 import styled from 'styled-components';
 // Compiled with babel in node_modules for build process
 import { ApiAiClient } from '.lib/api-ai-javascript';
 import Dictation from './Dictation';
+import Speech from './Speech';
 
 const ENTER_KEY_CODE = 13;
 
@@ -26,7 +27,11 @@ class ChatBox extends React.Component<{}, {}> {
   constructor(props) {
     super(props);
     this.state = {
-      client: new ApiAiClient({ accessToken: this.props.accessToken })
+      client: new ApiAiClient({ accessToken: this.props.accessToken }),
+      artyom: new Artyom(),
+      speak: '',
+      speaking: false,
+      currentQuery: null
     };
   }
 
@@ -55,8 +60,13 @@ class ChatBox extends React.Component<{}, {}> {
   }
 
   userInput(value) {
-    this.createQueryNode(value);
+    if (this.state.currentQuery) {
+      this.updateNode(this.state.currentQuery, value);
+    } else {
+      this.createQueryNode(value);
+    }
     let responseNode = this.createResponseNode();
+    this.setState({ currentQuery: null });
 
     this.sendText(value)
       .then(
@@ -95,6 +105,7 @@ class ChatBox extends React.Component<{}, {}> {
       'clearfix left-align left card-panel green accent-1 bring-front margins';
     node.innerHTML = query;
     this.resultDiv.appendChild(node);
+    return node;
   }
 
   createResponseNode() {
@@ -104,6 +115,14 @@ class ChatBox extends React.Component<{}, {}> {
     node.innerHTML = '...';
     this.resultDiv.appendChild(node);
     this.updateScroll();
+    return node;
+  }
+
+  updateNode(node, text) {
+    node.innerHTML = text;
+    if (this.state.currentQuery === node) {
+      this.setState({ currentQuery: null });
+    }
     return node;
   }
 
@@ -134,6 +153,7 @@ class ChatBox extends React.Component<{}, {}> {
     let audio = document.createElement('audio');
     let source = document.createElement('source');
     let audioContent = /<audio(.*?)<\/audio>/g.exec(speech);
+    let outputText = /<speak>(.*?)<\/speak>/g.exec(speech)[1];
 
     if (audioContent) {
       let audioSrc = /src="(.*?)"/g.exec(audioContent[1])[1];
@@ -143,16 +163,18 @@ class ChatBox extends React.Component<{}, {}> {
       source.src = audioSrc;
       source.setAttribute('type', 'audio/' + audioExt);
       audioDiv.className = 'col s8 offset-m2';
+
+      outputText = outputText.replace(audioContent[0], '');
     }
 
-    text.innerHTML = /<speak>(.*?)<\/speak>/g
-      .exec(speech)[1]
-      .replace(audio, '');
+    text.innerHTML = outputText;
 
     audioDiv.appendChild(audio);
     audio.appendChild(source);
     node.appendChild(text);
     node.appendChild(audioDiv);
+
+    this.setState({ speak: text.innerHTML });
   }
 
   setResponseOnNode(response, node) {
@@ -169,6 +191,7 @@ class ChatBox extends React.Component<{}, {}> {
       }
     } else {
       node.innerHTML = response ? response : '[empty response]';
+      this.setState({ speak: response });
     }
     node.setAttribute('data-actual-response', response);
     this.updateScroll();
@@ -176,6 +199,17 @@ class ChatBox extends React.Component<{}, {}> {
 
   updateScroll() {
     this.chatDiv.scrollTop = this.chatDiv.scrollHeight;
+  }
+
+  awaitingInput() {
+    if (!this.state.currentQuery) {
+      let node = this.createQueryNode('...');
+      this.setState({ currentQuery: node });
+    }
+  }
+
+  disableDictation(disable) {
+    this.setState({ speaking: disable });
   }
 
   render() {
@@ -190,7 +224,20 @@ class ChatBox extends React.Component<{}, {}> {
               <div ref={ele => (this.resultDiv = ele)} id="result" />
             </div>
           </div>
-          <Dictation callback={this.userInput.bind(this)} />
+          <div className="row">
+            <div className="col s4" />
+            <Dictation
+              artyom={this.state.artyom}
+              userInput={this.userInput.bind(this)}
+              awaitingInput={this.awaitingInput.bind(this)}
+              disable={this.state.speaking}
+            />
+            <Speech
+              artyom={this.state.artyom}
+              text={this.state.speak}
+              speakingCallback={this.disableDictation.bind(this)}
+            />
+          </div>
           <div className="row">
             <div className="col s12">
               <div className="input-field">
