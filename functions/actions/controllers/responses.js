@@ -8,6 +8,7 @@ const yaml = require('js-yaml');
 
 const utils = require('./../../common/utils');
 const knowledgeGraph = require('./../logic/knowledgeGraph');
+const animalFacts = require('./../../common/animalFacts');
 
 const responseData = yaml.safeLoad(
   fs.readFileSync(
@@ -67,6 +68,7 @@ function animalsIdentical(app, context) {
     `<audio src="${audioUrl}"></audio>` +
     restart +
     '</speak>';
+
   let card = new BasicCard()
     .setTitle(animalName)
     .setImage(imageUrl, animalName)
@@ -114,10 +116,13 @@ function animalResponse(app, context) {
     respData.rediscover_2
   ]);
 
+  let funFact = animalFacts.generateFact();
+  success = success + ' ' + respData.fun_fact.format(animalName, funFact);
+
   simpleResp.speech =
     '<speak>' +
     success +
-    `<audio src="${context.audioUrl}"></audio>` +
+    `<audio src="${context.audioUrl}"></audio> ` +
     rediscover +
     '</speak>';
   let card = new BasicCard()

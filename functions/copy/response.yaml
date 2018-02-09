@@ -12,6 +12,7 @@ animal_response:
   rediscover_1: What an unusual animal. Would you like to discover another one?
   rediscover_2: There are lots more hiding. Would you like to find another animal?
   body: Head of ${0}, body of ${1} and legs of ${2}
+  fun_fact: Here’s a fun fact about the ${0} - ${1}
 
 screen_switch:
   text: Would you like me to send a picture of the ${0} to your phone?
