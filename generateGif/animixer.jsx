@@ -398,7 +398,7 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
   // Get all walk comps
   var walkComps = getComps('_walk');
   errorStr = '';
-  var batchSize = 50;
+  var batchSize = 10;
   var batch = 0;
   var skipExisting = true;
   var comps = [];
@@ -431,6 +431,9 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
       renderClear(app, comps);
       batch = 0;
       comps = [];
+      // Clear cache
+      $.writeln('Clearing cache.');
+      app.purge(PurgeTarget.ALL_CACHES);
     }
 
     // remove target permutation from list of permutations

@@ -50,11 +50,11 @@ def batch(iterable, n=1):
         yield iterable[ndx:min(ndx + n, l)]
 
 
-def batch_args(iterable, n=1, skip_existing=True):
+def batch_args(iterable, n=1, skip_existing=True, folder=None):
     position = 1
     l = len(iterable)
     for ndx in range(0, l, n):
-        yield [iterable[ndx:min(ndx + n, l)], skip_existing, position]
+        yield [iterable[ndx:min(ndx + n, l)], skip_existing, position, folder]
         position += 1
         
 
@@ -240,12 +240,12 @@ def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None):
 
 if __name__ == '__main__':
     skip_existing = True
-    #generate_tiffs_ae(skip_existing)
+    generate_tiffs_ae(skip_existing)
     thumb_nails = generate_thumbnails(skip_existing)
-    gif_paths = generate_gifs(skip_existing)
-    if ASYNC:
-        async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
-        async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
-    else:
-        upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
-        upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
+    #gif_paths = generate_gifs(skip_existing)
+    #if ASYNC:
+    #    async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
+    #    async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
+    #else:
+    #    upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
+    #    upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
