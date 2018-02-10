@@ -393,7 +393,7 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
   // Get all walk comps
   var walkComps = getComps('_walk');
   errorStr = '';
-  var batchSize = 10;
+  var batchSize = 25;
   var batch = 0;
   var comps = [];
 
