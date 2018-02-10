@@ -8,6 +8,7 @@ import os
 import subprocess
 from subprocess import STDOUT, check_output
 from sys import platform
+import shutil
 
 from google.cloud import storage
 import imageio
@@ -41,12 +42,14 @@ SKIP_EXISTING = False
 ANIMAL_LIST = [
     'antelope',
     'buffalo',
+    'bunny',
     'chicken',
     'crocodile',
     'dog',
     'duck',
     'elephant',
     'flamingo',
+    'fox',
     'frog',
     'giraffe',
     'gorilla',
@@ -54,11 +57,14 @@ ANIMAL_LIST = [
     'hyena',
     'leopard',
     'lion',
+    'lizard',
     'ostrich',
+    'pig',
     'pony',
     'puma',
-    'pussycat',
+    'cat',
     'rhino',
+    'sheep',
     'tiger',
     'tortoise',
     'warthog',
@@ -75,26 +81,34 @@ def remove_existing(permutations):
     remove_indices = []
     print("Removing animixer animals that have thumbnails")
     for index, perm in tqdm(enumerate(permutations)):
-        file_name = '_'.join([
+        animal_name = '_'.join([
             ANIMAL_LIST[perm[0]],
             ANIMAL_LIST[perm[1]],
-            ANIMAL_LIST[perm[2]])
-        file_name += '_thumbnail.tiff'
-        file_path = os.path.join(THUMBNAILS_FOLDER, file_name)
+            ANIMAL_LIST[perm[2]]])
+        thumbail_name = animal_name + '_thumbnail.tif'
+        file_path = os.path.join(THUMBNAILS_FOLDER, thumbail_name)
+        image_folder_path = os.path.join(IMAGE_FOLDER, animal_name + '_render')
         if os.path.exists(file_path):
-            remove_indexs.append(index)
+            remove_indices.append(index)
+        elif os.path.exists(image_folder_path):
+            print("Deleting animal images as no thumbnail found: {}".format(
+                image_folder_path))
+            shutil.rmtree(image_folder_path)
 
-    while remove_indices:
-        del permutations[remove_indices.pop(0)]
+    print("Removing {} existing animals".format(len(remove_indices)))
+    for index in reversed(remove_indices):
+        del permutations[index]
 
     return permutations
 
 def generate_permuations(number_animals, skip_existing=True):
     # generate originals
+    print("Generating list of animals to create")
     originals = [[x, x, x] for x in range(number_animals)]
     permutations = originals + list(itertools.permutations(range(number_animals), 3))
     if skip_existing:
         permutations = remove_existing(permutations)
+    print("Returning {} animals to generate".format(len(permutations)))
     return permutations
 
 
@@ -115,7 +129,7 @@ def run_command(cmd, timeout=1800):
     """
     Run command with timeout to kill it if it runs too long
     """
-    output = check_output(cmd, stderr=STDOUT, timeout=seconds)
+    output = check_output(cmd, stderr=STDOUT, timeout=timeout)
     print("Process completed with output: {}".format(output))
 
 
@@ -139,14 +153,14 @@ def generate_tiffs_ae(skip_existing=True):
             # Mac call
             cmd = (
                 'arch -x86_64 osascript ./ASfile.scpt '
-                '%s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\', \'%s\', false)"' % (
+                '%s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\', \'%s\')"' % (
                     FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE, IMAGE_FOLDER))
 
-            run_command(cmd, (batch * 8))
+            run_command(cmd, (batch_size * 8))
         else:
             script = (
                 "var scriptPath = '%s' + '/' + '%s';" +
-                "$.evalFile(scriptPath);renderAnimals('%s', '%s', '%s', false);") % (
+                "$.evalFile(scriptPath);renderAnimals('%s', '%s', '%s');") % (
                     FILE_DIR.replace('\\', '/'),
                     'animixer.jsx',
                     PROJECT_FILE.replace('\\', '/'),
@@ -154,9 +168,9 @@ def generate_tiffs_ae(skip_existing=True):
                     IMAGE_FOLDER.replace('\\', '/'))
             cmd = (
                 'C:\Program Files\Adobe\Adobe After Effects CC 2018\Support Files\AfterFX.exe '
-                '-s "%s"' % windows_script)
+                '-s "%s"' % script)
 
-            run_command(cmd, (batch * 8))
+            run_command(cmd, (batch_size * 8))
 
 
 def generate_gifs(skip_existing=True):
