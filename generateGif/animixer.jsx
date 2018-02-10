@@ -210,9 +210,8 @@ function renderComposition(renderComp, folderPath, filepath) {
 /**
  * Move currently displayed Render layers to correct places then render this comp
  */
-function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting, outputPath) {
+function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   // Create render comp for animal
-  skipExisting = skipExisting || false;
   var head = headComp.name.replace('_walk', '');
   var body = bodyComp.name.replace('_walk', '');
   var tail = bodyComp.name.replace('_tail', '');
@@ -223,11 +222,6 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting, outputPath
   var folderPath = foldersPath + '/' + compName;
   var filepath = folderPath + '/' + compName;
   var AEFolderName = 'Animixes';
-
-  // Skip if files already exist
-  if (skipExisting && fileExists(folderPath + '/' + compName + '_00000.tif')) {
-    return;
-  }
 
   if (existing) {
     existing.remove();
@@ -386,6 +380,7 @@ function scaleAllCameraZooms(theComp, scaleBy) {
  */
 function renderAnimals(projectPath, permutationsFile, outputPath) {
   //app.beginUndoGroup('XXX');
+
   if (projectPath) {
     var project = new File(projectPath);
     app.open(project);
@@ -400,7 +395,6 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
   errorStr = '';
   var batchSize = 10;
   var batch = 0;
-  var skipExisting = true;
   var comps = [];
 
   // Generate all possible combinations for target comp or load from file
@@ -412,7 +406,7 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
       var walk_cmp_1 = walkComps[permutations[0][0]];
       var walk_cmp_2 = walkComps[permutations[0][1]];
       var walk_cmp_3 = walkComps[permutations[0][2]];
-      var renderCompItem = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, skipExisting, outputPath);
+      var renderCompItem = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, outputPath);
       if (renderCompItem) {
         $.writeln('Composed animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
         comps.push(renderCompItem[0]);

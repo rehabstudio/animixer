@@ -6,6 +6,7 @@ import math
 from multiprocessing import Pool
 import os
 import subprocess
+from subprocess import STDOUT, check_output
 from sys import platform
 
 from google.cloud import storage
@@ -32,16 +33,69 @@ FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_FILE = os.path.join(FILE_DIR, 'ae_project', 'animixer_anim.aep')
 PERMUTATIONS_FILE = os.path.join(FILE_DIR, 'ae_project', 'permutations.json')
 IMAGE_FOLDER = os.path.join(ROOT_DIR, 'images')
+THUMBNAILS_FOLDER = os.path.join(ROOT_DIR, 'thumbnails')
 ASYNC = True
 CLOUD_BUCKET = 'animixer-1d266.appspot.com'
 MAX_PROCESS = 5
 SKIP_EXISTING = False
+ANIMAL_LIST = [
+    'antelope',
+    'buffalo',
+    'chicken',
+    'crocodile',
+    'dog',
+    'duck',
+    'elephant',
+    'flamingo',
+    'frog',
+    'giraffe',
+    'gorilla',
+    'hippo',
+    'hyena',
+    'leopard',
+    'lion',
+    'ostrich',
+    'pony',
+    'puma',
+    'pussycat',
+    'rhino',
+    'tiger',
+    'tortoise',
+    'warthog',
+    'wildebeest',
+    'zebra',
+]
 
 
-def generate_permuations(number_animals):
+def remove_existing(permutations):
+    """
+    Looks for existing thumbnails and if they exist then remove index from
+    permutations
+    """
+    remove_indices = []
+    print("Removing animixer animals that have thumbnails")
+    for index, perm in tqdm(enumerate(permutations)):
+        file_name = '_'.join([
+            ANIMAL_LIST[perm[0]],
+            ANIMAL_LIST[perm[1]],
+            ANIMAL_LIST[perm[2]])
+        file_name += '_thumbnail.tiff'
+        file_path = os.path.join(THUMBNAILS_FOLDER, file_name)
+        if os.path.exists(file_path):
+            remove_indexs.append(index)
+
+    while remove_indices:
+        del permutations[remove_indices.pop(0)]
+
+    return permutations
+
+def generate_permuations(number_animals, skip_existing=True):
     # generate originals
     originals = [[x, x, x] for x in range(number_animals)]
-    return originals + list(itertools.permutations(range(number_animals), 3))
+    permutations = originals + list(itertools.permutations(range(number_animals), 3))
+    if skip_existing:
+        permutations = remove_existing(permutations)
+    return permutations
 
 
 def batch(iterable, n=1):
@@ -56,7 +110,14 @@ def batch_args(iterable, n=1, skip_existing=True, folder=None):
     for ndx in range(0, l, n):
         yield [iterable[ndx:min(ndx + n, l)], skip_existing, position, folder]
         position += 1
-        
+
+def run_command(cmd, timeout=1800):
+    """
+    Run command with timeout to kill it if it runs too long
+    """
+    output = check_output(cmd, stderr=STDOUT, timeout=seconds)
+    print("Process completed with output: {}".format(output))
+
 
 def generate_tiffs_ae(skip_existing=True):
     """
@@ -76,22 +137,26 @@ def generate_tiffs_ae(skip_existing=True):
 
         if OS == 'unix':
             # Mac call
-            ae = subprocess.call(
+            cmd = (
                 'arch -x86_64 osascript ./ASfile.scpt '
-                '%s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\', \'%s\')"' % (
-                    FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE, IMAGE_FOLDER), shell=True)
+                '%s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\', \'%s\', false)"' % (
+                    FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE, IMAGE_FOLDER))
+
+            run_command(cmd, (batch * 8))
         else:
-            windows_script = (
-                "var scriptPath = '%s' + '/' + '%s';" + 
-                "$.evalFile(scriptPath);renderAnimals('%s', '%s', '%s');") % (
+            script = (
+                "var scriptPath = '%s' + '/' + '%s';" +
+                "$.evalFile(scriptPath);renderAnimals('%s', '%s', '%s', false);") % (
                     FILE_DIR.replace('\\', '/'),
                     'animixer.jsx',
                     PROJECT_FILE.replace('\\', '/'),
                     PERMUTATIONS_FILE.replace('\\', '/'),
                     IMAGE_FOLDER.replace('\\', '/'))
-            ae = subprocess.call(
-                'C:\Program Files\Adobe\Adobe After Effects CC 2018\Support Files\AfterFX.exe ' +
+            cmd = (
+                'C:\Program Files\Adobe\Adobe After Effects CC 2018\Support Files\AfterFX.exe '
                 '-s "%s"' % windows_script)
+
+            run_command(cmd, (batch * 8))
 
 
 def generate_gifs(skip_existing=True):
@@ -159,7 +224,7 @@ def generate_thumbnails(skip_existing=True):
         filenames = [
             os.path.join(subdir, f) for f in os.listdir(subdir)
             if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.tif')]
-        
+
         if not filenames:
             print('Skipping folder: {}'.format(subdir))
             continue
@@ -169,7 +234,7 @@ def generate_thumbnails(skip_existing=True):
             wpercent = (basewidth/float(img.size[0]))
             hsize = int((float(img.size[1])*float(wpercent)))
             img = img.resize((basewidth,hsize), Image.ANTIALIAS)
-            img.save(thumbnail_path) 
+            img.save(thumbnail_path)
         except Exception as e:
             print('Error: filename {} failed, skipping'.format(filename))
             print(str(e))
@@ -179,7 +244,7 @@ def generate_thumbnails(skip_existing=True):
 
     return thumbnail_paths
 
-    
+
 def storage_file_exists(gcs_file):
     """
     Return True if google cloud storage file exists
