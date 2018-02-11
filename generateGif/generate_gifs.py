@@ -129,9 +129,17 @@ def run_command(cmd, timeout=1800):
     """
     Run command with timeout to kill it if it runs too long
     """
-    output = check_output(cmd, stderr=STDOUT, timeout=timeout)
-    print("Process completed with output: {}".format(output))
-
+    try:
+        output = check_output(cmd, stderr=STDOUT, timeout=timeout)
+        print("Process completed with output: {}".format(output))
+    except Exception as e:
+        try:
+            print("Process failed: {} retrying".format(str(e)))
+            output = check_output(cmd, stderr=STDOUT, timeout=timeout)
+            print("Process completed with output: {}".format(output))
+        except Exception as e:
+            print("Processing failed 2nd time skipping")
+    
 
 def generate_tiffs_ae(skip_existing=True):
     """
@@ -141,7 +149,7 @@ def generate_tiffs_ae(skip_existing=True):
     permutations_file = None
     number_animals = 30
     permutations = generate_permuations(number_animals)
-    batch_size = 500
+    batch_size = 50
     jobs = math.ceil(len(permutations) / batch_size)
 
     # Batch render animals and restart AE between batches
@@ -156,7 +164,7 @@ def generate_tiffs_ae(skip_existing=True):
                 '%s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\', \'%s\')"' % (
                     FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE, IMAGE_FOLDER))
 
-            run_command(cmd, (batch_size * 8))
+            run_command(cmd, (batch_size * 20))
         else:
             script = (
                 "var scriptPath = '%s' + '/' + '%s';" +
@@ -170,7 +178,7 @@ def generate_tiffs_ae(skip_existing=True):
                 'C:\Program Files\Adobe\Adobe After Effects CC 2018\Support Files\AfterFX.exe '
                 '-s "%s"' % script)
 
-            run_command(cmd, (batch_size * 8))
+            run_command(cmd, (batch_size * 20))
 
 
 def generate_gifs(skip_existing=True):
