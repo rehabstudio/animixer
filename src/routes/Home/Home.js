@@ -9,6 +9,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Card from 'material-ui/Card';
+import Welcome from '../../components/App/Welcome';
 import ChatBox from '../../components/App/ChatBox';
 
 const Container = styled.div`
@@ -37,11 +38,12 @@ class Home extends React.Component<{}> {
 
   render() {
     return (
-      <Container>
-        <Content>
+      <div>
+        <Welcome />
+        <Container>
           <ChatBox accessToken={this.state.accessToken} />
-        </Content>
-      </Container>
+        </Container>
+      </div>
     );
   }
 }

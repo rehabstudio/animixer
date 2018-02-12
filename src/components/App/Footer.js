@@ -12,9 +12,9 @@ import styled from 'styled-components';
 const Container = styled.div`
   position: fixed;
   bottom: 0;
-  left: 0;
+  right: 0;
   padding: 24px;
-  color: rgba(255, 255, 255, 1);
+  color: rgba(0, 0, 0, 1);
 `;
 
 const Copyright = styled.span`
@@ -26,7 +26,7 @@ const ExtLink = styled.a`
   &:hover,
   &:active,
   &:visited {
-    color: rgba(255, 255, 255, 1);
+    color: rgba(0, 0, 0, 1);
     text-decoration: none;
   }
 

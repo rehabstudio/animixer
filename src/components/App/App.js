@@ -13,14 +13,11 @@ import { MuiThemeProvider } from 'material-ui/styles';
 import theme from '../../theme';
 import Toolbar from './Toolbar';
 import Footer from './Footer';
+import Background from './Background';
 
 const Container = styled.div`
   height: 100vh;
-  background: url(/safari-background.jpg) no-repeat center center fixed;
-  background-size: cover;
 `;
-
-//http://koistya.github.io/files/background-v1-1920x1080.jpg
 
 class App extends React.Component<{}> {
   componentDidMount() {
@@ -34,11 +31,9 @@ class App extends React.Component<{}> {
   render() {
     return (
       <MuiThemeProvider theme={theme}>
-        <Container>
-          <Toolbar user={this.props.user} />
-          {this.props.route.body}
-          <Footer />
-        </Container>
+        <Background />
+        <Container>{this.props.route.body}</Container>
+        <Footer />
       </MuiThemeProvider>
     );
   }
