@@ -23,17 +23,30 @@ class Speech extends React.Component<{}> {
     if (!props.artyom) {
       throw new Error('Expecting Artyom instance in props');
     }
+    let state = {
+      enabled: false
+    };
+    if (this.props.enabled) {
+      state.enabled = true;
+    }
 
     this.artyom = props.artyom || new Artyom();
     this.speakingCallback = props.speakingCallback || function(text) {};
-    this.state = {
-      enabled: false
-    };
+    this.state = state;
   }
 
   componentWillReceiveProps(newProps) {
     if (newProps.text && newProps.text !== this.props.text) {
       this.speak(newProps.text);
+    }
+    if (newProps.enabled && newProps.enabled !== this.props.enabled) {
+      this.toggleSpeech(newProps.enabled);
+    }
+  }
+
+  componentDidMount() {
+    if (this.state.enabled) {
+      this.icon.innerHTML = 'volume_up';
     }
   }
 
@@ -53,6 +66,7 @@ class Speech extends React.Component<{}> {
   }
 
   toggleSpeech() {
+    this.state.enabled;
     if (this.state.enabled) {
       this.icon.innerHTML = 'volume_mute';
       this.setState({ enabled: false });

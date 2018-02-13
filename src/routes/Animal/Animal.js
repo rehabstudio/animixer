@@ -13,20 +13,30 @@ import {
 
 import ErrorPage from '../ErrorPage';
 
+const Title = styled.h5`
+  text-align: center;
+`;
+
+const Text = styled.p`
+  text-align: center;
+`;
+
 const Container = styled.div`
-  height: calc(100vh - 125px);
-  height: -o-calc(100vh - 125px); /* opera */
-  height: -webkit-calc(100vh - 125px); /* google, safari */
-  height: -moz-calc(100vh - 125px); /* firefox */
-  min-height: 70vh;
+  height: 75vh;
   overflow-y: auto;
-  background-color: white;
+  position: relative;
+  top: 75px;
+  color: #4e6174;
+  font-family: 'Nanum Gothic';
 `;
 
 const AnimalImg = styled.img``;
 
-const AnimalText = styled.h5`
+const AnimalText = styled.div`
   margin: 10px auto;
+  border-radius: 20px;
+  text-align: center;
+  display: inline-block;
 `;
 
 const AnimalContainer = styled.div`
@@ -36,6 +46,10 @@ const AnimalContainer = styled.div`
 const APIHost = window.location.href.startsWith('http://localhost')
   ? 'http://localhost:5000/animixer-1d266/us-central1'
   : 'https://us-central1-animixer-1d266.cloudfunctions.net';
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 class Animal extends React.Component<{}> {
   constructor(props) {
@@ -153,71 +167,75 @@ class Animal extends React.Component<{}> {
       return <ErrorPage error={{ status: 404 }} />;
     } else {
       return (
-        <Container className="container valign-wrapper">
-          <div
-            id="main-wrapper"
-            className={!this.state.animalExists ? 'hidden' : 'valign'}
-            style={{ width: '100%', height: '100%' }}
-          >
-            <div className="row">
-              <AnimalText className="col s12 clearfix center-align">
-                {this.state.animalNameText}
+        <div className={!this.state.animalExists ? 'hidden' : 'container'}>
+          <Container className="row" ref="container">
+            <Title>Congratulations</Title>
+            <Text>You have just discovered the mysterious</Text>
+            <div style={{ textAlign: 'center' }}>
+              <AnimalText className="card-panel text-darken-2 hoverable bring-front margins">
+                {capitalizeFirstLetter(this.state.animalName)}
               </AnimalText>
             </div>
-            <div className="row">
-              <AnimalContainer className="col s12 m10 offset-m1 image-div">
-                <AnimalImg
-                  innerRef={ele => (this.animalImg = ele)}
-                  className="col s12 responsive-img"
-                  style={{
-                    maxHeight: '55vh',
-                    marginBottom: '10px'
-                  }}
-                  onLoad={this.handleImageLoaded.bind(this)}
-                  onError={this.handleImageErrored.bind(this)}
-                />
-                <div className="audio-div">
-                  <audio
-                    controls
-                    src={this.state.audioUrl}
+            <div
+              id="main-wrapper"
+              className="valign"
+              style={{ width: '100%', height: '100%' }}
+            >
+              <div className="row">
+                <AnimalContainer className="col s12 m10 offset-m1 image-div">
+                  <AnimalImg
+                    innerRef={ele => (this.animalImg = ele)}
+                    className="col s8 offset-s2"
                     style={{
-                      width: '100%'
+                      maxHeight: '40vh',
+                      marginBottom: '10px'
                     }}
+                    onLoad={this.handleImageLoaded.bind(this)}
+                    onError={this.handleImageErrored.bind(this)}
                   />
-                </div>
-              </AnimalContainer>
-            </div>
-            <div className="row">
-              <div className="col s12 m8 offset-m2">
-                <AnimalText className="col s8 clearfix center-align">
-                  {this.state.animalFactText}
-                </AnimalText>
-                <div className="col s4">
-                  <FacebookShareButton
-                    url={shareUrl}
-                    quote={title}
-                    className="share-button"
-                  >
-                    <FacebookIcon size={32} round />
-                  </FacebookShareButton>
-                  <TwitterShareButton
-                    url={shareUrl}
-                    title={title}
-                    className="share-button"
-                  >
-                    <TwitterIcon size={32} round />
-                  </TwitterShareButton>
-                  <GooglePlusShareButton
-                    url={shareUrl}
-                    className="share-button"
-                  >
-                    <GooglePlusIcon size={32} round />
-                  </GooglePlusShareButton>
+                  <div className="audio-div">
+                    <audio
+                      controls
+                      src={this.state.audioUrl}
+                      style={{
+                        width: '100%'
+                      }}
+                    />
+                  </div>
+                </AnimalContainer>
+              </div>
+              <div className="row">
+                <div className="col s12 m8 offset-m2">
+                  <Text className="col s8 clearfix center-align">
+                    {this.state.animalFactText}
+                  </Text>
+                  <div className="col s4">
+                    <FacebookShareButton
+                      url={shareUrl}
+                      quote={title}
+                      className="share-button"
+                    >
+                      <FacebookIcon size={32} round />
+                    </FacebookShareButton>
+                    <TwitterShareButton
+                      url={shareUrl}
+                      title={title}
+                      className="share-button"
+                    >
+                      <TwitterIcon size={32} round />
+                    </TwitterShareButton>
+                    <GooglePlusShareButton
+                      url={shareUrl}
+                      className="share-button"
+                    >
+                      <GooglePlusIcon size={32} round />
+                    </GooglePlusShareButton>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </Container>
+          </Container>
+        </div>
       );
     }
   }

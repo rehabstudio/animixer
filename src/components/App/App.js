@@ -11,7 +11,6 @@ import styled from 'styled-components';
 import { MuiThemeProvider } from 'material-ui/styles';
 
 import theme from '../../theme';
-import Toolbar from './Toolbar';
 import Header from './Header';
 import Footer from './Footer';
 import Background from './Background';

@@ -64,14 +64,14 @@ class Dictation extends React.Component<{}> {
 
   toggleDictation() {
     if (this.state.recording) {
-      this.icon.innerHTML = 'mic';
+      this.icon.innerHTML = 'mic_off';
       this.stopDictation();
       this.setState({
         recording: false,
         text: this.placeHolderText
       });
     } else {
-      this.icon.innerHTML = 'mic_off';
+      this.icon.innerHTML = 'mic';
       this.startDictation();
       this.setState({ recording: true });
     }

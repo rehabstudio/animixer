@@ -36,10 +36,6 @@ const Input = styled.input`
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 10px;
-
-  *:focus {
-    outline: none;
-  }
 `;
 
 const ScrollChat = styled.div`
@@ -266,7 +262,7 @@ class ChatBox extends React.Component<{}, {}> {
   render() {
     return (
       <Container innerRef={ele => (this.chatDiv = ele)} className="container">
-        <div className="row" onClick={this.scrollUp} style={{ height: '0px' }}>
+        <div className="row" onClick={this.scrollUp}>
           <img
             className="col s4 offset-s4"
             src="/static/img/icon-up.png"
@@ -300,7 +296,7 @@ class ChatBox extends React.Component<{}, {}> {
                 className="col l2 m4 s6 valign-wrapper"
                 style={{ paddingRight: '0px' }}
               >
-                <div style={{ marginLeft: 'auto' }}>
+                <div style={{ marginLeft: 'auto', marginRight: '5px' }}>
                   <Dictation
                     artyom={this.state.artyom}
                     userInput={this.userInput.bind(this)}
@@ -312,6 +308,7 @@ class ChatBox extends React.Component<{}, {}> {
                   artyom={this.state.artyom}
                   text={this.state.speak}
                   speakingCallback={this.disableDictation.bind(this)}
+                  enabled={true}
                 />
               </div>
             </InputField>
