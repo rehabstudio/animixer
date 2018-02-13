@@ -38,7 +38,7 @@ THUMBNAILS_FOLDER = os.path.join(ROOT_DIR, 'thumbnails')
 ASYNC = True
 CLOUD_BUCKET = 'animixer-1d266.appspot.com'
 MAX_PROCESS = 5
-SKIP_EXISTING = False
+SKIP_EXISTING = True
 ANIMAL_LIST = sorted([
     'antelope',
     'buffalo',
@@ -288,22 +288,23 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None):
     """
     Upload file paths to cloud bucket defined in globals
     """
-    #print('Starting Upload to cloud')
     client = storage.Client()
     bucket = client.get_bucket(CLOUD_BUCKET)
     #print('Getting list of files from server')
     blobs = [b.name for b in bucket.list_blobs()]
 
-    #print('Uploading {} files to cloud'.format(len(file_paths)))
+    print('Uploading {} files to cloud'.format(len(file_paths)))
     for gif in tqdm(file_paths, position=position, desc='Process: {}'.format(position)):
         try:
             file_name = gif.split(SEPARATOR)[-1]
-            if file_name in blobs and skip_existing:
-                continue
             if folder:
                 blob_name = os.path.join(folder, file_name)
             else:
                 blob_name = file_name
+                
+            if blob_name in blobs and skip_existing:
+                continue
+            
             blob = bucket.blob(blob_name)
             blob.upload_from_filename(gif)
             blob.make_public()
@@ -330,10 +331,9 @@ def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None):
 
 
 if __name__ == '__main__':
-    skip_existing = True
-    thumb_nails = generate_thumbnails(skip_existing)
-    generate_tiffs_ae(skip_existing)
-    gif_paths = generate_gifs(skip_existing)
+    thumb_nails = generate_thumbnails(SKIP_EXISTING)
+    #generate_tiffs_ae(SKIP_EXISTING)
+    gif_paths = generate_gifs(SKIP_EXISTING)
     if ASYNC:
         async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
         async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
