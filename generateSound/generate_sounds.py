@@ -99,6 +99,7 @@ def generate_sounds(skip_existing=True):
 
     return output_files
 
+
 def add_original(skip_existing=True):
     '''
     Add original sounds to output folder
@@ -106,6 +107,7 @@ def add_original(skip_existing=True):
     print('Copying original sounds to output dir')
     filenames = get_audio_files(INPUT_DIR)
     for filepath in tqdm(filenames):
+        import pdb;pdb.set_trace()
         animal_name, ext = filepath.split('/')[-1].split('.')
         filename = animalName + animalName + '.' + ext
         dest_path = os.path.join(FILE_DIR, OUTPUT_DIR, filename)
