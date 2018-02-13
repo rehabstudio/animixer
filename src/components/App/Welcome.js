@@ -12,6 +12,7 @@ const Start = styled.div`
   width: 325px;
   margin: auto;
   border-radius: 30px;
+  cursor: pointer;
 `;
 
 const StartText = styled.span`
@@ -31,6 +32,7 @@ const MicIcon = styled.i`
 class Welcome extends React.Component<{}> {
   constructor(props) {
     super(props);
+    this.scrollDown = this.props.scrollDown || function() {};
   }
 
   render() {
@@ -38,7 +40,11 @@ class Welcome extends React.Component<{}> {
       <WelcomeContainer className="row valign-wrapper">
         <div className="col s10 offset-s1 m6 offset-m3 l4 offset-l4 center-align">
           <img className="center-align" src="/static/img/logo_low_res.png" />
-          <Start className="valign-wrapper">
+          <Start
+            innerRef={ele => (this.startDiv = ele)}
+            onClick={this.scrollDown}
+            className="valign-wrapper"
+          >
             <MicIcon className="small material-icons">mic_none</MicIcon>
             <StartText className="center-align">START YOUR SAFARI</StartText>
           </Start>

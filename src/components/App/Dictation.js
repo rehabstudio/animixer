@@ -3,13 +3,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 const MicIcon = styled.div`
-  background-color: #fff;
-  border: 4px solid black;
-  height: 75px;
+  background-color: #587b14;
+  color: #ecf2dc;
+  height: 50px;
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
-  width: 75px;
+  width: 50px;
   cursor: pointer;
 `;
 
@@ -102,23 +102,18 @@ class Dictation extends React.Component<{}> {
 
   render() {
     return (
-      <div className="col s2">
-        <MicIcon
-          className="valign-wrapper"
-          onClick={this.toggleDictation.bind(this)}
+      <MicIcon
+        className="valign-wrapper"
+        onClick={this.toggleDictation.bind(this)}
+      >
+        <i
+          className="center-align small material-icons"
+          style={{ width: '100%' }}
+          ref={ele => (this.icon = ele)}
         >
-          <i
-            className="center-align medium material-icons"
-            style={{ width: '100%' }}
-            ref={ele => (this.icon = ele)}
-          >
-            mic
-          </i>
-        </MicIcon>
-        <div>
-          <p>Click here to enable microphone</p>
-        </div>
-      </div>
+          mic
+        </i>
+      </MicIcon>
     );
   }
 }

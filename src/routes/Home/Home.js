@@ -12,6 +12,11 @@ import Card from 'material-ui/Card';
 import Welcome from '../../components/App/Welcome';
 import ChatBox from '../../components/App/ChatBox';
 
+const ScrollDiv = styled.div`
+  position: relative;
+  bottom: 0vh;
+`;
+
 const Container = styled.div`
   max-width: 1000px;
   box-sizing: border-box;
@@ -30,20 +35,33 @@ const token = window.location.href.startsWith('http://localhost')
 class Home extends React.Component<{}> {
   constructor(props) {
     super(props);
-
     this.state = {
       accessToken: token
     };
   }
 
+  goToWelcome() {
+    this.scrollDiv.style = {
+      animationName: 'scrollDown',
+      animationDuration: '1s'
+    };
+  }
+
+  goToChat() {
+    this.scrollDiv.className += ' scrollUp';
+  }
+
   render() {
     return (
-      <div>
-        <Welcome />
+      <ScrollDiv innerRef={ele => (this.scrollDiv = ele)}>
+        <Welcome
+          scrollUp={this.goToWelcome.bind(this)}
+          scrollDown={this.goToChat.bind(this)}
+        />
         <Container>
           <ChatBox accessToken={this.state.accessToken} />
         </Container>
-      </div>
+      </ScrollDiv>
     );
   }
 }

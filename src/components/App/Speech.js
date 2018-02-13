@@ -3,13 +3,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 const SpeakerIcon = styled.div`
-  background-color: #fff;
-  border: 4px solid black;
-  height: 75px;
+  background-color: #587b14;
+  color: #ecf2dc;
+  height: 50px;
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
-  width: 75px;
+  width: 50px;
   cursor: pointer;
 `;
 
@@ -61,23 +61,18 @@ class Speech extends React.Component<{}> {
 
   render() {
     return (
-      <div className="col s2">
-        <SpeakerIcon
-          className="valign-wrapper"
-          onClick={this.toggleSpeech.bind(this)}
+      <SpeakerIcon
+        className="valign-wrapper"
+        onClick={this.toggleSpeech.bind(this)}
+      >
+        <i
+          className="center-align small material-icons"
+          style={{ width: '100%' }}
+          ref={ele => (this.icon = ele)}
         >
-          <i
-            className="center-align medium material-icons"
-            style={{ width: '100%' }}
-            ref={ele => (this.icon = ele)}
-          >
-            volume_mute
-          </i>
-        </SpeakerIcon>
-        <div>
-          <p>Click here to enable speech</p>
-        </div>
-      </div>
+          volume_mute
+        </i>
+      </SpeakerIcon>
     );
   }
 }

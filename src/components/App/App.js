@@ -17,6 +17,7 @@ import Background from './Background';
 
 const Container = styled.div`
   height: 100vh;
+  overflow-y: hidden;
 `;
 
 class App extends React.Component<{}> {

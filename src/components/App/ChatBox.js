@@ -16,11 +16,24 @@ import Speech from './Speech';
 const ENTER_KEY_CODE = 13;
 
 const Container = styled.div`
-  height: calc(100vh - 180px);
-  height: -o-calc(100vh - 180px); /* opera */
-  height: -webkit-calc(100vh - 180px); /* google, safari */
-  height: -moz-calc(100vh - 180px); /* firefox */
   overflow-y: auto;
+  overflow-x: hidden;
+`;
+
+const InputField = styled.div`
+  border: 1px solid #587b14;
+  border-radius: 34px;
+  background-color: #ffffff;
+  display: flex;
+  padding-left: 5px;
+  padding-right: 5px;
+`;
+
+const Input = styled.input`
+  font-family: 'Nanum Gothic';
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
 `;
 
 class ChatBox extends React.Component<{}, {}> {
@@ -215,40 +228,39 @@ class ChatBox extends React.Component<{}, {}> {
   render() {
     return (
       <Container innerRef={ele => (this.chatDiv = ele)} className="container">
-        <div id="placeholder">
-          <h5>Say “Explore” to start your Animixer safari</h5>
+        <div className="row" style={{ height: '70vh' }}>
+          <div className="col s12">
+            <div ref={ele => (this.resultDiv = ele)} id="result" />
+          </div>
         </div>
-        <div id="main-wrapper">
-          <div className="row">
-            <div className="col s12">
-              <div ref={ele => (this.resultDiv = ele)} id="result" />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col s4" />
-            <Dictation
-              artyom={this.state.artyom}
-              userInput={this.userInput.bind(this)}
-              awaitingInput={this.awaitingInput.bind(this)}
-              disable={this.state.speaking}
-            />
-            <Speech
-              artyom={this.state.artyom}
-              text={this.state.speak}
-              speakingCallback={this.disableDictation.bind(this)}
-            />
-          </div>
-          <div className="row">
-            <div className="col s12">
-              <div className="input-field">
-                <input
-                  ref={ele => (this.inputField = ele)}
-                  placeholder="Or type here, ask me something..."
+        <div className="row">
+          <div className="col s12">
+            <InputField>
+              <div className="col s10">
+                <Input
+                  innerRef={ele => (this.inputField = ele)}
+                  placeholder="Ask me something..."
                   id="q"
                   type="text"
+                  style={{ marginBottom: '5px' }}
                 />
               </div>
-            </div>
+              <div className="col s1">
+                <Dictation
+                  artyom={this.state.artyom}
+                  userInput={this.userInput.bind(this)}
+                  awaitingInput={this.awaitingInput.bind(this)}
+                  disable={this.state.speaking}
+                />
+              </div>
+              <div className="col s1">
+                <Speech
+                  artyom={this.state.artyom}
+                  text={this.state.speak}
+                  speakingCallback={this.disableDictation.bind(this)}
+                />
+              </div>
+            </InputField>
           </div>
         </div>
       </Container>

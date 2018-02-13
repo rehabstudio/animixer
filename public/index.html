@@ -41,10 +41,6 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
 
 <style>
-#placeholder {
-  text-align: center;
-  margin-top: 1.5em;
-}
 .bring-front {
   position: relative;
   z-index: 1;
@@ -78,6 +74,17 @@ body {
   height: 50px;
   margin-right: 25px;
 }
+
+.scrollUp {
+  transform: translateY(-100vh);
+  transition: transform 400ms ease-in;
+}
+
+.scrollDown {
+  transform: translateY(100vh);
+  transition: transform 400ms ease-in;
+}
+
 </style>
 </head>
 
