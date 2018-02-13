@@ -36,7 +36,8 @@ class Home extends React.Component<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      accessToken: token
+      accessToken: token,
+      startChat: false
     };
   }
 
@@ -51,11 +52,17 @@ class Home extends React.Component<{}> {
   goToWelcome() {
     this.clearAnimation();
     this.scrollDiv.className += ' scrollDown';
+    this.setState({
+      startChat: false
+    });
   }
 
   goToChat() {
     this.clearAnimation();
     this.scrollDiv.className += ' scrollUp';
+    this.setState({
+      startChat: true
+    });
   }
 
   render() {
@@ -64,6 +71,7 @@ class Home extends React.Component<{}> {
         <Welcome scrollDown={this.goToChat.bind(this)} />
         <Container>
           <ChatBox
+            startChat={this.state.startChat}
             scrollUp={this.goToWelcome.bind(this)}
             accessToken={this.state.accessToken}
           />

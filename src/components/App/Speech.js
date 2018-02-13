@@ -2,15 +2,18 @@ import Artyom from 'artyom.js';
 import React from 'react';
 import styled from 'styled-components';
 
+const iconSize = '45px';
+
 const SpeakerIcon = styled.div`
   background-color: #587b14;
   color: #ecf2dc;
-  height: 50px;
+  height: ${iconSize};
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
-  width: 50px;
+  width: ${iconSize};
   cursor: pointer;
+  flex-shrink: 0;
 `;
 
 class Speech extends React.Component<{}> {

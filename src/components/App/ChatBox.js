@@ -27,6 +27,8 @@ const InputField = styled.div`
   display: flex;
   padding-left: 5px;
   padding-right: 5px;
+  padding-top: 2.5px;
+  padding-bottom: 2.5px;
 `;
 
 const Input = styled.input`
@@ -34,6 +36,15 @@ const Input = styled.input`
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 10px;
+
+  *:focus {
+    outline: none;
+  }
+`;
+
+const ScrollChat = styled.div`
+  overflow-y: scroll;
+  height: 100%;
 `;
 
 class ChatBox extends React.Component<{}, {}> {
@@ -44,7 +55,8 @@ class ChatBox extends React.Component<{}, {}> {
       artyom: new Artyom(),
       speak: '',
       speaking: false,
-      currentQuery: null
+      currentQuery: null,
+      startChat: false
     };
     this.scrollUp = this.props.scrollUp || function() {};
   }
@@ -63,6 +75,16 @@ class ChatBox extends React.Component<{}, {}> {
     );
   }
 
+  componentWillReceiveProps(newProps) {
+    if (
+      newProps.startChat !== this.props.startChat &&
+      newProps.startChat &&
+      !this.state.startChat
+    ) {
+      this.startChat();
+    }
+  }
+
   queryInputKeyDown(event) {
     if (event.which !== ENTER_KEY_CODE) {
       return;
@@ -79,10 +101,22 @@ class ChatBox extends React.Component<{}, {}> {
     } else {
       this.createQueryNode(value);
     }
-    let responseNode = this.createResponseNode();
-    this.setState({ currentQuery: null });
+    this.setState({
+      currentQuery: null,
+      startChat: false
+    });
 
-    this.sendText(value)
+    return this.getResponse(value);
+  }
+
+  sendText(text) {
+    return this.state.client.textRequest(text);
+  }
+
+  getResponse(value) {
+    let responseNode = this.createResponseNode();
+
+    return this.sendText(value)
       .then(
         function(response) {
           let result;
@@ -107,10 +141,6 @@ class ChatBox extends React.Component<{}, {}> {
           this.setResponseOnNode('Something went wrong', responseNode);
         }.bind(this)
       );
-  }
-
-  sendText(text) {
-    return this.state.client.textRequest(text);
   }
 
   createQueryNode(query) {
@@ -212,7 +242,7 @@ class ChatBox extends React.Component<{}, {}> {
   }
 
   updateScroll() {
-    this.chatDiv.scrollTop = this.chatDiv.scrollHeight;
+    this.scrollDiv.scrollTop = this.scrollDiv.scrollHeight;
   }
 
   awaitingInput() {
@@ -226,6 +256,13 @@ class ChatBox extends React.Component<{}, {}> {
     this.setState({ speaking: disable });
   }
 
+  startChat() {
+    this.getResponse('hello');
+    this.setState({
+      startChat: true
+    });
+  }
+
   render() {
     return (
       <Container innerRef={ele => (this.chatDiv = ele)} className="container">
@@ -237,31 +274,40 @@ class ChatBox extends React.Component<{}, {}> {
           />
         </div>
         <div className="row" style={{ height: '70vh' }}>
-          <div className="col s12">
+          <ScrollChat
+            className="col s12"
+            innerRef={ele => (this.scrollDiv = ele)}
+          >
             <div ref={ele => (this.resultDiv = ele)} id="result" />
-          </div>
+          </ScrollChat>
         </div>
         <div className="row">
           <div className="col s12">
             <InputField>
-              <div className="col s10">
+              <div className="col l10 m8 s6">
                 <Input
                   innerRef={ele => (this.inputField = ele)}
                   placeholder="Ask me something..."
                   id="q"
                   type="text"
-                  style={{ marginBottom: '5px' }}
+                  style={{
+                    marginBottom: '0px',
+                    borderBottom: 'none'
+                  }}
                 />
               </div>
-              <div className="col s1">
-                <Dictation
-                  artyom={this.state.artyom}
-                  userInput={this.userInput.bind(this)}
-                  awaitingInput={this.awaitingInput.bind(this)}
-                  disable={this.state.speaking}
-                />
-              </div>
-              <div className="col s1">
+              <div
+                className="col l2 m4 s6 valign-wrapper"
+                style={{ paddingRight: '0px' }}
+              >
+                <div style={{ marginLeft: 'auto' }}>
+                  <Dictation
+                    artyom={this.state.artyom}
+                    userInput={this.userInput.bind(this)}
+                    awaitingInput={this.awaitingInput.bind(this)}
+                    disable={this.state.speaking}
+                  />
+                </div>
                 <Speech
                   artyom={this.state.artyom}
                   text={this.state.speak}

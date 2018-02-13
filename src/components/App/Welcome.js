@@ -8,6 +8,8 @@ const WelcomeContainer = styled.div`
 
 const Start = styled.div`
   background-color: #517363;
+  background-image: url('/static/img/waves.png');
+  background-size: cover;
   height: 59px;
   width: 325px;
   margin: auto;
@@ -17,8 +19,8 @@ const Start = styled.div`
 
 const StartText = styled.span`
   font-family: 'Nanum Gothic';
-  font-size: 20px;
-  line-height: 23px;
+  font-size: 16px;
+  line-height: 19px;
   color: #ecf2dc;
   margin-right: auto;
   width: 252px;
