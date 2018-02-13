@@ -40,26 +40,33 @@ class Home extends React.Component<{}> {
     };
   }
 
+  clearAnimation() {
+    this.scrollDiv.className = this.scrollDiv.className.replace(
+      'scrollDown',
+      ''
+    );
+    this.scrollDiv.className = this.scrollDiv.className.replace('scrollUp', '');
+  }
+
   goToWelcome() {
-    this.scrollDiv.style = {
-      animationName: 'scrollDown',
-      animationDuration: '1s'
-    };
+    this.clearAnimation();
+    this.scrollDiv.className += ' scrollDown';
   }
 
   goToChat() {
+    this.clearAnimation();
     this.scrollDiv.className += ' scrollUp';
   }
 
   render() {
     return (
       <ScrollDiv innerRef={ele => (this.scrollDiv = ele)}>
-        <Welcome
-          scrollUp={this.goToWelcome.bind(this)}
-          scrollDown={this.goToChat.bind(this)}
-        />
+        <Welcome scrollDown={this.goToChat.bind(this)} />
         <Container>
-          <ChatBox accessToken={this.state.accessToken} />
+          <ChatBox
+            scrollUp={this.goToWelcome.bind(this)}
+            accessToken={this.state.accessToken}
+          />
         </Container>
       </ScrollDiv>
     );

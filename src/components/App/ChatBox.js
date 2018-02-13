@@ -46,6 +46,7 @@ class ChatBox extends React.Component<{}, {}> {
       speaking: false,
       currentQuery: null
     };
+    this.scrollUp = this.props.scrollUp || function() {};
   }
 
   componentDidMount() {
@@ -228,6 +229,13 @@ class ChatBox extends React.Component<{}, {}> {
   render() {
     return (
       <Container innerRef={ele => (this.chatDiv = ele)} className="container">
+        <div className="row" onClick={this.scrollUp} style={{ height: '0px' }}>
+          <img
+            className="col s4 offset-s4"
+            src="/static/img/icon-up.png"
+            style={{ height: '50px' }}
+          />
+        </div>
         <div className="row" style={{ height: '70vh' }}>
           <div className="col s12">
             <div ref={ele => (this.resultDiv = ele)} id="result" />
