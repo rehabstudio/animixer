@@ -11,24 +11,32 @@ import {
   TwitterIcon
 } from 'react-share';
 
+import Buttons from '../../components/Elements/Buttons';
 import ErrorPage from '../ErrorPage';
 import utils from '../../utils';
 
 const Title = styled.h5`
   text-align: center;
+  font-weight: bold;
 `;
 
 const Text = styled.p`
   text-align: center;
+  margin: 10px auto;
 `;
 
 const Container = styled.div`
-  height: 80vh;
+  height: 90vh;
   overflow: hidden;
   position: relative;
   top: 75px;
   color: #4e6174;
   font-family: 'Nanum Gothic';
+`;
+
+const ShareContainer = styled.div`
+  margin: auto;
+  width: 130px;
 `;
 
 const AnimalImg = styled.img``;
@@ -44,6 +52,9 @@ const AnimalContainer = styled.div`
   padding: 10px;
 `;
 
+const AudioButton = Buttons.TitleLink(null, null, 'auto');
+const AudioButtonText = Buttons.TitleText();
+
 const APIHost = window.location.href.startsWith('http://localhost')
   ? 'http://localhost:5000/animixer-1d266/us-central1'
   : 'https://us-central1-animixer-1d266.cloudfunctions.net';
@@ -57,6 +68,7 @@ class Animal extends React.Component<{}> {
     this.state = {
       animalName: '',
       animalNameText: '',
+      animalVerb: 'roar',
       audioUrl: audioUrl,
       imageUrl: imageUrl,
       animalExists: null,
@@ -88,7 +100,7 @@ class Animal extends React.Component<{}> {
 
   componentDidMount() {
     // Get animal name from API
-    this.getAnimalName(this.state.qs);
+    this.getAnimalData(this.state.qs);
 
     // If we have an image url load it
     if (this.animalImg) {
@@ -116,7 +128,7 @@ class Animal extends React.Component<{}> {
     this.setState({ animalExists: false });
   }
 
-  getAnimalName(parsedArgs) {
+  getAnimalData(parsedArgs) {
     if (
       parsedArgs.animal1 === parsedArgs.animal2 &&
       parsedArgs.animal2 === parsedArgs.animal3
@@ -156,6 +168,10 @@ class Animal extends React.Component<{}> {
       });
   }
 
+  playAnimalSound() {
+    this.audio.play();
+  }
+
   render() {
     const shareUrl = window.location.href;
     const title = this.state.animalNameText;
@@ -192,6 +208,7 @@ class Animal extends React.Component<{}> {
                   />
                   <div className="audio-div">
                     <audio
+                      ref={ele => (this.audio = ele)}
                       controls
                       src={this.state.audioUrl}
                       style={{
@@ -200,35 +217,45 @@ class Animal extends React.Component<{}> {
                     />
                   </div>
                 </AnimalContainer>
+                <AudioButton
+                  className="valign-wrapper"
+                  onClick={this.playAnimalSound.bind(this)}
+                >
+                  <AudioButtonText>
+                    Hear me {this.state.animalVerb}
+                  </AudioButtonText>
+                </AudioButton>
               </div>
               <div className="row">
                 <div className="col s12 m8 offset-m2">
-                  <Text className="col s8 clearfix center-align">
+                  <Text className="col s12 clearfix center-align">
                     {this.state.animalFactText}
                   </Text>
-                  <div className="col s4">
-                    <FacebookShareButton
-                      url={shareUrl}
-                      quote={title}
-                      className="share-button"
-                    >
-                      <FacebookIcon size={32} round />
-                    </FacebookShareButton>
-                    <TwitterShareButton
-                      url={shareUrl}
-                      title={title}
-                      className="share-button"
-                    >
-                      <TwitterIcon size={32} round />
-                    </TwitterShareButton>
-                    <GooglePlusShareButton
-                      url={shareUrl}
-                      className="share-button"
-                    >
-                      <GooglePlusIcon size={32} round />
-                    </GooglePlusShareButton>
-                  </div>
                 </div>
+              </div>
+              <div className="row">
+                <ShareContainer>
+                  <FacebookShareButton
+                    url={shareUrl}
+                    quote={title}
+                    className="share-button"
+                  >
+                    <FacebookIcon size={32} round />
+                  </FacebookShareButton>
+                  <TwitterShareButton
+                    url={shareUrl}
+                    title={title}
+                    className="share-button"
+                  >
+                    <TwitterIcon size={32} round />
+                  </TwitterShareButton>
+                  <GooglePlusShareButton
+                    url={shareUrl}
+                    className="share-button"
+                  >
+                    <GooglePlusIcon size={32} round />
+                  </GooglePlusShareButton>
+                </ShareContainer>
               </div>
             </div>
           </Container>

@@ -9,6 +9,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import history from '../../history';
+import Buttons from '../Elements/Buttons';
 
 const Container = styled.div`
   position: fixed;
@@ -17,27 +18,8 @@ const Container = styled.div`
   padding: 24px;
 `;
 
-const TitleLink = styled.div`
-  background-color: #517363;
-  background-image: url('/static/img/waves.png');
-  background-size: cover;
-  background-repeat: repeat-x;
-  width: 252px;
-  height: 50px;
-  border-radius: 30px;
-  cursor: pointer;
-  z-index: 10;
-  margin-right: 10px;
-  margin-bottom: 10px;
-`;
-
-const TitleText = styled.span`
-  font-family: 'Nanum Gothic';
-  font-size: 20px;
-  line-height: 23px;
-  color: #ecf2dc;
-  margin: auto;
-`;
+const TitleLink = Buttons.TitleLink();
+const TitleText = Buttons.TitleText();
 
 class Header extends React.Component<{}> {
   goAnimalMixer() {
