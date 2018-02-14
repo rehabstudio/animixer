@@ -106,7 +106,19 @@ class Animal extends React.Component<{}> {
     } else {
       return (
         <div className={!this.state.animalExists ? 'hidden' : 'container'}>
-          <AnimalComponent animalData={this.state.animalData} ref="container" />
+          <div
+            className="row"
+            style={{
+              height: '90vh',
+              top: '75px',
+              position: 'relative'
+            }}
+          >
+            <AnimalComponent
+              animalData={this.state.animalData}
+              ref="container"
+            />
+          </div>
         </div>
       );
     }

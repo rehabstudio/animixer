@@ -7,6 +7,7 @@
 /* @flow */
 import Artyom from 'artyom.js';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 // Compiled with babel in node_modules for build process
 import { ApiAiClient } from '.lib/api-ai-javascript';
@@ -54,7 +55,8 @@ class ChatBox extends React.Component<{}, {}> {
       speak: '',
       speaking: false,
       currentQuery: null,
-      startChat: false
+      startChat: false,
+      audioUrl: null
     };
     this.scrollUp = this.props.scrollUp || function() {};
   }
@@ -187,34 +189,46 @@ class ChatBox extends React.Component<{}, {}> {
     node.appendChild(imageNode);
   }
 
+  addAnimal(cardData, node) {
+    let shareUrl;
+    if (cardData.basic_card.buttons.length > 0) {
+      shareUrl = cardData.basic_card.buttons[0].open_url_action.url;
+      shareUrl = shareUrl.replace('https://animixer.beta.rehab', '');
+    }
+    let animalNode = document.createElement('div');
+    let animalData = {
+      animalName: cardData.basic_card.title,
+      imageUrl: cardData.basic_card.image.url,
+      audioUrl: this.state.audioUrl,
+      shareUrl: shareUrl
+    };
+    node.appendChild(animalNode);
+    ReactDOM.render(
+      <Animal
+        shareEnabled={false}
+        titleEnabled={false}
+        animalData={animalData}
+        onLoad={this.updateScroll.bind(this)}
+      />,
+      animalNode
+    );
+  }
+
   addTextAudio(textData, node) {
     let speech =
       textData.simple_response.ssml || textData.simple_response.text_to_speech;
     let text = document.createElement('p');
-    let audioDiv = document.createElement('div');
-    let audio = document.createElement('audio');
-    let source = document.createElement('source');
     let audioContent = /<audio(.*?)<\/audio>/g.exec(speech);
     let outputText = /<speak>(.*?)<\/speak>/g.exec(speech)[1];
 
     if (audioContent) {
       let audioSrc = /src="(.*?)"/g.exec(audioContent[1])[1];
-      let audioExt = audioSrc.split('.').pop();
-      audio.setAttribute('controls', '');
-      audio.style.width = '100%';
-      source.src = audioSrc;
-      source.setAttribute('type', 'audio/' + audioExt);
-      audioDiv.className = 'col s8 offset-m2';
-
       outputText = outputText.replace(audioContent[0], '');
+      this.setState({ audioUrl: audioSrc });
     }
 
     text.innerHTML = outputText;
-
-    audioDiv.appendChild(audio);
-    audio.appendChild(source);
     node.appendChild(text);
-    node.appendChild(audioDiv);
 
     this.setState({ speak: text.innerHTML });
   }
@@ -226,7 +240,7 @@ class ChatBox extends React.Component<{}, {}> {
       for (let i = 0; i < response.items.length; i++) {
         let item = response.items[i];
         if (item.basic_card !== undefined) {
-          this.addImage(item, node);
+          this.addAnimal(item, node);
         } else if (item.simple_response !== undefined) {
           this.addTextAudio(item, node);
         }

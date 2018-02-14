@@ -10,6 +10,7 @@ import {
 import styled from 'styled-components';
 
 import Buttons from '../Elements/Buttons';
+import history from '../../history';
 import utils from '../../utils';
 
 const Title = styled.h5`
@@ -23,10 +24,8 @@ const Text = styled.p`
 `;
 
 const Container = styled.div`
-  height: 90vh;
   overflow: hidden;
   position: relative;
-  top: 75px;
   color: #4e6174;
   font-family: 'Nanum Gothic';
 `;
@@ -52,11 +51,17 @@ const AnimalContainer = styled.div`
 const AudioButton = Buttons.TitleLink(null, null, 'auto');
 const AudioButtonText = Buttons.TitleText();
 
+const ShareButton = Buttons.TitleLink(null, null, 'auto 5px');
+const ShareButtonText = Buttons.TitleText();
+
 class Animal extends React.Component<{}> {
   constructor(props) {
     super(props);
-    this.shareEnabled = props.shareEnabled || true;
-    this.titleEnabled = props.titleEnabled || false;
+    this.shareEnabled =
+      props.shareEnabled === undefined ? true : props.shareEnabled;
+    this.titleEnabled =
+      props.titleEnabled === undefined ? true : props.titleEnabled;
+    this.onLoad = props.onLoad || function() {};
   }
 
   componentWillReceiveProps(newProps) {
@@ -80,10 +85,15 @@ class Animal extends React.Component<{}> {
 
   handleImageLoaded() {
     this.setState({ animalExists: true });
+    this.onLoad();
   }
 
   handleImageErrored() {
     this.setState({ animalExists: false });
+  }
+
+  goToShareUrl() {
+    history.push(this.props.animalData.shareUrl);
   }
 
   render() {
@@ -94,7 +104,7 @@ class Animal extends React.Component<{}> {
         : '';
 
     return (
-      <Container className="row">
+      <Container>
         <div className={this.titleEnabled ? '' : 'hidden'}>
           <Title>Congratulations</Title>
           <Text>You have just discovered the mysterious</Text>
@@ -132,16 +142,30 @@ class Animal extends React.Component<{}> {
                 />
               </div>
             </AnimalContainer>
-            <AudioButton
-              className="valign-wrapper"
-              onClick={this.playAnimalSound.bind(this)}
-            >
-              <AudioButtonText>
-                Hear me {this.props.animalData.animalVerb}
-              </AudioButtonText>
-            </AudioButton>
+            <div style={{ width: 'fit-content', margin: 'auto' }}>
+              <AudioButton
+                className="valign-wrapper left"
+                onClick={this.playAnimalSound.bind(this)}
+              >
+                <AudioButtonText>
+                  Hear me {this.props.animalData.animalVerb}
+                </AudioButtonText>
+              </AudioButton>
+              <ShareButton
+                className={
+                  this.props.animalData.shareUrl
+                    ? 'valign-wrapper left'
+                    : 'hidden'
+                }
+                onClick={this.goToShareUrl.bind(this)}
+              >
+                <ShareButtonText>Share</ShareButtonText>
+              </ShareButton>
+            </div>
           </div>
-          <div className="row">
+          <div
+            className={this.props.animalData.animalFactText ? 'row' : 'hidden'}
+          >
             <div className="col s12 m8 offset-m2">
               <Text className="col s12 clearfix center-align">
                 {this.props.animalData.animalFactText}
