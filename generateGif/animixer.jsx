@@ -247,13 +247,20 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   var headMarker = getLayers(bodyComp, 'x_' + body + '_head', 'startsWith')[0];
   var tailMarker = getLayers(bodyComp, 'x_' + body + '_tail', 'startsWith')[0];
   var markerPos;
+  
+  var headOnTop = headLayer.name.endsWith('_ontop');
 
   // Copy layers to render comp
   bgLayer.copyToComp(renderComp);
-  headLayer.copyToComp(renderComp);
+  if(!headOnTop) {
+      headLayer.copyToComp(renderComp);
+  }
   legsLayer.copyToComp(renderComp);
   tailLayer.copyToComp(renderComp);
   bodyLayer.copyToComp(renderComp);
+  if(headOnTop) {
+      headLayer.copyToComp(renderComp);
+  }
 
   // Get render layers
   var renderBGLayer = getLayers(renderComp, 'bg', 'startsWith')[0];

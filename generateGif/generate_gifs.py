@@ -294,11 +294,11 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None):
     blobs = [b.name for b in bucket.list_blobs()]
 
     print('Uploading {} files to cloud'.format(len(file_paths)))
-    for gif in tqdm(file_paths, position=position, desc='Process: {}'.format(position)):
+    for file_path in tqdm(file_paths, position=position, desc='Process: {}'.format(position)):
         try:
-            file_name = gif.split(SEPARATOR)[-1]
+            file_name = file_path.split(SEPARATOR)[-1]
             if folder:
-                blob_name = os.path.join(folder, file_name)
+                blob_name = '/'.join([folder, file_name])
             else:
                 blob_name = file_name
                 
@@ -306,10 +306,10 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None):
                 continue
             
             blob = bucket.blob(blob_name)
-            blob.upload_from_filename(gif)
+            blob.upload_from_filename(file_path)
             blob.make_public()
         except Exception as e:
-            print('Error: unable to upload file: {}'.format(gif))
+            print('Error: unable to upload file: {}'.format(file_path))
             print(str(e))
             continue
 
@@ -331,8 +331,8 @@ def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None):
 
 
 if __name__ == '__main__':
+    generate_tiffs_ae(SKIP_EXISTING)
     thumb_nails = generate_thumbnails(SKIP_EXISTING)
-    #generate_tiffs_ae(SKIP_EXISTING)
     gif_paths = generate_gifs(SKIP_EXISTING)
     if ASYNC:
         async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
