@@ -6,7 +6,7 @@ import math
 from multiprocessing import Pool
 import os
 import subprocess
-from subprocess import STDOUT, check_output
+from subprocess import CalledProcessError, STDOUT, check_output
 from sys import platform
 import shutil
 
@@ -38,8 +38,8 @@ THUMBNAILS_FOLDER = os.path.join(ROOT_DIR, 'thumbnails')
 ASYNC = True
 CLOUD_BUCKET = 'animixer-1d266.appspot.com'
 MAX_PROCESS = 5
-SKIP_EXISTING = False
-ANIMAL_LIST = [
+SKIP_EXISTING = True
+ANIMAL_LIST = sorted([
     'antelope',
     'buffalo',
     'bunny',
@@ -70,7 +70,7 @@ ANIMAL_LIST = [
     'warthog',
     'wildebeest',
     'zebra',
-]
+])
 
 
 def remove_existing(permutations):
@@ -129,9 +129,19 @@ def run_command(cmd, timeout=1800):
     """
     Run command with timeout to kill it if it runs too long
     """
-    output = check_output(cmd, stderr=STDOUT, timeout=timeout)
-    print("Process completed with output: {}".format(output))
-
+    try:
+        output = check_output(cmd, stderr=STDOUT, timeout=timeout)
+        print("Process completed with output: {}".format(output))
+    except CalledProcessError as e:
+        print("Process completed with output: {}".format(str(e.args)))
+    except Exception as e:
+        try:
+            print("Process failed: {} retrying".format(str(e)))
+            output = check_output(cmd, stderr=STDOUT, timeout=timeout)
+            print("Process completed with output: {}".format(output))
+        except Exception as e:
+            print("Processing failed 2nd time skipping")
+    
 
 def generate_tiffs_ae(skip_existing=True):
     """
@@ -141,7 +151,7 @@ def generate_tiffs_ae(skip_existing=True):
     permutations_file = None
     number_animals = 30
     permutations = generate_permuations(number_animals)
-    batch_size = 500
+    batch_size = 50
     jobs = math.ceil(len(permutations) / batch_size)
 
     # Batch render animals and restart AE between batches
@@ -156,7 +166,7 @@ def generate_tiffs_ae(skip_existing=True):
                 '%s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\', \'%s\')"' % (
                     FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE, IMAGE_FOLDER))
 
-            run_command(cmd, (batch_size * 8))
+            run_command(cmd, (batch_size * 20))
         else:
             script = (
                 "var scriptPath = '%s' + '/' + '%s';" +
@@ -170,7 +180,9 @@ def generate_tiffs_ae(skip_existing=True):
                 'C:\Program Files\Adobe\Adobe After Effects CC 2018\Support Files\AfterFX.exe '
                 '-s "%s"' % script)
 
-            run_command(cmd, (batch_size * 8))
+            run_command(cmd, (batch_size * 20))
+
+        thumb_nails = generate_thumbnails(skip_existing)
 
 
 def generate_gifs(skip_existing=True):
@@ -276,22 +288,23 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None):
     """
     Upload file paths to cloud bucket defined in globals
     """
-    #print('Starting Upload to cloud')
     client = storage.Client()
     bucket = client.get_bucket(CLOUD_BUCKET)
     #print('Getting list of files from server')
     blobs = [b.name for b in bucket.list_blobs()]
 
-    #print('Uploading {} files to cloud'.format(len(file_paths)))
+    print('Uploading {} files to cloud'.format(len(file_paths)))
     for gif in tqdm(file_paths, position=position, desc='Process: {}'.format(position)):
         try:
             file_name = gif.split(SEPARATOR)[-1]
-            if file_name in blobs and skip_existing:
-                continue
             if folder:
                 blob_name = os.path.join(folder, file_name)
             else:
                 blob_name = file_name
+                
+            if blob_name in blobs and skip_existing:
+                continue
+            
             blob = bucket.blob(blob_name)
             blob.upload_from_filename(gif)
             blob.make_public()
@@ -318,13 +331,12 @@ def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None):
 
 
 if __name__ == '__main__':
-    skip_existing = True
-    generate_tiffs_ae(skip_existing)
-    thumb_nails = generate_thumbnails(skip_existing)
-    #gif_paths = generate_gifs(skip_existing)
-    #if ASYNC:
-    #    async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
-    #    async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
-    #else:
-    #    upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
-    #    upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
+    thumb_nails = generate_thumbnails(SKIP_EXISTING)
+    #generate_tiffs_ae(SKIP_EXISTING)
+    gif_paths = generate_gifs(SKIP_EXISTING)
+    if ASYNC:
+        async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
+        async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
+    else:
+        upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
+        upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
