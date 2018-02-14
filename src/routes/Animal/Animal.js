@@ -12,6 +12,7 @@ import {
 } from 'react-share';
 
 import ErrorPage from '../ErrorPage';
+import utils from '../../utils';
 
 const Title = styled.h5`
   text-align: center;
@@ -22,8 +23,8 @@ const Text = styled.p`
 `;
 
 const Container = styled.div`
-  height: 75vh;
-  overflow-y: auto;
+  height: 80vh;
+  overflow: hidden;
   position: relative;
   top: 75px;
   color: #4e6174;
@@ -46,10 +47,6 @@ const AnimalContainer = styled.div`
 const APIHost = window.location.href.startsWith('http://localhost')
   ? 'http://localhost:5000/animixer-1d266/us-central1'
   : 'https://us-central1-animixer-1d266.cloudfunctions.net';
-
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
 
 class Animal extends React.Component<{}> {
   constructor(props) {
@@ -173,7 +170,7 @@ class Animal extends React.Component<{}> {
             <Text>You have just discovered the mysterious</Text>
             <div style={{ textAlign: 'center' }}>
               <AnimalText className="card-panel text-darken-2 hoverable bring-front margins">
-                {capitalizeFirstLetter(this.state.animalName)}
+                {utils.capitalizeFirstLetter(this.state.animalName)}
               </AnimalText>
             </div>
             <div

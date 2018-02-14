@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import Gallery from 'react-grid-gallery';
 import rp from 'request-promise';
 
+import utils from '../../utils';
 import history from '../../history';
 
 const Title = styled.h5`
@@ -106,15 +107,16 @@ class Mixipedia extends React.Component<{}> {
     return rp(postOptions).then(resp => {
       let imagesData = resp.body;
       let imageKeys = Object.keys(imagesData);
-      let images = imageKeys.map(function(imageKey) {
+      let images = imageKeys.map(imageKey => {
         let image = imagesData[imageKey];
+        let animalName = utils.capitalizeFirstLetter(image.name);
         return {
           src: image.gif_url,
           thumbnail: image.gif_url,
           thumbnailWidth: 320,
           thumbnailHeight: 174,
-          thumbnailCaption: image.name,
-          caption: image.name,
+          thumbnailCaption: animalName,
+          caption: animalName,
           data: image
         };
       });
