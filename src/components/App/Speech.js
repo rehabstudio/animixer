@@ -66,7 +66,6 @@ class Speech extends React.Component<{}> {
   }
 
   toggleSpeech() {
-    this.state.enabled;
     if (this.state.enabled) {
       this.icon.innerHTML = 'volume_mute';
       this.setState({ enabled: false });

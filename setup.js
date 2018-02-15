@@ -62,17 +62,3 @@ if (!text.includes('babel-plugin-transform-export-extensions')) {
     throw new Error(`Failed to inject babel-plugin-transform-export-extensions in ${file}.`); // prettier-ignore
   }
 }
-
-//
-// Download the GraphQL schema
-// -----------------------------------------------------------------------------
-if (process.argv.includes('--download-schema')) {
-  file = fs.createWriteStream('./src/schema.graphql');
-  https.get('https://graphql-demo.kriasoft.com/schema', resp => {
-    if (resp.statusCode === 200) {
-      resp.pipe(file);
-    } else {
-      throw new Error('Failed to download the schema.');
-    }
-  });
-}

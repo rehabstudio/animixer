@@ -53,10 +53,6 @@ const FadeBottom = styled.div`
 `;
 
 class Background extends React.Component<{}> {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <BackgroundContainer>

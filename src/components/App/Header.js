@@ -11,10 +11,17 @@ import styled from 'styled-components';
 import history from '../../history';
 import Buttons from '../Elements/Buttons';
 
-const Container = styled.div`
+const LHSContainer = styled.div`
   position: fixed;
   top: 0;
   left: 0;
+  padding: 24px;
+`;
+
+const RHSContainer = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
   padding: 24px;
 `;
 
@@ -32,24 +39,28 @@ class Header extends React.Component<{}> {
 
   render() {
     return (
-      <Container className="row">
-        <div>
+      <div className={this.props.hide ? 'hidden' : ''}>
+        <LHSContainer className="row">
+          <div>
+            <TitleLink
+              className="left valign-wrapper"
+              innerRef={ele => (this.mixipediaDiv = ele)}
+              onClick={this.goMixipedia.bind(this)}
+            >
+              <TitleText>Mixipedia</TitleText>
+            </TitleLink>
+          </div>
+        </LHSContainer>
+        <RHSContainer>
           <TitleLink
-            className="left valign-wrapper"
+            className="right valign-wrapper"
             innerRef={ele => (this.mixipediaDiv = ele)}
             onClick={this.goAnimalMixer.bind(this)}
           >
             <TitleText>Animal Mixer</TitleText>
           </TitleLink>
-          <TitleLink
-            className="left valign-wrapper"
-            innerRef={ele => (this.mixipediaDiv = ele)}
-            onClick={this.goMixipedia.bind(this)}
-          >
-            <TitleText>Mixipedia</TitleText>
-          </TitleLink>
-        </div>
-      </Container>
+        </RHSContainer>
+      </div>
     );
   }
 }

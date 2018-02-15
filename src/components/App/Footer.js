@@ -9,10 +9,18 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Container = styled.div`
+const RHSContainer = styled.div`
   position: fixed;
   bottom: 0;
   right: 0;
+  padding: 24px;
+  color: rgba(0, 0, 0, 1);
+`;
+
+const LHSContainer = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
   padding: 24px;
   color: rgba(0, 0, 0, 1);
 `;
@@ -43,12 +51,17 @@ const Separator = styled.span`
 class Footer extends React.Component<{}> {
   render() {
     return (
-      <Container>
-        <Copyright css="padding-right: 0.5em">&copy; 2018-present</Copyright>
-        <ExtLink href="https://beta.rehab/">Rehab</ExtLink>
-        <Separator>|</Separator>
-        <ExtLink href="http://beta.rehab/terms">Terms & Conditions</ExtLink>
-      </Container>
+      <div className={this.props.hide ? 'hidden' : ''}>
+        <LHSContainer>
+          <img src="/static/img/voice_experiment.png" />
+        </LHSContainer>
+        <RHSContainer>
+          <Copyright css="padding-right: 0.5em">&copy; 2018-present</Copyright>
+          <ExtLink href="https://beta.rehab/">Rehab</ExtLink>
+          <Separator>|</Separator>
+          <ExtLink href="http://beta.rehab/terms">Terms & Conditions</ExtLink>
+        </RHSContainer>
+      </div>
     );
   }
 }

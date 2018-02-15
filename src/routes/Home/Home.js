@@ -8,7 +8,6 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import Card from 'material-ui/Card';
 import Welcome from '../../components/App/Welcome';
 import ChatBox from '../../components/App/ChatBox';
 
@@ -23,11 +22,6 @@ const Container = styled.div`
   margin: 0 auto;
 `;
 
-const Content = styled(Card)`
-  padding: 1em 2em;
-  margin: 2em 0;
-`;
-
 const token = window.location.href.startsWith('http://localhost')
   ? '1966938d12d44294989f5dae8ceae940' // local
   : '35806a855ec547b28ce01e07815569e4'; // prod
@@ -39,6 +33,14 @@ class Home extends React.Component<{}> {
       accessToken: token,
       startChat: false
     };
+  }
+
+  componentDidMount() {
+    this.hideHeader(true);
+  }
+
+  hideHeader(hide) {
+    window.dispatchEvent(new CustomEvent('hideHeader', { detail: hide }));
   }
 
   clearAnimation() {
@@ -55,6 +57,7 @@ class Home extends React.Component<{}> {
     this.setState({
       startChat: false
     });
+    this.hideHeader(true);
   }
 
   goToChat() {
@@ -63,6 +66,7 @@ class Home extends React.Component<{}> {
     this.setState({
       startChat: true
     });
+    this.hideHeader(false);
   }
 
   render() {

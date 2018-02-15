@@ -21,12 +21,34 @@ const Container = styled.div`
 `;
 
 class App extends React.Component<{}> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hideHeader: true,
+      hideFooter: false
+    };
+  }
+
   componentDidMount() {
     window.document.title = this.props.route.title;
+    window.addEventListener('hideHeader', this.hideHeader.bind(this));
+    window.addEventListener('hideFooter', this.hideFooter.bind(this));
   }
 
   componentDidUpdate() {
     window.document.title = this.props.route.title;
+  }
+
+  hideHeader(event) {
+    this.setState({
+      hideHeader: event.detail
+    });
+  }
+
+  hideFooter(event) {
+    this.setState({
+      hideFooter: event.detail
+    });
   }
 
   render() {
@@ -34,8 +56,8 @@ class App extends React.Component<{}> {
       <MuiThemeProvider theme={theme}>
         <Background />
         <Container>{this.props.route.body}</Container>
-        <Header />
-        <Footer />
+        <Header hide={this.state.hideHeader} />
+        <Footer hide={this.state.hideFooter} />
       </MuiThemeProvider>
     );
   }
