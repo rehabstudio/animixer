@@ -23,15 +23,23 @@ const RHSContainer = styled.div`
   position: fixed;
   top: 0;
   right: 0;
-  padding: 24px;
+  padding: 15px;
   cursor: pointer;
+
+  @media (max-width: 600px) {
+    padding: 20px;
+  }
 `;
 
 const AnimixerImg = styled.img`
   width: 150px;
+
+  @media (max-width: 600px) {
+    width: 100px;
+  }
 `;
 
-const TitleLink = Buttons.TitleLink();
+const TitleLink = Buttons.TitleLink(null, null, null, ``);
 const TitleText = Buttons.TitleText();
 
 class Header extends React.Component<{}> {

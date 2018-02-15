@@ -23,9 +23,17 @@ const Container = styled.div`
 class App extends React.Component<{}> {
   constructor(props) {
     super(props);
+    let hideHeader = null;
+    let hideFooter = null;
+
+    if (this.props.location.pathname !== '/') {
+      hideHeader = false;
+      hideFooter = false;
+    }
+
     this.state = {
-      hideHeader: null,
-      hideFooter: null
+      hideHeader: hideHeader,
+      hideFooter: hideFooter
     };
   }
 

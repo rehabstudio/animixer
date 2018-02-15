@@ -46,6 +46,20 @@ const ScrollChat = styled.div`
   height: 100%;
 `;
 
+const Chevron = styled.img`
+  @media (max-width: 992px) {
+    visibility: hidden;
+  }
+`;
+
+const InputContainer = styled.div`
+  position: relative;
+
+  @media (max-width: 992px) {
+    bottom: 50px;
+  }
+`;
+
 class ChatBox extends React.Component<{}, {}> {
   constructor(props) {
     super(props);
@@ -298,7 +312,7 @@ class ChatBox extends React.Component<{}, {}> {
         }
       >
         <div className="row" onClick={this.scrollUp}>
-          <img
+          <Chevron
             className="col s4 offset-s4"
             src="/static/img/icon-up.png"
             style={{ height: '50px' }}
@@ -312,7 +326,7 @@ class ChatBox extends React.Component<{}, {}> {
             <div ref={ele => (this.resultDiv = ele)} id="result" />
           </ScrollChat>
         </div>
-        <div className="row">
+        <InputContainer className="row">
           <div className="col s12">
             <InputField>
               <div className="col l10 m8 s6">
@@ -348,7 +362,7 @@ class ChatBox extends React.Component<{}, {}> {
               </div>
             </InputField>
           </div>
-        </div>
+        </InputContainer>
       </Container>
     );
   }

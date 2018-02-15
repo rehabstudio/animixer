@@ -34,11 +34,25 @@ const FadeCss = `
 const LeftDesign = styled.div`
   background: url(/static/img/lhs.png) no-repeat left center fixed;
   ${DesignCss};
+
+  @media (max-width: 992px) {
+    background-position: left -50px center;
+  }
+  @media (max-width: 600px) {
+    background-position: left -135px center;
+  }
 `;
 
 const RightDesign = styled.div`
   background: url(/static/img/rhs.png) no-repeat right center fixed;
   ${DesignCss};
+
+  @media (max-width: 992px) {
+    background-position: right -50px center;
+  }
+  @media (max-width: 600px) {
+    background-position: right -135px center;
+  }
 `;
 
 const FadeTop = styled.div`

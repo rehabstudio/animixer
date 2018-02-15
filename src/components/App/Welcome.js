@@ -15,6 +15,11 @@ const Start = styled.div`
   margin: auto;
   border-radius: 30px;
   cursor: pointer;
+
+  @media (max-width: 600px) {
+    width: 250px;
+    height: 45px;
+  }
 `;
 
 const StartText = styled.span`
@@ -31,6 +36,15 @@ const MicIcon = styled.i`
   margin-left: auto;
 `;
 
+const Logo = styled.img`
+  width: 100%;
+  margin: auto;
+
+  @media (max-width: 600px) {
+    width: 250px;
+  }
+`;
+
 class Welcome extends React.Component<{}> {
   constructor(props) {
     super(props);
@@ -41,7 +55,7 @@ class Welcome extends React.Component<{}> {
     return (
       <WelcomeContainer className="row valign-wrapper">
         <div className="col s10 offset-s1 m6 offset-m3 l4 offset-l4 center-align">
-          <img className="center-align" src="/static/img/logo_low_res.png" />
+          <Logo className="center-align" src="/static/img/logo_low_res.png" />
           <Start
             innerRef={ele => (this.startDiv = ele)}
             onClick={this.scrollDown}

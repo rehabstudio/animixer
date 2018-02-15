@@ -42,16 +42,28 @@ const AnimalText = styled.div`
   border-radius: 20px;
   text-align: center;
   display: inline-block;
+  font-size: 20px;
+  padding: 10px;
+
+  @media (max-width: 600px) {
+    padding: 5px 10px;
+  }
 `;
 
 const AnimalContainer = styled.div`
   padding: 10px;
 `;
 
-const AudioButton = Buttons.TitleLink(null, null, 'auto');
+const buttonMediaCss = `
+  @media (max-width: 600px) {
+    width: 100px;
+  }
+`;
+
+const AudioButton = Buttons.TitleLink(null, null, 'auto', buttonMediaCss);
 const AudioButtonText = Buttons.TitleText();
 
-const ShareButton = Buttons.TitleLink(null, null, 'auto 5px');
+const ShareButton = Buttons.TitleLink(null, null, 'auto 5px', buttonMediaCss);
 const ShareButtonText = Buttons.TitleText();
 
 class Animal extends React.Component<{}> {

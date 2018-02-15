@@ -1,6 +1,7 @@
 import React from 'react';
 import qs from 'query-string';
 import rp from 'request-promise';
+import styled from 'styled-components';
 
 import ErrorPage from '../ErrorPage';
 import { default as AnimalComponent } from '../../components/App/Animal';
@@ -8,6 +9,16 @@ import { default as AnimalComponent } from '../../components/App/Animal';
 const APIHost = window.location.href.startsWith('http://localhost')
   ? 'http://localhost:5000/animixer-1d266/us-central1'
   : 'https://us-central1-animixer-1d266.cloudfunctions.net';
+
+const AnimalContainer = styled.div`
+  height: 90vh;
+  top: 50px;
+  position: relative;
+
+  @media (max-width: 600px) {
+    top: 100px;
+  }
+`;
 
 class Animal extends React.Component<{}> {
   constructor(props) {
@@ -105,19 +116,12 @@ class Animal extends React.Component<{}> {
     } else {
       return (
         <div className={!this.state.animalExists ? 'hidden' : 'container'}>
-          <div
-            className="row"
-            style={{
-              height: '90vh',
-              top: '75px',
-              position: 'relative'
-            }}
-          >
+          <AnimalContainer className="row">
             <AnimalComponent
               animalData={this.state.animalData}
               ref="container"
             />
-          </div>
+          </AnimalContainer>
         </div>
       );
     }
