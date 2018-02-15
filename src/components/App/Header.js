@@ -16,6 +16,7 @@ const LHSContainer = styled.div`
   top: 0;
   left: 0;
   padding: 24px;
+  cursor: pointer;
 `;
 
 const RHSContainer = styled.div`
@@ -23,6 +24,11 @@ const RHSContainer = styled.div`
   top: 0;
   right: 0;
   padding: 24px;
+  cursor: pointer;
+`;
+
+const AnimixerImg = styled.img`
+  width: 150px;
 `;
 
 const TitleLink = Buttons.TitleLink();
@@ -30,16 +36,30 @@ const TitleText = Buttons.TitleText();
 
 class Header extends React.Component<{}> {
   goAnimalMixer() {
-    history.push('/');
+    if (this.props.location && this.props.location.pathname === '/') {
+      window.dispatchEvent(new CustomEvent('reset', { detail: true }));
+    } else {
+      history.push('/');
+    }
   }
 
   goMixipedia() {
     history.push('/mixipedia');
   }
 
+  visiblity() {
+    if (this.props.hide === null) {
+      return 'fadeout';
+    } else if (this.props.hide) {
+      return 'fadeout';
+    } else {
+      return 'fadein';
+    }
+  }
+
   render() {
     return (
-      <div className={this.props.hide ? 'hidden' : ''}>
+      <div className={this.visiblity()}>
         <LHSContainer className="row">
           <div>
             <TitleLink
@@ -51,14 +71,14 @@ class Header extends React.Component<{}> {
             </TitleLink>
           </div>
         </LHSContainer>
-        <RHSContainer>
-          <TitleLink
+        <RHSContainer
+          innerRef={ele => (this.mixipediaDiv = ele)}
+          onClick={this.goAnimalMixer.bind(this)}
+        >
+          <AnimixerImg
+            src="/static/img/logo_low_res.png"
             className="right valign-wrapper"
-            innerRef={ele => (this.mixipediaDiv = ele)}
-            onClick={this.goAnimalMixer.bind(this)}
-          >
-            <TitleText>Animal Mixer</TitleText>
-          </TitleLink>
+          />
         </RHSContainer>
       </div>
     );

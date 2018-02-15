@@ -24,8 +24,8 @@ class App extends React.Component<{}> {
   constructor(props) {
     super(props);
     this.state = {
-      hideHeader: true,
-      hideFooter: false
+      hideHeader: null,
+      hideFooter: null
     };
   }
 
@@ -54,10 +54,10 @@ class App extends React.Component<{}> {
   render() {
     return (
       <MuiThemeProvider theme={theme}>
-        <Background />
+        <Background location={this.props.location} />
         <Container>{this.props.route.body}</Container>
-        <Header hide={this.state.hideHeader} />
-        <Footer hide={this.state.hideFooter} />
+        <Header hide={this.state.hideHeader} location={this.props.location} />
+        <Footer hide={this.state.hideFooter} location={this.props.location} />
       </MuiThemeProvider>
     );
   }

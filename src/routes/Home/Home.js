@@ -37,6 +37,7 @@ class Home extends React.Component<{}> {
 
   componentDidMount() {
     this.hideHeader(true);
+    window.addEventListener('reset', this.reset.bind(this));
   }
 
   hideHeader(hide) {
@@ -44,16 +45,23 @@ class Home extends React.Component<{}> {
   }
 
   clearAnimation() {
-    this.scrollDiv.className = this.scrollDiv.className.replace(
-      'scrollDown',
-      ''
-    );
-    this.scrollDiv.className = this.scrollDiv.className.replace('scrollUp', '');
+    if (this.scrollDiv) {
+      this.scrollDiv.className = this.scrollDiv.className.replace(
+        'scrollDown',
+        ''
+      );
+      this.scrollDiv.className = this.scrollDiv.className.replace(
+        'scrollUp',
+        ''
+      );
+    }
   }
 
   goToWelcome() {
     this.clearAnimation();
-    this.scrollDiv.className += ' scrollDown';
+    if (this.scrollDiv) {
+      this.scrollDiv.className += ' scrollUp';
+    }
     this.setState({
       startChat: false
     });
@@ -62,11 +70,20 @@ class Home extends React.Component<{}> {
 
   goToChat() {
     this.clearAnimation();
-    this.scrollDiv.className += ' scrollUp';
-    this.setState({
-      startChat: true
-    });
+    if (this.scrollDiv) {
+      this.scrollDiv.className += ' scrollDown';
+    }
+    setTimeout(() => {
+      this.setState({
+        startChat: true
+      });
+    }, 1000);
+
     this.hideHeader(false);
+  }
+
+  reset(event) {
+    this.goToWelcome();
   }
 
   render() {

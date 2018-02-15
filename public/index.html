@@ -58,6 +58,8 @@ body {
 }
 .hidden {
   display: none;
+  visibility: hidden;
+  opacity: 0;
 }
 .share-button {
   display: inline-block;
@@ -75,11 +77,11 @@ body {
   margin-right: 25px;
   display: None;
 }
-.scrollUp {
+.scrollDown {
   transform: translateY(-100vh);
   transition: transform 400ms ease-in;
 }
-.scrollDown {
+.scrollUp {
   transform: translateY(0);
   transition: transform 400ms ease-in;
 }
@@ -94,6 +96,24 @@ body {
   border-radius: 10px 10px 0px 10px;
   font-family: "Nanum Gothic";
   font-weight: bold;
+}
+
+.fadein {
+  -webkit-transition: opacity 0.5s ease-out;
+  -moz-transition: opacity 0.5s ease-out;
+  -ms-transition: opacity 0.5s ease-out;
+  -o-transition: opacity 0.5s ease-out;
+  visibility: visible;
+  opacity: 1;
+}
+
+.fadeout {
+  -webkit-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  -moz-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  -ms-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  -o-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  visibility: hidden;
+  opacity: 0;
 }
 
 </style>

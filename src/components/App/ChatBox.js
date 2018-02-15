@@ -82,6 +82,12 @@ class ChatBox extends React.Component<{}, {}> {
       !this.state.startChat
     ) {
       this.startChat();
+    } else if (
+      newProps.startChat !== this.props.startChat &&
+      !newProps.startChat &&
+      this.state.startChat
+    ) {
+      this.stopChat();
     }
   }
 
@@ -102,8 +108,7 @@ class ChatBox extends React.Component<{}, {}> {
       this.createQueryNode(value);
     }
     this.setState({
-      currentQuery: null,
-      startChat: false
+      currentQuery: null
     });
 
     return this.getResponse(value);
@@ -275,9 +280,23 @@ class ChatBox extends React.Component<{}, {}> {
     });
   }
 
+  stopChat() {
+    this.setState({
+      startChat: false
+    });
+    setTimeout(() => {
+      this.resultDiv.innerHTML = '';
+    }, 500);
+  }
+
   render() {
     return (
-      <Container innerRef={ele => (this.chatDiv = ele)} className="container">
+      <Container
+        innerRef={ele => (this.chatDiv = ele)}
+        className={
+          this.state.startChat ? 'container fadein' : 'container fadeout'
+        }
+      >
         <div className="row" onClick={this.scrollUp}>
           <img
             className="col s4 offset-s4"
