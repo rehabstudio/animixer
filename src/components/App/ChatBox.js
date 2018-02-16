@@ -62,13 +62,17 @@ const InputContainer = styled.div`
   @media (max-width: 992px) {
     bottom: 50px;
   }
+
+  @media (max-height: 600px) {
+    bottom: 0px;
+  }
 `;
 
 const ChatBoxContainer = styled.div`
   height: 70vh;
 
   @media (max-height: 600px) {
-    height: 100%;
+    height: 50vh;
   }
 `;
 
