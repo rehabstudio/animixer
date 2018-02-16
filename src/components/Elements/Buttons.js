@@ -18,6 +18,10 @@ function TitleLink(width, height, margin, css) {
     z-index: 10;
     margin: ${margin};
 
+    @media (max-width: 992px) {
+      width: 200px;
+    }
+
     @media (max-width: 600px) {
       width: 150px;
     }

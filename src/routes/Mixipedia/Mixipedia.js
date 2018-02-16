@@ -30,6 +30,10 @@ const Container = styled.div`
   top: 100px;
   color: #4e6174;
   font-family: 'Nanum Gothic';
+
+  @media (max-width: 600px) {
+    height: 70vh;
+  }
 `;
 
 const LoadingSpinner = styled.img`
