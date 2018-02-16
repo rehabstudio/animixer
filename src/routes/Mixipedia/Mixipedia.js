@@ -32,6 +32,14 @@ const Container = styled.div`
   font-family: 'Nanum Gothic';
 `;
 
+const LoadingSpinner = styled.img`
+  visibility: hidden;
+  width: 150px;
+  margin: 0 auto;
+  position: relative;
+  display: block;
+`;
+
 const APIHost = window.location.href.startsWith('http://localhost')
   ? 'http://localhost:5000/animixer-1d266/us-central1'
   : 'https://us-central1-animixer-1d266.cloudfunctions.net';
@@ -81,7 +89,8 @@ class Mixipedia extends React.Component<{}> {
   }
 
   getImageUrl(appendImages) {
-    let limit = 12;
+    let screenHeight = window.innerHeight;
+    let limit = screenHeight > 900 ? 20 : 12;
     let url = APIHost + '/api/mixipedia';
     if (appendImages && this.state.images.length > 0) {
       let lastImage = this.state.images[this.state.images.length - 1];
@@ -103,16 +112,19 @@ class Mixipedia extends React.Component<{}> {
       resolveWithFullResponse: true,
       json: true
     };
+
+    this.spinner.style.visibility = 'visible';
     // make API call to get animals
     return rp(postOptions).then(resp => {
       let imagesData = resp.body;
       let imageKeys = Object.keys(imagesData);
+      let lastImage = this.state.images[this.state.images.length - 1];
       let images = imageKeys.map(imageKey => {
         let image = imagesData[imageKey];
         let animalName = utils.capitalizeFirstLetter(image.name);
         return {
-          src: image.gif_url,
-          thumbnail: image.gif_url,
+          src: image.image_url,
+          thumbnail: image.image_url,
           thumbnailWidth: 320,
           thumbnailHeight: 174,
           thumbnailCaption: animalName,
@@ -121,20 +133,32 @@ class Mixipedia extends React.Component<{}> {
         };
       });
 
+      // Sort data
+      images.sort((a, b) => {
+        return a.data.date_found_inv - b.data.date_found_inv;
+      });
+
+      // Filter data
+      if (lastImage) {
+        images = images.filter(image => {
+          return image.data.date_found_inv > lastImage.data.date_found_inv;
+        });
+      }
+
       if (appendImages) {
-        if (images.length > 1) {
+        if (images) {
           let existingImages = this.state.images;
-          images = images.reverse();
-          images.shift();
           this.setState({
             images: existingImages.concat(images)
           });
         }
       } else {
         this.setState({
-          images: images.reverse()
+          images: images
         });
       }
+
+      this.spinner.style.visibility = 'hidden';
     });
   }
 
@@ -179,6 +203,11 @@ class Mixipedia extends React.Component<{}> {
             ref="gallery"
             tileDescriptionStyle={this.descriptionStyle}
             tileViewportStyle={this.imageStyle}
+          />
+          <LoadingSpinner
+            className="clearfix"
+            innerRef={ele => (this.spinner = ele)}
+            src="/static/img/loading_spinner.gif"
           />
         </Container>
       </div>
