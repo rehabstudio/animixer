@@ -19,7 +19,6 @@ const UNKNOWN_ARGUMENT = 'noun';
  * @return {Promise}        request promise for post request
  */
 function animalFoundPost(context) {
-  console.log('Making call to : ', APIHost);
   return rp({
     uri: APIHost + '/api/mixipedia',
     method: 'POST',

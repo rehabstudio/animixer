@@ -21,8 +21,6 @@ function mixipediaGet(request, response) {
     limit = 10;
   }
 
-  console.log('start: ', start);
-
   database
     .ref('/animals')
     .orderByChild('date_found_inv')
