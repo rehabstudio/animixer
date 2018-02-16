@@ -1,6 +1,6 @@
 process.env.DEBUG = 'actions-on-google:*';
 
-const ENV = process.env.ENV === 'DEV' ? 'dev' : 'prod';
+const ENV = process.env.ENV;
 const config = {
   apiKey: 'AIzaSyB9j98cQ4v_tu7mLr-gClzWxSNTmAOd8es',
   authDomain: 'animixer-1d266.firebaseapp.com',

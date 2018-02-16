@@ -48,7 +48,7 @@ function getImageUrl(context) {
     '_render.gif';
   let imageUrl = `https://storage.googleapis.com/${
     config.storageBucket
-  }/${imageName}`;
+  }/gifs/${imageName}`;
   return imageUrl;
 }
 
@@ -60,7 +60,7 @@ function getAudioUrl(context) {
     [context.animalHead, context.animalBody].sort().join('') + '.wav';
   let audioUrl = `https://storage.googleapis.com/${
     config.storageBucket
-  }/${audioName}`;
+  }/sounds/${audioName}`;
   return audioUrl;
 }
 

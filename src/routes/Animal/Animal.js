@@ -24,7 +24,7 @@ class Animal extends React.Component<{}> {
   constructor(props) {
     super(props);
     const parsed = qs.parse(props.location.search);
-    const imageUrl = this.generateImageUrl(parsed);
+    const imageUrl = this.generateGifUrl(parsed);
     const audioUrl = this.generateAudio(parsed);
     this.state = {
       qs: parsed,
@@ -49,15 +49,15 @@ class Animal extends React.Component<{}> {
   generateAudio(qs) {
     let animals = [qs.animal1, qs.animal2].sort().join('');
     return (
-      'https://storage.googleapis.com/animixer-1d266.appspot.com/' +
+      'https://storage.googleapis.com/animixer-1d266.appspot.com/sounds/' +
       animals +
       '.wav'
     );
   }
 
-  generateImageUrl(qs) {
+  generateGifUrl(qs) {
     return (
-      'https://storage.googleapis.com/animixer-1d266.appspot.com/' +
+      'https://storage.googleapis.com/animixer-1d266.appspot.com/gifs/' +
       qs.animal1 +
       '_' +
       qs.animal2 +
@@ -72,8 +72,12 @@ class Animal extends React.Component<{}> {
       parsedArgs.animal1 === parsedArgs.animal2 &&
       parsedArgs.animal2 === parsedArgs.animal3
     ) {
+      let animalData = this.state.animalData;
+      animalData.animalName = parsedArgs.animal1;
       return this.setState({
-        animalNameText: `You have discovered the ${parsedArgs.animal1}!`
+        animalDiscoverText: `You have discovered the ${parsedArgs.animal1}!`,
+        animalExists: true,
+        animalData: animalData
       });
     }
 

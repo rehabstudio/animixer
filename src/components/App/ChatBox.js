@@ -273,7 +273,9 @@ class ChatBox extends React.Component<{}, {}> {
   }
 
   updateScroll() {
-    this.scrollDiv.scrollTop = this.scrollDiv.scrollHeight;
+    if (this.scrollDiv) {
+      this.scrollDiv.scrollTop = this.scrollDiv.scrollHeight;
+    }
   }
 
   awaitingInput() {
