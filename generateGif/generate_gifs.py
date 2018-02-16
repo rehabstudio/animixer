@@ -241,7 +241,7 @@ def generate_thumbnails(skip_existing=True):
     print('Generating thumbnails')
     for subdir in tqdm(subdirs):
         subdir_name = subdir.split(SEPARATOR)[-1].replace('_render', '_thumbnail')
-        thumbnail_path = os.path.join(ROOT_DIR, 'thumbnails', (subdir_name + '.tif'))
+        thumbnail_path = os.path.join(ROOT_DIR, 'thumbnails', (subdir_name + '.png'))
 
         if(os.path.exists(thumbnail_path) and skip_existing):
             thumbnail_paths.append(thumbnail_path)
@@ -259,8 +259,8 @@ def generate_thumbnails(skip_existing=True):
             img = Image.open(filenames[0])
             wpercent = (basewidth/float(img.size[0]))
             hsize = int((float(img.size[1])*float(wpercent)))
-            img = img.resize((basewidth,hsize), Image.ANTIALIAS)
-            img.save(thumbnail_path)
+            img = img.resize((basewidth,hsize), Image.ANTIALIAS).convert('RGB')
+            img.save(thumbnail_path, format='PNG')
         except Exception as e:
             print('Error: filename {} failed, skipping'.format(filename))
             print(str(e))
