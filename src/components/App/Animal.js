@@ -135,7 +135,7 @@ class Animal extends React.Component<{}> {
             <AnimalContainer className="col s12 m10 offset-m1 image-div">
               <AnimalImg
                 innerRef={ele => (this.animalImg = ele)}
-                className="col s8 offset-s2"
+                className="col s12 m8 offset-m2"
                 style={{
                   maxHeight: '40vh',
                   marginBottom: '10px'

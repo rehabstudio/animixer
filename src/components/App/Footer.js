@@ -39,6 +39,12 @@ const LHSContainer = styled.div`
 
   @media (max-width: 600px) {
     bottom: 66px;
+    padding: 10px;
+  }
+
+  @media (max-height: 600px) {
+    bottom: -50px;
+    padding: 10px;
   }
 `;
 

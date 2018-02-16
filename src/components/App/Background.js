@@ -39,7 +39,7 @@ const LeftDesign = styled.div`
     background-position: left -50px center;
   }
   @media (max-width: 600px) {
-    background-position: left -135px center;
+    background-position: left -150px center;
   }
 `;
 
@@ -51,7 +51,7 @@ const RightDesign = styled.div`
     background-position: right -50px center;
   }
   @media (max-width: 600px) {
-    background-position: right -135px center;
+    background-position: right -175px center;
   }
 `;
 
