@@ -43,10 +43,16 @@ const Input = styled.input`
 
 const ScrollChat = styled.div`
   overflow-y: scroll;
-  height: 70vh;
+  height: 100%;
 
-  @media (max-width: 600px) {
-    height: 65vh;
+  @media (max-width: 992px) {
+    height: 90%;
+  }
+`;
+
+const Chevron = styled.div`
+  @media (max-width: 992px) {
+    visibility: hidden;
   }
 `;
 
@@ -320,7 +326,7 @@ class ChatBox extends React.Component<{}, {}> {
         }
       >
         <div className="row" onClick={this.scrollUp}>
-          <div className="col s4 offset-s4" style={{ height: '50px' }} />
+          <Chevron className="col s4 offset-s4" style={{ height: '50px' }} />
         </div>
         <ChatBoxContainer className="row">
           <ScrollChat
