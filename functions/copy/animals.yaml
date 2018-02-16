@@ -28,11 +28,13 @@ animals:
 verbs:
   antelope: bleet
   buffalo: moo
+  bunny: squeak
   chicken: cock-a-doodle-doo
   crocodile: snap
   dog: bark
   duck: quack
   elephant: trumpet
+  fox: bark
   flamingo: squawk
   frog: ribbit
   giraffe: hum
@@ -41,11 +43,14 @@ verbs:
   hyena: laugh
   leopard: growl
   lion: roar
+  lizard: hiss
   ostrich: squawk
+  pig: oink
   pony: neigh
   puma: growl
   pussycat: meow
   rhino: snuffle
+  sheep: baa
   tiger: growl
   tortoise: mutter
   warthog: oink
@@ -96,6 +101,10 @@ syllables:
     - buff
     - uffa
     - lo
+  bunny:
+    - Rabb
+    - abbi
+    - bit
   chicken:
     - chick
     - ick
@@ -116,6 +125,10 @@ syllables:
     - ele
     - epha
     - phant
+  fox:
+    - F
+    - ox
+    - x
   flamingo:
     - flam
     - ami
@@ -148,10 +161,18 @@ syllables:
     - li
     - i
     - on
+  lizard:
+    - Liz
+    - iza
+    - zard
   ostrich:
     - ostr
     - ich
     - ich
+  pig:
+    - P
+    - ig
+    - g
   pony:
     - p
     - on
@@ -168,6 +189,10 @@ syllables:
     - rhin
     - oçe
     - ros
+  sheep:
+    - Sh
+    - ee
+    - ep
   tiger:
     - ti
     - ige
