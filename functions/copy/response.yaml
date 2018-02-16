@@ -2,12 +2,12 @@ animals_not_valid:
   text: I've never seen an animal with the same head body or legs, would you like to look again?
 
 animals_idential:
-  success_1: Congratulations, you’ve just discovered… ${0} ${1}! There are some amazing mixed up animals here. Let’s see what else is hiding.
-  success_2: There’s something hiding over there. It’s… ${0} ${1}! There are some really unusual animals on this safari. Let’s find a new one.
+  success_1: Congratulations, you’ve just discovered... ${0} ${1}! There are some amazing mixed up animals here. Let’s see what else is hiding.
+  success_2: There’s something hiding over there. It’s... ${0} ${1}! There are some really unusual animals on this safari. Let’s find a new one.
   restart: To start, what head does your animal have?
 
 animal_response:
-  success_1: Congratulations, you’ve found the wild ${0}! This is what it sounds like…
+  success_1: Congratulations, you’ve found the wild ${0}! This is what it sounds like...
   success_2: Congratulations, you’ve just discovered the mysterious ${0}! Hear it ${1}...
   rediscover_1: What an unusual animal. Would you like to discover another one?
   rediscover_2: There are lots more hiding. Would you like to find another animal?

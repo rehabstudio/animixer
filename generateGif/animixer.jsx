@@ -11,7 +11,7 @@
 // ------------------------------------------------------------------
 
 var errorStr = '';
-var rootDir = '~/';
+var rootDir = 'D:/';
 
 String.prototype.trim = function(str) {
   return this.replace(/^\s+|\s+$/gm, '');
@@ -34,27 +34,25 @@ function remove(array, element) {
   array.splice(index, 1);
 }
 
-function permutator(list, maxLen) {
+function permutator(list, maxLen, permutationsFile) {
   // Copy initial values as arrays
-  /**
-        var perm = list.map(function(val) {
-        return [val];
-    });
-    */
-  var permFile = new File(rootDir + 'permutations.json');
-  var existingData;
-  try {
-    permFile.open("r");
-    existingData = JSON.parse(permFile.read());
-    permFile.close();
-  } catch (err) {}
+  if (permutationsFile) {
+    var permFile = new File(permutationsFile);
+    var existingData;
+    try {
+      permFile.open("r");
+      existingData = JSON.parse(permFile.read());
+      permFile.close();
+    } catch (err) {}
 
-  if (existingData) {
-    $.writeln('Using existing permuation data');
-    return existingData;
+    if (existingData) {
+      $.writeln('Using existing permuation data');
+      return existingData;
+    }
   }
 
   var perm = [];
+
   for (var i = 0; i < list.length; i++) {
     perm.push([i]);
   }
@@ -78,12 +76,16 @@ function permutator(list, maxLen) {
     return generate(perm, maxLen, currLen + 1);
   };
   // Start with size 1 because of initial values
-  var permuations = generate(perm, maxLen, 1);
-  var permFile = new File(rootDir + 'permutations.json');
-  permFile.open("w");
-  permFile.write(JSON.stringify({'permuations': permuations}));
-  permFile.close();
-  return permuations;
+  var retArray = generate(perm, maxLen, 1);
+
+  // Render originals
+  for (var i = 0; i < list.length; i++) {
+    retArray.insert([
+      i, i, i
+    ], 0);
+  }
+
+  return retArray;
 };
 
 // ------------------------------------------------------------------
@@ -139,72 +141,6 @@ function renderClear(app, comps) {
     var comp = comps.shift();
     comp.remove();
   }
-}
-
-function renderAnimals() {
-  //app.beginUndoGroup('XXX');
-
-  // Get all walk comps
-  var walkComps = getComps('_walk');
-  errorStr = '';
-  var batchSize = 50;
-  var batch = 0;
-  var skipExisting = true;
-
-  // While there are walk comps to process
-  while (walkComps.length > 0) {
-
-    // Generate all possible combinations for target comp
-    var permutations = permutator(walkComps, 3);
-    // Render original
-    permutations.insert([
-      0, 0, 0
-    ], 0);
-    var comps = [];
-
-    for (var i = 0; i < permutations.length; i++) {
-      try {
-        var walk_cmp_1 = walkComps[permutations[i][0]];
-        var walk_cmp_2 = walkComps[permutations[i][1]];
-        var walk_cmp_3 = walkComps[permutations[i][2]];
-        var renderCompItem = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, skipExisting);
-        if (renderCompItem) {
-          $.writeln('Composed animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
-          comps.push(renderCompItem[0]);
-          batch++;
-        } else {
-          $.writeln('Skipping animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
-        }
-
-      } catch (err) {
-        errorStr += 'Error missing element / badly named element, skipping animal.\n';
-        errorStr += 'Error: ' + err + '\n';
-        $.writeln(errorStr);
-      }
-
-      if (batch >= batchSize) {
-        renderClear(app, comps);
-        batch = 0;
-        comps = [];
-      }
-    }
-
-    // remove target comp from list of comps
-    walkComps.shift();
-  }
-
-  renderClear(app, comps);
-
-  // Show errors
-  if (errorStr) {
-    errorStr = 'Error Report:\n' + errorStr;
-    $.writeln(errorStr);
-    alert(errorStr);
-  }
-
-  $.writeln('Render animals complete');
-
-  //app.endUndoGroup();
 }
 
 function getMarkerWidth(markers) {
@@ -274,31 +210,26 @@ function renderComposition(renderComp, folderPath, filepath) {
 /**
  * Move currently displayed Render layers to correct places then render this comp
  */
-function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
+function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   // Create render comp for animal
-  skipExisting = skipExisting || false;
   var head = headComp.name.replace('_walk', '');
   var body = bodyComp.name.replace('_walk', '');
   var tail = bodyComp.name.replace('_tail', '');
   var legs = legsComp.name.replace('_walk', '');
   var compName = head + '_' + body + '_' + legs + '_render';
   var existing = getComps(compName)[0];
-  var folderName = 'Animixes';
-  var folderPath = rootDir + folderName + '/' + compName;
+  var foldersPath = outputPath || rootDir + 'Animixes';
+  var folderPath = foldersPath + '/' + compName;
   var filepath = folderPath + '/' + compName;
-
-  // Skip if files already exist
-  if (skipExisting && fileExists(folderPath + '/' + compName + '_00000.tif')) {
-    return;
-  }
+  var AEFolderName = 'Animixes';
 
   if (existing) {
     existing.remove();
   }
 
-  var renderFolder = getFolder(folderName)[0];
+  var renderFolder = getFolder(AEFolderName)[0];
   if (renderFolder === undefined) {
-    renderFolder = app.project.items.addFolder(folderName);
+    renderFolder = app.project.items.addFolder(AEFolderName);
   }
   var renderComp = app.project.items.addComp(compName, 3200, 1800, 1, 0.7, 25);
   renderComp.parentFolder = renderFolder;
@@ -316,13 +247,20 @@ function renderAnimalComp(headComp, bodyComp, legsComp, skipExisting) {
   var headMarker = getLayers(bodyComp, 'x_' + body + '_head', 'startsWith')[0];
   var tailMarker = getLayers(bodyComp, 'x_' + body + '_tail', 'startsWith')[0];
   var markerPos;
+  
+  var headOnTop = headLayer.name.endsWith('_ontop');
 
   // Copy layers to render comp
   bgLayer.copyToComp(renderComp);
-  headLayer.copyToComp(renderComp);
+  if(!headOnTop) {
+      headLayer.copyToComp(renderComp);
+  }
   legsLayer.copyToComp(renderComp);
   tailLayer.copyToComp(renderComp);
   bodyLayer.copyToComp(renderComp);
+  if(headOnTop) {
+      headLayer.copyToComp(renderComp);
+  }
 
   // Get render layers
   var renderBGLayer = getLayers(renderComp, 'bg', 'startsWith')[0];
@@ -439,8 +377,88 @@ function scaleAllCameraZooms(theComp, scaleBy) {
   }
 }
 
+/**
+ * Render Animals in AE, will load a project file if given and then look
+ * for comps to build animals with then render, will quit after completion.
+ *
+ * @param  {string} projectPath      Optional will load project before rendering
+ * @param  {list} permutationsFile Optional list of list of indexs of animals to load
+                                     for use by external process to batch render animals
+ */
+function renderAnimals(projectPath, permutationsFile, outputPath) {
+  //app.beginUndoGroup('XXX');
+
+  if (projectPath) {
+    var project = new File(projectPath);
+    app.open(project);
+  }
+
+  // Clear cache
+  $.writeln('Clearing cache.');
+  app.purge(PurgeTarget.ALL_CACHES);
+
+  // Get all walk comps
+  var walkComps = getComps('_walk');
+  errorStr = '';
+  var batchSize = 25;
+  var batch = 0;
+  var comps = [];
+
+  // Generate all possible combinations for target comp or load from file
+  var permutations = permutator(walkComps, 3, permutationsFile);
+
+  // While there are walk comps to process
+  while (permutations.length > 0) {
+    try {
+      var walk_cmp_1 = walkComps[permutations[0][0]];
+      var walk_cmp_2 = walkComps[permutations[0][1]];
+      var walk_cmp_3 = walkComps[permutations[0][2]];
+      var renderCompItem = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, outputPath);
+      if (renderCompItem) {
+        $.writeln('Composed animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
+        comps.push(renderCompItem[0]);
+        batch++;
+      } else {
+        $.writeln('Skipping animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
+      }
+
+    } catch (err) {
+      errorStr += 'Error missing element / badly named element, skipping animal.\n';
+      errorStr += 'Error: ' + err + '\n';
+      $.writeln(errorStr);
+    }
+
+    if (batch >= batchSize) {
+      renderClear(app, comps);
+      batch = 0;
+      comps = [];
+      // Clear cache
+      $.writeln('Clearing cache.');
+      app.purge(PurgeTarget.ALL_CACHES);
+    }
+
+    // remove target permutation from list of permutations
+    permutations.shift();
+  }
+
+  renderClear(app, comps);
+
+  // Show errors
+  if (errorStr) {
+    errorStr = 'Error Report:\n' + errorStr;
+    $.writeln(errorStr);
+    alert(errorStr);
+  }
+
+  $.writeln('Render animals complete');
+
+  //app.endUndoGroup();
+  app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);
+  app.quit();
+}
+
 // ------------------------------------------------------------------
 // Main
 // ------------------------------------------------------------------
 
-renderAnimals();
+//renderAnimals(undefined, 'C:\\Users\\rehabstudio\\Projects\\animixer\\generateGif\\ae_project\\permutations.json', undefined);

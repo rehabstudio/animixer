@@ -47,10 +47,16 @@ class Animal extends React.Component<{}> {
   }
 
   generateAudio(qs) {
-    let animals = [qs.animal1, qs.animal2].sort().join('');
+    let animal;
+    if (qs.animal1 === qs.animal2 && qs.animal2 === qs.animal3) {
+      animal = qs.animal1;
+    } else {
+      animal = [qs.animal1, qs.animal2].sort().join('');
+    }
+
     return (
       'https://storage.googleapis.com/animixer-1d266.appspot.com/sounds/' +
-      animals +
+      animal +
       '.wav'
     );
   }
