@@ -1,0 +1,81 @@
+facts:
+  - they are afraid of bubbles.
+  - they love the colour ${colour}.
+  - they like wearing fluffy ${clothes}.
+  - their favourite food is ${food}.
+  - they can jump as high as ${height}.
+  - they are the best at hide and seek.
+  - they love to cuddle.
+  - they are always sleepy.
+  - they don’t like heights.
+  - they can play the ${instrament}.
+  - they like to wiggle.
+  - they can do the splits.
+  - they love rainbows.
+  - they like to roller skate.
+  - they are really ticklish.
+  - they can’t keep secrets.
+  - they can turn invisible.
+  - they can ${action} really really fast.
+  - they can say the alphabet backwards.
+  - they can hula hoop.
+  - they live in a ${place} .
+  - they like long walks on the beach.
+  - they love to whistle.
+  - they can hop on one leg all day.
+  - they smell like ${fruit}.
+  - they have glittery poo.
+  - they are scared of the dark.
+  - they hiccup out of their ${orifice}.
+  - they have sticky ${colour} bogies.
+  - they have x-ray vision.
+
+colour:
+  - purple
+  - blue
+  - pink
+  - green
+  - yellow
+  - orange
+
+clothes:
+  - hats
+  - shoes
+  - pants
+
+food:
+  - ice cream
+
+height:
+  - a tree
+  - a house
+  - a rocket
+
+instrament:
+  - saxophone
+  - piano
+  - guitar
+  - kazoo
+
+action:
+  - run
+  - skip
+  - jump
+
+place:
+  - treehouse
+  - bouncy
+  - castle
+  - palace
+
+fruit:
+  - strawberries
+  - blueberries
+  - bananas
+  - pineapples
+  - coconuts
+
+orifice:
+  - butt
+  - nose
+  - ear

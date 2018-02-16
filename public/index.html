@@ -20,7 +20,7 @@ work correctly both with client-side routing and a non-root public URL.
 Learn how to configure a non-root public URL by running `npm run build`.
 -->
 <title>Animixer</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono|Nanum+Gothic">
 <style>
 html,
 body,
@@ -36,14 +36,11 @@ body {
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
 
 <style>
-#placeholder {
-  text-align: center;
-  margin-top: 1.5em;
-}
 .bring-front {
   position: relative;
   z-index: 1;
@@ -61,7 +58,64 @@ body {
 }
 .hidden {
   display: none;
+  visibility: hidden;
+  opacity: 0;
 }
+.share-button {
+  display: inline-block;
+  margin: 10px 5px;
+}
+.image-div {
+  position: relative;
+}
+.audio-div {
+  position: absolute;
+  bottom:25px;
+  right:0;
+  width: 200px;
+  height: 50px;
+  margin-right: 25px;
+  display: None;
+}
+.scrollDown {
+  transform: translateY(-100vh);
+  transition: transform 400ms ease-in;
+}
+.scrollUp {
+  transform: translateY(0);
+  transition: transform 400ms ease-in;
+}
+.response {
+  background-color: #fffef2;
+  border-radius: 10px 10px 10px 0px;
+  font-family: "Nanum Gothic";
+  font-weight: bold;
+}
+.query {
+  background-color: #597a1f;
+  border-radius: 10px 10px 0px 10px;
+  font-family: "Nanum Gothic";
+  font-weight: bold;
+}
+
+.fadein {
+  -webkit-transition: opacity 0.5s ease-out;
+  -moz-transition: opacity 0.5s ease-out;
+  -ms-transition: opacity 0.5s ease-out;
+  -o-transition: opacity 0.5s ease-out;
+  visibility: visible;
+  opacity: 1;
+}
+
+.fadeout {
+  -webkit-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  -moz-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  -ms-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  -o-transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+  visibility: hidden;
+  opacity: 0;
+}
+
 </style>
 </head>
 

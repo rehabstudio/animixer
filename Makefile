@@ -4,6 +4,9 @@ setup:
 run:
 	yarn start
 
+run-functions:
+	ENV=DEV && cd functions && firebase serve --only functions
+
 deploy:
 	yarn build && firebase deploy
 
