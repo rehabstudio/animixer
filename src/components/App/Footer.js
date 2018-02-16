@@ -42,7 +42,7 @@ const LHSContainer = styled.div`
     padding: 10px;
   }
 
-  @media (max-height: 600px) {
+  @media (max-width: 600px) and (max-height: 600px) {
     display: none;
   }
 `;
