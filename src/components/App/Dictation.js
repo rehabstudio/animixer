@@ -2,15 +2,18 @@ import Artyom from 'artyom.js';
 import React from 'react';
 import styled from 'styled-components';
 
+const iconSize = '45px';
+
 const MicIcon = styled.div`
-  background-color: #fff;
-  border: 4px solid black;
-  height: 75px;
+  background-color: #587b14;
+  color: #ecf2dc;
+  height: ${iconSize};
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
-  width: 75px;
+  width: ${iconSize};
   cursor: pointer;
+  flex-shrink: 0;
 `;
 
 class Dictation extends React.Component<{}> {
@@ -61,14 +64,14 @@ class Dictation extends React.Component<{}> {
 
   toggleDictation() {
     if (this.state.recording) {
-      this.icon.innerHTML = 'mic';
+      this.icon.innerHTML = 'mic_off';
       this.stopDictation();
       this.setState({
         recording: false,
         text: this.placeHolderText
       });
     } else {
-      this.icon.innerHTML = 'mic_off';
+      this.icon.innerHTML = 'mic';
       this.startDictation();
       this.setState({ recording: true });
     }
@@ -102,23 +105,18 @@ class Dictation extends React.Component<{}> {
 
   render() {
     return (
-      <div className="col s2">
-        <MicIcon
-          className="valign-wrapper"
-          onClick={this.toggleDictation.bind(this)}
+      <MicIcon
+        className="valign-wrapper"
+        onClick={this.toggleDictation.bind(this)}
+      >
+        <i
+          className="center-align small material-icons"
+          style={{ width: '100%' }}
+          ref={ele => (this.icon = ele)}
         >
-          <i
-            className="center-align medium material-icons"
-            style={{ width: '100%' }}
-            ref={ele => (this.icon = ele)}
-          >
-            mic
-          </i>
-        </MicIcon>
-        <div>
-          <p>Click here to enable microphone</p>
-        </div>
-      </div>
+          mic
+        </i>
+      </MicIcon>
     );
   }
 }

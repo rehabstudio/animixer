@@ -13,33 +13,33 @@ const routes = [
   {
     path: '',
     components: () => [import(/* webpackChunkName: 'home' */ './Home')],
-    render: ({ user, components: [Home] }) => ({
+    render: ({ location, components: [Home] }) => ({
       title: 'Animixer',
-      body: <Home user={user} />
+      body: <Home />
     })
   },
   {
     path: '/animal',
     components: () => [import(/* webpackChunkName: 'animal' */ './Animal')],
-    render: ({ user, location, components: [Animal] }) => ({
+    render: ({ location, components: [Animal] }) => ({
       title: 'Animal • Animixer',
-      body: <Animal user={user} location={location} />
+      body: <Animal location={location} />
     })
   },
   {
     path: '/mixipedia',
     components: () => [import(/* webpackChunkName: 'about' */ './Mixipedia')],
-    render: ({ user, components: [Mixipedia] }) => ({
+    render: ({ location, components: [Mixipedia] }) => ({
       title: 'Mixipedia • Animixer',
-      body: <Mixipedia user={user} />
+      body: <Mixipedia />
     })
   },
   {
     path: '(.*)',
     components: () => [import(/* webpackChunkName: 'error' */ './ErrorPage')],
-    render: ({ user, components: [ErrorPage] }) => ({
+    render: ({ location, components: [ErrorPage] }) => ({
       title: 'Not Found • Animixer',
-      body: <ErrorPage user={user} error={{ status: 404 }} />
+      body: <ErrorPage error={{ status: 404 }} />
     })
   }
 ];
@@ -53,10 +53,9 @@ function resolveRoute(ctx) {
 
   return Promise.all(route.components()).then(components =>
     ctx.render({
-      user: ctx.user,
       location: ctx.location,
+      callbacks: ctx.callbacks,
       route: route.render({
-        user: ctx.user,
         location: ctx.location,
         components: components.map(x => x.default)
       })

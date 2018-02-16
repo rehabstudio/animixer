@@ -11,7 +11,6 @@ import ReactDOM from 'react-dom';
 import firebase from '@firebase/app';
 
 import App from './components/App';
-import auth from './auth';
 import history from './history';
 import routes from './routes';
 import registerServiceWorker from './registerServiceWorker';
@@ -22,7 +21,7 @@ firebase.initializeApp({
   databaseURL: 'https://animixer-1d266.firebaseio.com',
   projectId: 'animixer-1d266',
   storageBucket: 'animixer-1d266.appspot.com',
-  messagingSenderId: '74799871575',
+  messagingSenderId: '74799871575'
 });
 
 const render = props =>
@@ -31,33 +30,21 @@ const render = props =>
       ReactDOM.render(
         <App {...props} />,
         document.getElementById('root'),
-        resolve(props),
+        resolve(props)
       );
     } catch (err) {
       reject(err);
     }
   });
 
-const resolve = promise =>
-  promise.then(({ user, location }) =>
-    routes.resolve({
-      pathname: location.pathname,
-      location,
-      user,
-      render,
-    }),
-  );
+const resolve = location => {
+  routes.resolve({
+    pathname: location.pathname,
+    location,
+    render
+  });
+};
 
-let promise;
-
-auth.onAuthStateChanged(user => {
-  if (!promise) {
-    promise = Promise.resolve({ user, location: history.location });
-    history.listen(location => {
-      promise = resolve(promise.then(x => ({ ...x, location })));
-    });
-  }
-  promise = resolve(promise.then(x => ({ ...x, user })));
-});
-
+resolve(history.location); // InitializeApp
+history.listen(resolve); // Listen for changes on client
 registerServiceWorker();

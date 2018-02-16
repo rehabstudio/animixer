@@ -1,41 +1,24 @@
 import React from 'react';
-import styled from 'styled-components';
 import qs from 'query-string';
 import rp from 'request-promise';
-import {
-  FacebookShareButton,
-  FacebookIcon,
-  GooglePlusShareButton,
-  GooglePlusIcon,
-  TwitterShareButton,
-  TwitterIcon
-} from 'react-share';
+import styled from 'styled-components';
 
 import ErrorPage from '../ErrorPage';
-
-const Container = styled.div`
-  height: calc(100vh - 125px);
-  height: -o-calc(100vh - 125px); /* opera */
-  height: -webkit-calc(100vh - 125px); /* google, safari */
-  height: -moz-calc(100vh - 125px); /* firefox */
-  min-height: 70vh;
-  overflow-y: auto;
-  background-color: white;
-`;
-
-const AnimalImg = styled.img``;
-
-const AnimalText = styled.h5`
-  margin: 10px auto;
-`;
-
-const AnimalContainer = styled.div`
-  padding: 10px;
-`;
+import { default as AnimalComponent } from '../../components/App/Animal';
 
 const APIHost = window.location.href.startsWith('http://localhost')
   ? 'http://localhost:5000/animixer-1d266/us-central1'
   : 'https://us-central1-animixer-1d266.cloudfunctions.net';
+
+const AnimalContainer = styled.div`
+  height: 90vh;
+  top: 50px;
+  position: relative;
+
+  @media (max-width: 600px) {
+    top: 100px;
+  }
+`;
 
 class Animal extends React.Component<{}> {
   constructor(props) {
@@ -44,14 +27,23 @@ class Animal extends React.Component<{}> {
     const imageUrl = this.generateImageUrl(parsed);
     const audioUrl = this.generateAudio(parsed);
     this.state = {
-      animalName: '',
-      animalNameText: '',
-      audioUrl: audioUrl,
-      imageUrl: imageUrl,
-      animalExists: null,
-      mobile: false,
-      qs: parsed
+      qs: parsed,
+      animalData: {
+        audioUrl: audioUrl,
+        imageUrl: imageUrl
+      },
+      animalExists: null
     };
+  }
+
+  componentDidMount() {
+    // Get animal name from API
+    this.getAnimalData(this.state.qs);
+
+    // If we have an image url load it
+    if (this.animalImg) {
+      this.animalImg.src = this.state.imageUrl;
+    }
   }
 
   generateAudio(qs) {
@@ -75,37 +67,7 @@ class Animal extends React.Component<{}> {
     );
   }
 
-  componentDidMount() {
-    // Get animal name from API
-    this.getAnimalName(this.state.qs);
-
-    // If we have an image url load it
-    if (this.animalImg) {
-      this.animalImg.src = this.state.imageUrl;
-    }
-
-    // Add check for mobile size for style
-    window.addEventListener('resize', this.mobileCheck.bind(this));
-    this.mobileCheck();
-  }
-
-  mobileCheck() {
-    if (window.innerWidth <= 600) {
-      this.setState({ mobile: true });
-    } else {
-      this.setState({ mobile: false });
-    }
-  }
-
-  handleImageLoaded() {
-    this.setState({ animalExists: true });
-  }
-
-  handleImageErrored() {
-    this.setState({ animalExists: false });
-  }
-
-  getAnimalName(parsedArgs) {
+  getAnimalData(parsedArgs) {
     if (
       parsedArgs.animal1 === parsedArgs.animal2 &&
       parsedArgs.animal2 === parsedArgs.animal3
@@ -131,13 +93,16 @@ class Animal extends React.Component<{}> {
     let factPromise = rp(animalFactUrl);
     return Promise.all([namePromise, factPromise])
       .then(responses => {
-        let animalNameData = JSON.parse(responses[0]);
-        animalNameData.animalNameText = `You have discovered the ${
-          animalNameData.animalName
+        let animalData = JSON.parse(responses[0]);
+        animalData.animalDiscoverText = `You have discovered the ${
+          animalData.animalName
         }!`;
         let animalFactData = JSON.parse(responses[1]);
-        animalNameData.animalFactText = animalFactData.animalFact;
-        this.setState(animalNameData);
+        animalData.animalFactText = animalFactData.animalFact;
+        this.setState({
+          animalData: animalData,
+          animalExists: true
+        });
       })
       .catch(err => {
         console.log('Error: Unable to retrieve animal name.');
@@ -146,78 +111,18 @@ class Animal extends React.Component<{}> {
   }
 
   render() {
-    const shareUrl = window.location.href;
-    const title = this.state.animalNameText;
-
     if (this.state.animalExists === false) {
       return <ErrorPage error={{ status: 404 }} />;
     } else {
       return (
-        <Container className="container valign-wrapper">
-          <div
-            id="main-wrapper"
-            className={!this.state.animalExists ? 'hidden' : 'valign'}
-            style={{ width: '100%', height: '100%' }}
-          >
-            <div className="row">
-              <AnimalText className="col s12 clearfix center-align">
-                {this.state.animalNameText}
-              </AnimalText>
-            </div>
-            <div className="row">
-              <AnimalContainer className="col s12 m10 offset-m1 image-div">
-                <AnimalImg
-                  innerRef={ele => (this.animalImg = ele)}
-                  className="col s12 responsive-img"
-                  style={{
-                    maxHeight: '55vh',
-                    marginBottom: '10px'
-                  }}
-                  onLoad={this.handleImageLoaded.bind(this)}
-                  onError={this.handleImageErrored.bind(this)}
-                />
-                <div className="audio-div">
-                  <audio
-                    controls
-                    src={this.state.audioUrl}
-                    style={{
-                      width: '100%'
-                    }}
-                  />
-                </div>
-              </AnimalContainer>
-            </div>
-            <div className="row">
-              <div className="col s12 m8 offset-m2">
-                <AnimalText className="col s8 clearfix center-align">
-                  {this.state.animalFactText}
-                </AnimalText>
-                <div className="col s4">
-                  <FacebookShareButton
-                    url={shareUrl}
-                    quote={title}
-                    className="share-button"
-                  >
-                    <FacebookIcon size={32} round />
-                  </FacebookShareButton>
-                  <TwitterShareButton
-                    url={shareUrl}
-                    title={title}
-                    className="share-button"
-                  >
-                    <TwitterIcon size={32} round />
-                  </TwitterShareButton>
-                  <GooglePlusShareButton
-                    url={shareUrl}
-                    className="share-button"
-                  >
-                    <GooglePlusIcon size={32} round />
-                  </GooglePlusShareButton>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Container>
+        <div className={!this.state.animalExists ? 'hidden' : 'container'}>
+          <AnimalContainer className="row">
+            <AnimalComponent
+              animalData={this.state.animalData}
+              ref="container"
+            />
+          </AnimalContainer>
+        </div>
       );
     }
   }

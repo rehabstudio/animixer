@@ -7,20 +7,57 @@
 /* @flow */
 import Artyom from 'artyom.js';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 // Compiled with babel in node_modules for build process
 import { ApiAiClient } from '.lib/api-ai-javascript';
+
+import Animal from './Animal';
 import Dictation from './Dictation';
 import Speech from './Speech';
 
 const ENTER_KEY_CODE = 13;
 
 const Container = styled.div`
-  height: calc(100vh - 180px);
-  height: -o-calc(100vh - 180px); /* opera */
-  height: -webkit-calc(100vh - 180px); /* google, safari */
-  height: -moz-calc(100vh - 180px); /* firefox */
   overflow-y: auto;
+  overflow-x: hidden;
+`;
+
+const InputField = styled.div`
+  border: 1px solid #587b14;
+  border-radius: 34px;
+  background-color: #ffffff;
+  display: flex;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2.5px;
+  padding-bottom: 2.5px;
+`;
+
+const Input = styled.input`
+  font-family: 'Nanum Gothic';
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+`;
+
+const ScrollChat = styled.div`
+  overflow-y: scroll;
+  height: 100%;
+`;
+
+const Chevron = styled.img`
+  @media (max-width: 992px) {
+    visibility: hidden;
+  }
+`;
+
+const InputContainer = styled.div`
+  position: relative;
+
+  @media (max-width: 992px) {
+    bottom: 50px;
+  }
 `;
 
 class ChatBox extends React.Component<{}, {}> {
@@ -31,8 +68,11 @@ class ChatBox extends React.Component<{}, {}> {
       artyom: new Artyom(),
       speak: '',
       speaking: false,
-      currentQuery: null
+      currentQuery: null,
+      startChat: false,
+      audioUrl: null
     };
+    this.scrollUp = this.props.scrollUp || function() {};
   }
 
   componentDidMount() {
@@ -47,6 +87,22 @@ class ChatBox extends React.Component<{}, {}> {
       'keydown',
       this.queryInputKeyDown.bind(this)
     );
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (
+      newProps.startChat !== this.props.startChat &&
+      newProps.startChat &&
+      !this.state.startChat
+    ) {
+      this.startChat();
+    } else if (
+      newProps.startChat !== this.props.startChat &&
+      !newProps.startChat &&
+      this.state.startChat
+    ) {
+      this.stopChat();
+    }
   }
 
   queryInputKeyDown(event) {
@@ -65,10 +121,21 @@ class ChatBox extends React.Component<{}, {}> {
     } else {
       this.createQueryNode(value);
     }
-    let responseNode = this.createResponseNode();
-    this.setState({ currentQuery: null });
+    this.setState({
+      currentQuery: null
+    });
 
-    this.sendText(value)
+    return this.getResponse(value);
+  }
+
+  sendText(text) {
+    return this.state.client.textRequest(text);
+  }
+
+  getResponse(value) {
+    let responseNode = this.createResponseNode();
+
+    return this.sendText(value)
       .then(
         function(response) {
           let result;
@@ -95,14 +162,10 @@ class ChatBox extends React.Component<{}, {}> {
       );
   }
 
-  sendText(text) {
-    return this.state.client.textRequest(text);
-  }
-
   createQueryNode(query) {
     let node = document.createElement('div');
     node.className =
-      'clearfix left-align left card-panel green accent-1 bring-front margins';
+      'query clearfix left-align right white-text card-panel bring-front margins';
     node.innerHTML = query;
     this.resultDiv.appendChild(node);
     return node;
@@ -111,7 +174,7 @@ class ChatBox extends React.Component<{}, {}> {
   createResponseNode() {
     let node = document.createElement('div');
     node.className =
-      'clearfix left-align right card-panel blue-text text-darken-2 hoverable bring-front margins';
+      'response clearfix left-align left card-panel text-darken-2 hoverable bring-front margins';
     node.innerHTML = '...';
     this.resultDiv.appendChild(node);
     this.updateScroll();
@@ -145,34 +208,46 @@ class ChatBox extends React.Component<{}, {}> {
     node.appendChild(imageNode);
   }
 
+  addAnimal(cardData, node) {
+    let shareUrl;
+    if (cardData.basic_card.buttons.length > 0) {
+      shareUrl = cardData.basic_card.buttons[0].open_url_action.url;
+      shareUrl = shareUrl.replace('https://animixer.beta.rehab', '');
+    }
+    let animalNode = document.createElement('div');
+    let animalData = {
+      animalName: cardData.basic_card.title,
+      imageUrl: cardData.basic_card.image.url,
+      audioUrl: this.state.audioUrl,
+      shareUrl: shareUrl
+    };
+    node.appendChild(animalNode);
+    ReactDOM.render(
+      <Animal
+        shareEnabled={false}
+        titleEnabled={false}
+        animalData={animalData}
+        onLoad={this.updateScroll.bind(this)}
+      />,
+      animalNode
+    );
+  }
+
   addTextAudio(textData, node) {
     let speech =
       textData.simple_response.ssml || textData.simple_response.text_to_speech;
     let text = document.createElement('p');
-    let audioDiv = document.createElement('div');
-    let audio = document.createElement('audio');
-    let source = document.createElement('source');
     let audioContent = /<audio(.*?)<\/audio>/g.exec(speech);
     let outputText = /<speak>(.*?)<\/speak>/g.exec(speech)[1];
 
     if (audioContent) {
       let audioSrc = /src="(.*?)"/g.exec(audioContent[1])[1];
-      let audioExt = audioSrc.split('.').pop();
-      audio.setAttribute('controls', '');
-      audio.style.width = '100%';
-      source.src = audioSrc;
-      source.setAttribute('type', 'audio/' + audioExt);
-      audioDiv.className = 'col s8 offset-m2';
-
       outputText = outputText.replace(audioContent[0], '');
+      this.setState({ audioUrl: audioSrc });
     }
 
     text.innerHTML = outputText;
-
-    audioDiv.appendChild(audio);
-    audio.appendChild(source);
     node.appendChild(text);
-    node.appendChild(audioDiv);
 
     this.setState({ speak: text.innerHTML });
   }
@@ -184,7 +259,7 @@ class ChatBox extends React.Component<{}, {}> {
       for (let i = 0; i < response.items.length; i++) {
         let item = response.items[i];
         if (item.basic_card !== undefined) {
-          this.addImage(item, node);
+          this.addAnimal(item, node);
         } else if (item.simple_response !== undefined) {
           this.addTextAudio(item, node);
         }
@@ -198,7 +273,7 @@ class ChatBox extends React.Component<{}, {}> {
   }
 
   updateScroll() {
-    this.chatDiv.scrollTop = this.chatDiv.scrollHeight;
+    this.scrollDiv.scrollTop = this.scrollDiv.scrollHeight;
   }
 
   awaitingInput() {
@@ -212,45 +287,82 @@ class ChatBox extends React.Component<{}, {}> {
     this.setState({ speaking: disable });
   }
 
+  startChat() {
+    this.getResponse('hello');
+    this.setState({
+      startChat: true
+    });
+  }
+
+  stopChat() {
+    this.setState({
+      startChat: false
+    });
+    setTimeout(() => {
+      this.resultDiv.innerHTML = '';
+    }, 500);
+  }
+
   render() {
     return (
-      <Container innerRef={ele => (this.chatDiv = ele)} className="container">
-        <div id="placeholder">
-          <h5>Say “Explore” to start your Animixer safari</h5>
+      <Container
+        innerRef={ele => (this.chatDiv = ele)}
+        className={
+          this.state.startChat ? 'container fadein' : 'container fadeout'
+        }
+      >
+        <div className="row" onClick={this.scrollUp}>
+          <Chevron
+            className="col s4 offset-s4"
+            src="/static/img/icon-up.png"
+            style={{ height: '50px' }}
+          />
         </div>
-        <div id="main-wrapper">
-          <div className="row">
-            <div className="col s12">
-              <div ref={ele => (this.resultDiv = ele)} id="result" />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col s4" />
-            <Dictation
-              artyom={this.state.artyom}
-              userInput={this.userInput.bind(this)}
-              awaitingInput={this.awaitingInput.bind(this)}
-              disable={this.state.speaking}
-            />
-            <Speech
-              artyom={this.state.artyom}
-              text={this.state.speak}
-              speakingCallback={this.disableDictation.bind(this)}
-            />
-          </div>
-          <div className="row">
-            <div className="col s12">
-              <div className="input-field">
-                <input
-                  ref={ele => (this.inputField = ele)}
-                  placeholder="Or type here, ask me something..."
+        <div className="row" style={{ height: '70vh' }}>
+          <ScrollChat
+            className="col s12"
+            innerRef={ele => (this.scrollDiv = ele)}
+          >
+            <div ref={ele => (this.resultDiv = ele)} id="result" />
+          </ScrollChat>
+        </div>
+        <InputContainer className="row">
+          <div className="col s12">
+            <InputField>
+              <div className="col l10 m8 s6">
+                <Input
+                  innerRef={ele => (this.inputField = ele)}
+                  placeholder="Ask me something..."
                   id="q"
                   type="text"
+                  style={{
+                    marginBottom: '0px',
+                    borderBottom: 'none'
+                  }}
                 />
               </div>
-            </div>
+              <div
+                className="col l2 m4 s6 valign-wrapper"
+                style={{ paddingRight: '0px' }}
+              >
+                <div style={{ marginLeft: 'auto', marginRight: '5px' }}>
+                  <Dictation
+                    artyom={this.state.artyom}
+                    userInput={this.userInput.bind(this)}
+                    awaitingInput={this.awaitingInput.bind(this)}
+                    disable={this.state.speaking}
+                  />
+                </div>
+                <Speech
+                  artyom={this.state.artyom}
+                  text={this.state.speak}
+                  speakingCallback={this.disableDictation.bind(this)}
+                  enabled={true}
+                />
+              </div>
+            </InputField>
           </div>
-        </div>
+        </InputContainer>
       </Container>
     );
   }

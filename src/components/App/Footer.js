@@ -9,24 +9,50 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Container = styled.div`
-  position: fixed;
+const FooterContainer = styled.div`
+  position: relative;
+
+  @media (max-width: 600px) {
+    height: 66px;
+    background: white;
+  }
+`;
+
+const RHSContainer = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 24px;
+  color: rgba(0, 0, 0, 1);
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+`;
+
+const LHSContainer = styled.div`
+  position: absolute;
   bottom: 0;
   left: 0;
-  padding: 24px;
-  color: rgba(255, 255, 255, 1);
+  padding: 20px;
+  color: rgba(0, 0, 0, 1);
+
+  @media (max-width: 600px) {
+    bottom: 66px;
+  }
 `;
 
 const Copyright = styled.span`
   padding-right: 0.5em;
 `;
 
-const ExtLink = styled.a`
+const linkCss = `
+  font-family: Nanum Gothic;
   &,
   &:hover,
   &:active,
   &:visited {
-    color: rgba(255, 255, 255, 1);
+    color: rgba(0, 0, 0, 1);
     text-decoration: none;
   }
 
@@ -35,20 +61,52 @@ const ExtLink = styled.a`
   }
 `;
 
+const PrivacyLink = styled.a`
+  ${linkCss} font-size: 8px;
+  position: relative;
+  bottom: -40px;
+  right: 120px;
+
+  @media (max-width: 600px) {
+    left: 0px;
+    text-align: left;
+  }
+`;
+
+const RehabLink = styled.a`
+  ${linkCss} display: block;
+  font-size: 9px;
+  text-align: right;
+`;
+
 const Separator = styled.span`
   padding-right: 0.5em;
   padding-left: 0.5em;
 `;
 
+const RehabImg = styled.img`
+  width: 80px;
+  display: block;
+  margin-left: auto;
+`;
+
 class Footer extends React.Component<{}> {
   render() {
     return (
-      <Container>
-        <Copyright css="padding-right: 0.5em">&copy; 2018-present</Copyright>
-        <ExtLink href="https://beta.rehab/">Rehab</ExtLink>
-        <Separator>|</Separator>
-        <ExtLink href="http://beta.rehab/terms">Terms & Conditions</ExtLink>
-      </Container>
+      <FooterContainer className={this.props.hide ? 'hidden' : ''}>
+        <LHSContainer>
+          <img src="/static/img/voice_experiment.png" />
+        </LHSContainer>
+        <RHSContainer>
+          <PrivacyLink href="http://beta.rehab/terms">
+            PRIVACY & TERMS
+          </PrivacyLink>
+          <RehabLink href="https://beta.rehab/">
+            MADE BY
+            <RehabImg src="/static/img/rehab.png" />
+          </RehabLink>
+        </RHSContainer>
+      </FooterContainer>
     );
   }
 }

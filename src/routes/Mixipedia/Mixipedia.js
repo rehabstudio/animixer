@@ -12,22 +12,24 @@ import styled from 'styled-components';
 import Gallery from 'react-grid-gallery';
 import rp from 'request-promise';
 
+import utils from '../../utils';
 import history from '../../history';
 
 const Title = styled.h5`
   text-align: center;
 `;
 
+const Text = styled.p`
+  text-align: center;
+`;
+
 const Container = styled.div`
-  box-sizing: border-box;
-  margin: 30px auto;
-  background-color: white;
-  width: 80vw;
-  height: calc(100vh - 180px);
-  height: -o-calc(100vh - 180px); /* opera */
-  height: -webkit-calc(100vh - 180px); /* google, safari */
-  height: -moz-calc(100vh - 180px); /* firefox */
+  height: 75vh;
   overflow-y: auto;
+  position: relative;
+  top: 100px;
+  color: #4e6174;
+  font-family: 'Nanum Gothic';
 `;
 
 const APIHost = window.location.href.startsWith('http://localhost')
@@ -105,15 +107,16 @@ class Mixipedia extends React.Component<{}> {
     return rp(postOptions).then(resp => {
       let imagesData = resp.body;
       let imageKeys = Object.keys(imagesData);
-      let images = imageKeys.map(function(imageKey) {
+      let images = imageKeys.map(imageKey => {
         let image = imagesData[imageKey];
+        let animalName = utils.capitalizeFirstLetter(image.name);
         return {
           src: image.gif_url,
           thumbnail: image.gif_url,
           thumbnailWidth: 320,
           thumbnailHeight: 174,
-          thumbnailCaption: image.name,
-          caption: image.name,
+          thumbnailCaption: animalName,
+          caption: animalName,
           data: image
         };
       });
@@ -147,18 +150,38 @@ class Mixipedia extends React.Component<{}> {
     history.push(url);
   }
 
+  imageStyle() {
+    return {
+      width: this.props.item.vwidth,
+      height: this.props.height,
+      overflow: 'hidden'
+    };
+  }
+
+  descriptionStyle() {
+    return {
+      textAlign: 'center'
+    };
+  }
+
   render() {
     return (
-      <Container ref="container">
-        <Title>Discovered Animals</Title>
-        <Gallery
-          images={this.state.images}
-          enableImageSelection={false}
-          enableLightbox={false}
-          onClickThumbnail={this.clickThumbnail}
-          ref="gallery"
-        />
-      </Container>
+      <div className="container">
+        <Container className="row" ref="container">
+          <Title>Mixipedia</Title>
+          <Text>See what’s been discovered by others.</Text>
+          <Gallery
+            background={'rgba(0, 0, 0, 0.0)'}
+            images={this.state.images}
+            enableImageSelection={false}
+            enableLightbox={false}
+            onClickThumbnail={this.clickThumbnail}
+            ref="gallery"
+            tileDescriptionStyle={this.descriptionStyle}
+            tileViewportStyle={this.imageStyle}
+          />
+        </Container>
+      </div>
     );
   }
 }
