@@ -107,9 +107,8 @@ def add_original(skip_existing=True):
     print('Copying original sounds to output dir')
     filenames = get_audio_files(INPUT_DIR)
     for filepath in tqdm(filenames):
-        import pdb;pdb.set_trace()
-        animal_name, ext = filepath.split('/')[-1].split('.')
-        filename = animalName + animalName + '.' + ext
+        animal_name, ext = filepath.split(SEPARATOR)[-1].split('.')
+        filename = animal_name + '.' + ext
         dest_path = os.path.join(FILE_DIR, OUTPUT_DIR, filename)
 
         if os.path.exists(dest_path) and skip_existing:
@@ -128,7 +127,7 @@ def upload_to_cloud(skip_existing=True):
 
     print('Uploading to cloud')
     for sound in tqdm(file_paths):
-        file_name = sound.split('/')[-1]
+        file_name = sound.split(SEPARATOR)[-1]
         if file_name in blobs and skip_existing:
             continue
         blob = bucket.blob(file_name)
