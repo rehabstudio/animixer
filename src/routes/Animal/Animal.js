@@ -18,6 +18,10 @@ const AnimalContainer = styled.div`
   @media (max-width: 600px) {
     top: 100px;
   }
+
+  @media (max-height: 600px) {
+    top: 55px;
+  }
 `;
 
 class Animal extends React.Component<{}> {

@@ -19,47 +19,65 @@ const MicIcon = styled.div`
 class Dictation extends React.Component<{}> {
   constructor(props) {
     super(props);
-    const dictationConfig = {
+    this.artyom = props.artyom || new Artyom();
+    this.placeHolderText = 'Click to speak to animixer';
+    this.userInput = props.userInput || function(text) {};
+    this.awaitingInput = props.awaitingInput || function(text) {};
+
+    let dictationConfig = {
       continuous: true, // Enable continuous if HTTPS connection
       onResult: this.onResult.bind(this),
       onStart: this.onStart.bind(this),
       onEnd: this.onEnd.bind(this)
     };
 
-    this.artyom = props.artyom || new Artyom();
-    this.placeHolderText = 'Click to speak to animixer';
-    this.userInput = props.userInput || function(text) {};
-    this.awaitingInput = props.awaitingInput || function(text) {};
+    if (this.artyom.Device.isMobile) {
+      dictationConfig.onResult = this.onResultMobileWrapper.bind(this);
+    }
+
     this.state = {
       dictation: this.artyom.newDictation(dictationConfig),
       text: this.placeHolderText,
+      recordOn: false,
       recording: false,
-      currentPhrase: ''
+      recordPause: false,
+      currentPhrase: '',
+      recievingData: false
     };
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.disable !== this.props.disable) {
-      if (newProps.disable && this.state.recording) {
+    if (newProps.recordPause !== this.props.recordPause) {
+      if (newProps.recordPause && this.state.recordOn) {
         this.stopDictation();
-      } else if (!newProps.disable && this.state.recording) {
-        this.startDictation();
+      } else if (!newProps.recordPause && this.state.recordOn) {
+        this.setState({ recordPause: false }, this.startDictation.bind(this));
+      } else if (newProps.recordPause) {
+        this.setState({ recordPause: true });
       }
     }
   }
 
   componentWillUnmount() {
     if (this.state.recording) {
-      this.state.dictation.stop();
+      this.stopDictation();
+      // Will stop any callbacks from restarting after page changes
+      this.setState({ recordPause: true });
     }
   }
 
   startDictation() {
-    this.state.dictation.start();
+    if (!this.state.recording && !this.state.recordPause) {
+      this.state.dictation.start();
+      this.setState({ recording: true });
+    }
   }
 
   stopDictation() {
-    this.state.dictation.stop();
+    if (this.state.recording) {
+      this.state.dictation.stop();
+      this.setState({ recording: false });
+    }
   }
 
   toggleDictation() {
@@ -67,22 +85,55 @@ class Dictation extends React.Component<{}> {
       this.icon.innerHTML = 'mic_off';
       this.stopDictation();
       this.setState({
-        recording: false,
-        text: this.placeHolderText
+        text: this.placeHolderText,
+        recordOn: false
       });
     } else {
       this.icon.innerHTML = 'mic';
       this.startDictation();
-      this.setState({ recording: true });
+      this.setState({
+        recordOn: true
+      });
     }
   }
 
-  onResult(text) {
+  /**
+   * There is a bug on artyom for mobile which sends duplicate
+   * values this will wrap the onResult function on mobile and
+   * stop duplicate values
+   *
+   * @param  {string} text     First text string from artyom
+   * @param  {string} tempText Temporary text string from artyom not
+   *                           normally used
+   */
+  onResultMobileWrapper(text, tempText) {
+    if ((text || tempText) && !this.state.recievingData) {
+      this.setState({
+        recievingData: true
+      });
+
+      this.onResult(text, tempText);
+
+      setTimeout(() => {
+        this.setState({
+          recievingData: false
+        });
+      }, 2000);
+    }
+  }
+
+  onResult(text, tempText) {
     if (this.state.recording) {
       if (text) {
         // callback to let chatbox know we're receiving input
         this.awaitingInput();
         this.setState({ currentPhrase: text });
+      } else if (tempText) {
+        this.userInput(tempText);
+        this.setState({
+          text: tempText,
+          currentPhrase: ''
+        });
       } else {
         // Once a user stops talking we send text
         let phrase = this.state.currentPhrase;
@@ -114,7 +165,7 @@ class Dictation extends React.Component<{}> {
           style={{ width: '100%' }}
           ref={ele => (this.icon = ele)}
         >
-          mic
+          mic_off
         </i>
       </MicIcon>
     );

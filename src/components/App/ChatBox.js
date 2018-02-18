@@ -72,7 +72,12 @@ const ChatBoxContainer = styled.div`
   height: 70vh;
 
   @media (max-height: 600px) {
-    height: 50vh;
+    margin-bottom: 0px;
+    height: 60vh;
+  }
+
+  @media (max-height: 300px) {
+    height: 40vh;
   }
 `;
 
@@ -132,6 +137,7 @@ class ChatBox extends React.Component<{}, {}> {
   }
 
   userInput(value) {
+    console.log('User input:', value);
     if (this.state.currentQuery) {
       this.updateNode(this.state.currentQuery, value);
     } else {
@@ -364,7 +370,7 @@ class ChatBox extends React.Component<{}, {}> {
                     artyom={this.state.artyom}
                     userInput={this.userInput.bind(this)}
                     awaitingInput={this.awaitingInput.bind(this)}
-                    disable={this.state.speaking}
+                    recordPause={this.state.speaking}
                   />
                 </div>
                 <Speech
