@@ -38,11 +38,6 @@ const LHSContainer = styled.div`
   color: rgba(0, 0, 0, 1);
 
   @media (max-width: 600px) {
-    bottom: 66px;
-    padding: 10px;
-  }
-
-  @media (max-width: 600px) and (max-height: 600px) {
     display: none;
   }
 `;

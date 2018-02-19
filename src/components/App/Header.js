@@ -15,8 +15,12 @@ const LHSContainer = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  padding: 24px;
+  padding: 10px;
   cursor: pointer;
+
+  @media (max-width: 992px) {
+    padding: 10px;
+  }
 `;
 
 const RHSContainer = styled.div`
@@ -25,16 +29,12 @@ const RHSContainer = styled.div`
   right: 0;
   padding: 15px;
   cursor: pointer;
-
-  @media (max-width: 600px) {
-    padding: 20px;
-  }
 `;
 
 const AnimixerImg = styled.img`
   width: 150px;
 
-  @media (max-width: 600px) {
+  @media (max-width: 992px) {
     width: 100px;
   }
 `;
@@ -55,6 +55,10 @@ class Header extends React.Component<{}> {
     history.push('/mixipedia');
   }
 
+  goHome() {
+    history.push('/');
+  }
+
   visiblity() {
     if (this.props.hide === null) {
       return 'fadeout';
@@ -68,7 +72,7 @@ class Header extends React.Component<{}> {
   render() {
     return (
       <div className={this.visiblity()}>
-        <LHSContainer className="row">
+        <RHSContainer className="row">
           <div>
             <TitleLink
               className="left valign-wrapper"
@@ -78,8 +82,8 @@ class Header extends React.Component<{}> {
               <TitleText>Mixipedia</TitleText>
             </TitleLink>
           </div>
-        </LHSContainer>
-        <RHSContainer
+        </RHSContainer>
+        <LHSContainer
           innerRef={ele => (this.mixipediaDiv = ele)}
           onClick={this.goAnimalMixer.bind(this)}
         >
@@ -87,7 +91,7 @@ class Header extends React.Component<{}> {
             src="/static/img/logo_low_res.png"
             className="right valign-wrapper"
           />
-        </RHSContainer>
+        </LHSContainer>
       </div>
     );
   }

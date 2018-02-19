@@ -46,7 +46,11 @@ const ScrollChat = styled.div`
   height: 100%;
 
   @media (max-width: 992px) {
-    height: 90%;
+    height: calc(100% - 100px);
+  }
+
+  @media (max-width: 600px) {
+    height: calc(100% - 40px);
   }
 `;
 
@@ -60,24 +64,24 @@ const InputContainer = styled.div`
   position: relative;
 
   @media (max-width: 992px) {
-    bottom: 50px;
+    bottom: 100px;
   }
 
-  @media (max-height: 600px) {
-    bottom: 0px;
+  @media (max-width: 600px) {
+    position: absolute;
+    bottom: 20px;
+    left: 0.75rem;
+    right: 0.75rem;
+    margin: 10px;
   }
 `;
 
 const ChatBoxContainer = styled.div`
   height: 70vh;
 
-  @media (max-height: 600px) {
+  @media (max-width: 992px) {
     margin-bottom: 0px;
-    height: 60vh;
-  }
-
-  @media (max-height: 300px) {
-    height: 40vh;
+    height: calc(100vh - 130px);
   }
 `;
 
@@ -349,7 +353,7 @@ class ChatBox extends React.Component<{}, {}> {
         <InputContainer className="row">
           <div className="col s12">
             <InputField>
-              <div className="col l10 m8 s6">
+              <div style={{ width: '100%' }}>
                 <Input
                   innerRef={ele => (this.inputField = ele)}
                   placeholder="Ask me something..."
@@ -357,7 +361,8 @@ class ChatBox extends React.Component<{}, {}> {
                   type="text"
                   style={{
                     marginBottom: '0px',
-                    borderBottom: 'none'
+                    borderBottom: 'none',
+                    marginLeft: '5px'
                   }}
                 />
               </div>
