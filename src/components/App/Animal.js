@@ -35,7 +35,10 @@ const ShareContainer = styled.div`
   width: 130px;
 `;
 
-const AnimalImg = styled.img``;
+const AnimalImg = styled.img`
+  border-radius: 30px;
+  width: 100%;
+`;
 
 const AnimalText = styled.div`
   margin: 10px auto;
@@ -148,16 +151,16 @@ class Animal extends React.Component<{}> {
         >
           <ChatDiv className="row">
             <AnimalContainer className="col s12 m10 offset-m1 image-div">
-              <AnimalImg
-                innerRef={ele => (this.animalImg = ele)}
+              <div
                 className="col s12 m8 offset-m2"
-                style={{
-                  maxHeight: '40vh',
-                  marginBottom: '10px'
-                }}
-                onLoad={this.handleImageLoaded.bind(this)}
-                onError={this.handleImageErrored.bind(this)}
-              />
+                style={{ marginBottom: '10px' }}
+              >
+                <AnimalImg
+                  innerRef={ele => (this.animalImg = ele)}
+                  onLoad={this.handleImageLoaded.bind(this)}
+                  onError={this.handleImageErrored.bind(this)}
+                />
+              </div>
               <div className="audio-div">
                 <audio
                   ref={ele => (this.audio = ele)}

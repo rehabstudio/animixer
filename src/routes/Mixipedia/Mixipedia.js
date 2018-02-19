@@ -182,7 +182,8 @@ class Mixipedia extends React.Component<{}> {
     return {
       width: this.props.item.vwidth,
       height: this.props.height,
-      overflow: 'hidden'
+      overflow: 'hidden',
+      borderRadius: '30px'
     };
   }
 
