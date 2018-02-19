@@ -128,9 +128,10 @@ def upload_to_cloud(skip_existing=True):
     print('Uploading to cloud')
     for sound in tqdm(file_paths):
         file_name = sound.split(SEPARATOR)[-1]
-        if file_name in blobs and skip_existing:
+        file_path = '/'.join(['sounds', file_name])
+        if file_path in blobs and skip_existing:
             continue
-        blob = bucket.blob(file_name)
+        blob = bucket.blob(file_path)
         blob.upload_from_filename(sound)
         blob.make_public()
 
