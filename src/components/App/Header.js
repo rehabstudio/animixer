@@ -44,7 +44,7 @@ const HomeLink = Buttons.TitleLink(
   null,
   null,
   `
-  background-image: url('static/img/chatbot_icon.png');
+  background-image: url('/static/img/chatbot_icon.png');
   box-shadow: 0 2px 12px 0 rgba(0,0,0,0.5);
 
   @media (max-width: 992px) {
@@ -62,7 +62,7 @@ const MixipediaLink = Buttons.TitleLink(
   null,
   null,
   `
-  background-image: url('static/img/mixipedia_icon.png');
+  background-image: url('/static/img/mixipedia_icon.png');
   box-shadow: 0 2px 12px 0 rgba(0,0,0,0.5);
 
   @media (max-width: 992px) {

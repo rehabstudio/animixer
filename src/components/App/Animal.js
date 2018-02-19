@@ -50,6 +50,10 @@ const AnimalText = styled.div`
   }
 `;
 
+const TitleContainer = styled.div`
+  cursor: pointer;
+`;
+
 const AnimalContainer = styled.div`
   padding: 10px;
 `;
@@ -109,8 +113,10 @@ class Animal extends React.Component<{}> {
     this.setState({ animalExists: false });
   }
 
-  goToShareUrl() {
-    history.push(this.props.animalData.shareUrl);
+  goAnimalUrl() {
+    if (this.props.animalData.animalUrl) {
+      history.push(this.props.animalData.animalUrl);
+    }
   }
 
   render() {
@@ -121,18 +127,20 @@ class Animal extends React.Component<{}> {
 
     return (
       <Container>
-        <div className={this.titleEnabled ? '' : 'hidden'}>
-          <Title>Congratulations</Title>
-          <Text>You have just discovered the mysterious</Text>
-        </div>
-        <div
+        <TitleContainer
           className={this.titleEnabled ? '' : 'hidden'}
-          style={{ textAlign: 'center' }}
+          onClick={this.goAnimalUrl.bind(this)}
         >
-          <AnimalText className="card-panel text-darken-2 hoverable bring-front margins">
-            {utils.capitalizeFirstLetter(this.props.animalData.animalName)}
-          </AnimalText>
-        </div>
+          <div>
+            <Title>Congratulations</Title>
+            <Text>You have just discovered the mysterious</Text>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <AnimalText className="card-panel text-darken-2 hoverable bring-front margins">
+              {utils.capitalizeFirstLetter(this.props.animalData.animalName)}
+            </AnimalText>
+          </div>
+        </TitleContainer>
         <div
           id="main-wrapper"
           className="valign"

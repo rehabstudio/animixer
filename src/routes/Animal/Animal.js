@@ -38,7 +38,8 @@ class Animal extends React.Component<{}> {
       qs: parsed,
       animalData: {
         audioUrl: audioUrl,
-        imageUrl: imageUrl
+        imageUrl: imageUrl,
+        shareUrl: window.location.href
       },
       animalExists: null
     };
