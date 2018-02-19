@@ -65,8 +65,7 @@ action:
 
 place:
   - treehouse
-  - bouncy
-  - castle
+  - bouncy castle
   - palace
 
 fruit:

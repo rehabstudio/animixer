@@ -17,6 +17,7 @@ import Dictation from './Dictation';
 import Speech from './Speech';
 
 const ENTER_KEY_CODE = 13;
+const Host = 'https://animixer.beta.rehab';
 
 const Container = styled.div`
   overflow-y: auto;
@@ -46,7 +47,11 @@ const ScrollChat = styled.div`
   height: 100%;
 
   @media (max-width: 992px) {
-    height: 90%;
+    height: calc(100% - 100px);
+  }
+
+  @media (max-width: 600px) {
+    height: calc(100% - 40px);
   }
 `;
 
@@ -60,19 +65,24 @@ const InputContainer = styled.div`
   position: relative;
 
   @media (max-width: 992px) {
-    bottom: 50px;
+    bottom: 100px;
   }
 
-  @media (max-height: 600px) {
-    bottom: 0px;
+  @media (max-width: 600px) {
+    position: absolute;
+    bottom: 20px;
+    left: 0.75rem;
+    right: 0.75rem;
+    margin: 10px;
   }
 `;
 
 const ChatBoxContainer = styled.div`
   height: 70vh;
 
-  @media (max-height: 600px) {
-    height: 50vh;
+  @media (max-width: 992px) {
+    margin-bottom: 0px;
+    height: calc(100vh - 130px);
   }
 `;
 
@@ -132,6 +142,7 @@ class ChatBox extends React.Component<{}, {}> {
   }
 
   userInput(value) {
+    console.log('User input:', value);
     if (this.state.currentQuery) {
       this.updateNode(this.state.currentQuery, value);
     } else {
@@ -226,22 +237,24 @@ class ChatBox extends React.Component<{}, {}> {
 
   addAnimal(cardData, node) {
     let shareUrl;
+    let animalUrl;
     if (cardData.basic_card.buttons.length > 0) {
       shareUrl = cardData.basic_card.buttons[0].open_url_action.url;
-      shareUrl = shareUrl.replace('https://animixer.beta.rehab', '');
+      animalUrl = shareUrl.replace(Host, '');
     }
     let animalNode = document.createElement('div');
     let animalData = {
       animalName: cardData.basic_card.title,
       imageUrl: cardData.basic_card.image.url,
       audioUrl: this.state.audioUrl,
-      shareUrl: shareUrl
+      shareUrl: shareUrl,
+      animalUrl: animalUrl
     };
     node.appendChild(animalNode);
     ReactDOM.render(
       <Animal
-        shareEnabled={false}
-        titleEnabled={false}
+        shareEnabled={true}
+        titleEnabled={true}
         animalData={animalData}
         onLoad={this.updateScroll.bind(this)}
       />,
@@ -343,7 +356,7 @@ class ChatBox extends React.Component<{}, {}> {
         <InputContainer className="row">
           <div className="col s12">
             <InputField>
-              <div className="col l10 m8 s6">
+              <div style={{ width: '100%' }}>
                 <Input
                   innerRef={ele => (this.inputField = ele)}
                   placeholder="Ask me something..."
@@ -351,7 +364,8 @@ class ChatBox extends React.Component<{}, {}> {
                   type="text"
                   style={{
                     marginBottom: '0px',
-                    borderBottom: 'none'
+                    borderBottom: 'none',
+                    marginLeft: '5px'
                   }}
                 />
               </div>
@@ -364,7 +378,7 @@ class ChatBox extends React.Component<{}, {}> {
                     artyom={this.state.artyom}
                     userInput={this.userInput.bind(this)}
                     awaitingInput={this.awaitingInput.bind(this)}
-                    disable={this.state.speaking}
+                    recordPause={this.state.speaking}
                   />
                 </div>
                 <Speech
