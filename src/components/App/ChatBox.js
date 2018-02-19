@@ -22,6 +22,7 @@ const Host = 'https://animixer.beta.rehab';
 const Container = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
+  height: 100vh;
 `;
 
 const InputField = styled.div`
@@ -82,7 +83,6 @@ const ChatBoxContainer = styled.div`
 
   @media (max-width: 992px) {
     margin-bottom: 0px;
-    height: calc(100vh - 130px);
   }
 `;
 
@@ -365,7 +365,10 @@ class ChatBox extends React.Component<{}, {}> {
                   style={{
                     marginBottom: '0px',
                     borderBottom: 'none',
-                    marginLeft: '5px'
+                    marginLeft: '5px',
+                    outlineStyle: 'none',
+                    boxShadow: 'none',
+                    borderColor: 'transparent'
                   }}
                 />
               </div>
