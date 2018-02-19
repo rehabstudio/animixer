@@ -157,7 +157,7 @@ class Dictation extends React.Component<{}> {
   render() {
     return (
       <MicIcon
-        className="valign-wrapper"
+        className={this.artyom.Device.isChrome ? 'valign-wrapper' : 'hidden'}
         onClick={this.toggleDictation.bind(this)}
       >
         <i
