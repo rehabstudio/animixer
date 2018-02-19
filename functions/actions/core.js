@@ -7,6 +7,7 @@ const UNKNOWN_ACTION = 'unknown';
 const EXIT_ACTION = 'exit';
 const SURFACE_SWITCH_ACTION = 'new_surface_intent';
 const CHANGE_ANIMAL_ACTION = 'change_value';
+const SUGGESTION_ACTION = 'suggestion';
 
 /**
  * Actions on google mapping of handlers to actions
@@ -24,6 +25,7 @@ const actionsFn = function(request, response) {
   actionMap.set(GENERATE_ACTION, controllers.animals.generateAnimal);
   actionMap.set(UNKNOWN_ACTION, controllers.animals.unknownAnimal);
   actionMap.set(CHANGE_ANIMAL_ACTION, controllers.animals.changeAnimal);
+  actionMap.set(SUGGESTION_ACTION, controllers.animals.suggestion);
   actionMap.set(SURFACE_SWITCH_ACTION, controllers.surface.surfaceSwitch);
   actionMap.set(EXIT_ACTION, controllers.misc.exit);
 

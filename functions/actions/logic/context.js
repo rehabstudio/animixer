@@ -5,7 +5,8 @@
  * @param  {array} args     List of values to check for and Return
  * @return {Object}         Object of expected values from dialog flow
  */
-function generateContext(app, args) {
+function generateContext(app, args, warn) {
+  warn = warn === undefined ? true : false;
   let context = {};
   // Refresh context
   for (let i = 0; i < args.length; i++) {

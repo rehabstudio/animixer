@@ -12,6 +12,7 @@ const ANIMAL2_ARGUMENT = 'animalBody';
 const ANIMAL3_ARGUMENT = 'animalLegs';
 const ANIMAL_CHANGED_ARGUMENT = 'changed';
 const UNKNOWN_ARGUMENT = 'noun';
+const ANIMAL_SUGGESTION = 'suggestion';
 
 /**
  * Make animal found POST request to api return promise
@@ -121,8 +122,39 @@ function changeAnimal(app) {
   }
 }
 
+/**
+ * Injects given suggestion into animal context
+ * @type {Object}
+ */
+function suggestion(app) {
+  let context = contextFn.generateContext(
+    app,
+    [ANIMAL1_ARGUMENT, ANIMAL2_ARGUMENT, ANIMAL3_ARGUMENT, ANIMAL_SUGGESTION],
+    false
+  );
+  let animalContext;
+  let params = {};
+  params[ANIMAL1_ARGUMENT] = context[ANIMAL1_ARGUMENT];
+  params[ANIMAL2_ARGUMENT] = context[ANIMAL2_ARGUMENT];
+  params[ANIMAL3_ARGUMENT] = context[ANIMAL3_ARGUMENT];
+
+  if (!context.animal1) {
+    animalContext = ANIMAL1_ARGUMENT;
+    params[ANIMAL1_ARGUMENT] = context[ANIMAL_SUGGESTION];
+  } else if (!context.animal2) {
+    animalContext = ANIMAL2_ARGUMENT;
+    params[ANIMAL2_ARGUMENT] = context[ANIMAL2_ARGUMENT];
+  } else if (!context.animal3) {
+    animalContext = ANIMAL3_ARGUMENT;
+    params[ANIMAL3_ARGUMENT] = context[ANIMAL3_ARGUMENT];
+  }
+
+  app.setContext(animalContext, 5, params);
+}
+
 module.exports = {
   changeAnimal,
   generateAnimal,
-  unknownAnimal
+  unknownAnimal,
+  suggestion
 };
