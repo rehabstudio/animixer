@@ -55,9 +55,7 @@ const AnimalContainer = styled.div`
 `;
 
 const ChatDiv = styled.div`
-  @media (max-width: 600px) {
-    margin-bottom: 5px;
-  }
+  margin-bottom: 5px;
 `;
 
 const buttonMediaCss = `
@@ -116,7 +114,6 @@ class Animal extends React.Component<{}> {
   }
 
   render() {
-    const shareUrl = window.location.href;
     let title =
       this.props.animalData !== {}
         ? this.props.animalData.animalDiscoverText
@@ -187,20 +184,23 @@ class Animal extends React.Component<{}> {
           <ChatDiv className={this.shareEnabled ? 'row' : 'hidden'}>
             <ShareContainer>
               <FacebookShareButton
-                url={shareUrl}
+                url={this.props.animalData.shareUrl}
                 quote={title}
                 className="share-button"
               >
                 <FacebookIcon size={32} round />
               </FacebookShareButton>
               <TwitterShareButton
-                url={shareUrl}
+                url={this.props.animalData.shareUrl}
                 title={title}
                 className="share-button"
               >
                 <TwitterIcon size={32} round />
               </TwitterShareButton>
-              <GooglePlusShareButton url={shareUrl} className="share-button">
+              <GooglePlusShareButton
+                url={this.props.animalData.shareUrl}
+                className="share-button"
+              >
                 <GooglePlusIcon size={32} round />
               </GooglePlusShareButton>
             </ShareContainer>

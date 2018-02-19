@@ -10,6 +10,10 @@ const APIHost = window.location.href.startsWith('http://localhost')
   ? 'http://localhost:5000/animixer-1d266/us-central1'
   : 'https://us-central1-animixer-1d266.cloudfunctions.net';
 
+const Host = window.location.href.startsWith('http://localhost')
+  ? 'http://localhost:3000'
+  : 'https://animixer.beta.rehab';
+
 const AnimalContainer = styled.div`
   height: 90vh;
   top: 50px;
@@ -78,31 +82,27 @@ class Animal extends React.Component<{}> {
   }
 
   getAnimalData(parsedArgs) {
+    let urlArgs =
+      `?animal1=${parsedArgs.animal1}&` +
+      `animal2=${parsedArgs.animal2}&` +
+      `animal3=${parsedArgs.animal3}`;
+    let animalNameUrl = APIHost + '/api/animalName' + urlArgs;
+    let animalFactUrl = APIHost + '/api/animalFact' + urlArgs;
+    let shareUrl = Host + urlArgs;
+
     if (
       parsedArgs.animal1 === parsedArgs.animal2 &&
       parsedArgs.animal2 === parsedArgs.animal3
     ) {
       let animalData = this.state.animalData;
       animalData.animalName = parsedArgs.animal1;
+      animalData.shareUrl = shareUrl;
       return this.setState({
         animalDiscoverText: `You have discovered the ${parsedArgs.animal1}!`,
         animalExists: true,
         animalData: animalData
       });
     }
-
-    let animalNameUrl =
-      APIHost +
-      '/api/animalName?animal1=' +
-      `${parsedArgs.animal1}&animal2=${parsedArgs.animal2}&animal3=${
-        parsedArgs.animal3
-      }`;
-    let animalFactUrl =
-      APIHost +
-      '/api/animalFact?animal1=' +
-      `${parsedArgs.animal1}&animal2=${parsedArgs.animal2}&animal3=${
-        parsedArgs.animal3
-      }`;
     let namePromise = rp(animalNameUrl);
     let factPromise = rp(animalFactUrl);
     return Promise.all([namePromise, factPromise])
@@ -113,6 +113,7 @@ class Animal extends React.Component<{}> {
         }!`;
         let animalFactData = JSON.parse(responses[1]);
         animalData.animalFactText = animalFactData.animalFact;
+        animalData.shareUrl = shareUrl;
         this.setState({
           animalData: animalData,
           animalExists: true

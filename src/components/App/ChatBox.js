@@ -17,6 +17,9 @@ import Dictation from './Dictation';
 import Speech from './Speech';
 
 const ENTER_KEY_CODE = 13;
+const Host = window.location.href.startsWith('http://localhost')
+  ? 'http://localhost:3000'
+  : 'https://animixer.beta.rehab';
 
 const Container = styled.div`
   overflow-y: auto;
@@ -236,16 +239,18 @@ class ChatBox extends React.Component<{}, {}> {
 
   addAnimal(cardData, node) {
     let shareUrl;
+    let animalUrl;
     if (cardData.basic_card.buttons.length > 0) {
       shareUrl = cardData.basic_card.buttons[0].open_url_action.url;
-      shareUrl = shareUrl.replace('https://animixer.beta.rehab', '');
+      animalUrl = shareUrl.replace(Host, '');
     }
     let animalNode = document.createElement('div');
     let animalData = {
       animalName: cardData.basic_card.title,
       imageUrl: cardData.basic_card.image.url,
       audioUrl: this.state.audioUrl,
-      shareUrl: shareUrl
+      shareUrl: shareUrl,
+      animalUrl: animalUrl
     };
     node.appendChild(animalNode);
     ReactDOM.render(
