@@ -54,9 +54,16 @@ const AnimalContainer = styled.div`
   padding: 10px;
 `;
 
+const ChatDiv = styled.div`
+  @media (max-width: 600px) {
+    margin-bottom: 5px;
+  }
+`;
+
 const buttonMediaCss = `
   @media (max-width: 600px) {
     width: 100px;
+    height: 30px;
   }
 `;
 
@@ -121,7 +128,10 @@ class Animal extends React.Component<{}> {
           <Title>Congratulations</Title>
           <Text>You have just discovered the mysterious</Text>
         </div>
-        <div style={{ textAlign: 'center' }}>
+        <div
+          className={this.titleEnabled ? '' : 'hidden'}
+          style={{ textAlign: 'center' }}
+        >
           <AnimalText className="card-panel text-darken-2 hoverable bring-front margins">
             {utils.capitalizeFirstLetter(this.props.animalData.animalName)}
           </AnimalText>
@@ -131,7 +141,7 @@ class Animal extends React.Component<{}> {
           className="valign"
           style={{ width: '100%', height: '100%' }}
         >
-          <div className="row">
+          <ChatDiv className="row">
             <AnimalContainer className="col s12 m10 offset-m1 image-div">
               <AnimalImg
                 innerRef={ele => (this.animalImg = ele)}
@@ -163,19 +173,9 @@ class Animal extends React.Component<{}> {
                   Hear me {this.props.animalData.animalVerb}
                 </AudioButtonText>
               </AudioButton>
-              <ShareButton
-                className={
-                  this.props.animalData.shareUrl
-                    ? 'valign-wrapper left'
-                    : 'hidden'
-                }
-                onClick={this.goToShareUrl.bind(this)}
-              >
-                <ShareButtonText>Share</ShareButtonText>
-              </ShareButton>
             </div>
-          </div>
-          <div
+          </ChatDiv>
+          <ChatDiv
             className={this.props.animalData.animalFactText ? 'row' : 'hidden'}
           >
             <div className="col s12 m8 offset-m2">
@@ -183,8 +183,8 @@ class Animal extends React.Component<{}> {
                 {this.props.animalData.animalFactText}
               </Text>
             </div>
-          </div>
-          <div className={this.shareEnabled ? 'row' : 'hidden'}>
+          </ChatDiv>
+          <ChatDiv className={this.shareEnabled ? 'row' : 'hidden'}>
             <ShareContainer>
               <FacebookShareButton
                 url={shareUrl}
@@ -204,7 +204,7 @@ class Animal extends React.Component<{}> {
                 <GooglePlusIcon size={32} round />
               </GooglePlusShareButton>
             </ShareContainer>
-          </div>
+          </ChatDiv>
         </div>
       </Container>
     );

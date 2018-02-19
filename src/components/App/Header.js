@@ -39,11 +39,44 @@ const AnimixerImg = styled.img`
   }
 `;
 
-const TitleLink = Buttons.TitleLink(null, null, null, ``);
-const TitleText = Buttons.TitleText();
+const HomeLink = Buttons.TitleLink(
+  '50px',
+  null,
+  null,
+  `
+  background-image: url('static/img/chatbot_icon.png');
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.5);
+
+  @media (max-width: 992px) {
+    width: 50px;
+  }
+
+  @media (max-width: 600px) {
+    width: 50px;
+  }
+  `
+);
+
+const MixipediaLink = Buttons.TitleLink(
+  '50px',
+  null,
+  null,
+  `
+  background-image: url('static/img/mixipedia_icon.png');
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.5);
+
+  @media (max-width: 992px) {
+    width: 50px;
+  }
+
+  @media (max-width: 600px) {
+    width: 50px;
+  }
+  `
+);
 
 class Header extends React.Component<{}> {
-  goAnimalMixer() {
+  goHome() {
     if (this.props.location && this.props.location.pathname === '/') {
       window.dispatchEvent(new CustomEvent('reset', { detail: true }));
     } else {
@@ -53,10 +86,6 @@ class Header extends React.Component<{}> {
 
   goMixipedia() {
     history.push('/mixipedia');
-  }
-
-  goHome() {
-    history.push('/');
   }
 
   visiblity() {
@@ -74,18 +103,21 @@ class Header extends React.Component<{}> {
       <div className={this.visiblity()}>
         <RHSContainer className="row">
           <div>
-            <TitleLink
+            <HomeLink
+              className="left valign-wrapper"
+              innerRef={ele => (this.homeDiv = ele)}
+              onClick={this.goHome.bind(this)}
+            />
+            <MixipediaLink
               className="left valign-wrapper"
               innerRef={ele => (this.mixipediaDiv = ele)}
               onClick={this.goMixipedia.bind(this)}
-            >
-              <TitleText>Mixipedia</TitleText>
-            </TitleLink>
+            />
           </div>
         </RHSContainer>
         <LHSContainer
           innerRef={ele => (this.mixipediaDiv = ele)}
-          onClick={this.goAnimalMixer.bind(this)}
+          onClick={this.goHome.bind(this)}
         >
           <AnimixerImg
             src="/static/img/logo_low_res.png"

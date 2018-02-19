@@ -250,8 +250,8 @@ class ChatBox extends React.Component<{}, {}> {
     node.appendChild(animalNode);
     ReactDOM.render(
       <Animal
-        shareEnabled={false}
-        titleEnabled={false}
+        shareEnabled={true}
+        titleEnabled={true}
         animalData={animalData}
         onLoad={this.updateScroll.bind(this)}
       />,
