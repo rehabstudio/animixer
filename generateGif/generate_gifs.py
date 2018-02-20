@@ -85,10 +85,10 @@ def remove_existing(permutations):
             ANIMAL_LIST[perm[0]],
             ANIMAL_LIST[perm[1]],
             ANIMAL_LIST[perm[2]]])
-        thumbail_name = animal_name + '_thumbnail.tif'
+        thumbail_name = animal_name + '_thumbnail'
         file_path = os.path.join(THUMBNAILS_FOLDER, thumbail_name)
         image_folder_path = os.path.join(IMAGE_FOLDER, animal_name + '_render')
-        if os.path.exists(file_path):
+        if os.path.exists(file_path + '.tif') or os.path.exists(file_path + '.png'):
             remove_indices.append(index)
         elif os.path.exists(image_folder_path):
             print("Deleting animal images as no thumbnail found: {}".format(

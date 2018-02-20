@@ -1,4 +1,4 @@
-/*
+﻿/*
   @Author: Noel Wilson
   @company: Rehab
 
@@ -180,7 +180,7 @@ function placeBodyTallHead(headLayer, bodyLayer) {
   // Make body if head is tall
   if (headLayer.name.endsWith('_tall') === true) {
     bodyLayer.transform.position.setValueAtTime(0, [
-      center[0], center[1] + 250
+      center[0], center[1] + 500
     ]);
   }
 }
