@@ -5,6 +5,7 @@ const responses = require('./responses');
 const utils = require('./../../common/utils');
 const surface = require('./surface');
 const { APIHost } = require('./../../config');
+const mixipedia = require('./../../api/controllers/mixipedia');
 
 // the parameters that are parsed from the generate_animal intent
 const ANIMAL1_ARGUMENT = 'animalHead';
@@ -57,7 +58,11 @@ function generateAnimal(app, skipSwitchScreen) {
 
   // If only one animal selected
   if (contextFn.animalsIdentical(context)) {
-    let animalFoundPromise = animalFoundPost(context);
+    let animalFoundPromise = mixipedia.createNewAnimalRecord(
+      context.animalHead,
+      context.animalBody,
+      context.animalLegs
+    );
     return Promise.resolve(animalFoundPromise).then(resp => {
       return responses.animalsIdentical(app, context);
     });
@@ -75,22 +80,22 @@ function generateAnimal(app, skipSwitchScreen) {
     uri: context.imageUrl,
     resolveWithFullResponse: true
   });
-  //let audioPromise = rp({ uri: context.audioUrl, resolveWithFullResponse: true });
-  let animalFoundPromise = animalFoundPost(context);
+  let animalFoundPromise = mixipedia.createNewAnimalRecord(
+    context.animalHead,
+    context.animalBody,
+    context.animalLegs
+  );
 
   // Wait for assets to be found
   return Promise.all([imagePromise, animalFoundPromise])
     .then(responseData => {
-      if (
-        responseData[0].statusCode === 200 &&
-        responseData[0].statusCode === 200
-      ) {
+      if (responseData[0].statusCode === 200 && responseData[1].success === 1) {
         if (!skipSwitchScreen && surface.shouldSwitchScreen(app, context)) {
           return;
         }
         responses.animalResponse(app, context);
       } else {
-        throw 'Animal content not found';
+        throw new Error('Animal content not found');
       }
     })
     .catch(err => {
