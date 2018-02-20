@@ -42,11 +42,15 @@ function replacementAnimal(animalName) {
       // parse response and add to results array if user input is an animal type
       const things = JSON.parse(response.body).itemListElement;
       things.forEach(thing => {
+        let description;
+        if (thing.result.description) {
+          description = thing.result.description.toLowerCase();
+        }
         if (
-          acceptableTypes.includes(thing.result.description) &&
-          resultArray.includes(thing.result.description) === false
+          acceptableTypes.includes(description) &&
+          resultArray.includes(description) === false
         ) {
-          resultArray.push(thing.result.description);
+          resultArray.push(description);
         }
       });
       // if item in results array then return animal of same type

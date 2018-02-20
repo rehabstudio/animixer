@@ -9,6 +9,18 @@ const animalData = yaml.safeLoad(
 const animalSyllables = animalData.syllables;
 
 /**
+ * Capitalize first letter of string
+ * @type {string} input string
+ * @return {string} Capitalized string
+ */
+function capitalizeFirstLetter(string) {
+  if (!string) {
+    return;
+  }
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+/**
  * Randomly return one item from array
  * @param  {array} values array of values to pick from
  * @return {any} randomly selected values from array
@@ -76,6 +88,7 @@ function getAOrAn(noun) {
 }
 
 module.exports = {
+  capitalizeFirstLetter,
   getAOrAn,
   getAudioUrl,
   getImageUrl,

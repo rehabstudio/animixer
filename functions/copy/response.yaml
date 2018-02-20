@@ -22,7 +22,7 @@ not_found:
   text: I haven’t discovered that animal yet on this safari. Would you like to try a different combination?
 
 exit:
-  text: Come back to the Animixer safari any time.
+  text: Come back to the Animal Mixer safari any time.
 
 unknownAnimalResponse:
   unknown_1: I haven’t seen a wild ${0} on this safari. How about ${1} ${2}?
