@@ -54,7 +54,7 @@ function createNewAnimalRecord(animal1, animal2, animal3) {
         let animalKey = 'animals/' + Object.keys(animalEntry)[0];
         let updateObj = {};
         updateObj[animalKey] = animalObj;
-        database
+        return database
           .ref()
           .update(updateObj)
           .then(function() {
@@ -66,7 +66,7 @@ function createNewAnimalRecord(animal1, animal2, animal3) {
             return { success: 0, error: error };
           });
       } else {
-        database
+        return database
           .ref('animals/')
           .push(animalObj)
           .then(function() {
@@ -124,7 +124,7 @@ function mixipediaPost(request, response) {
       .send(JSON.stringify({ success: 0, error: 'Invalid animals' }));
   }
 
-  createNewAnimalRecord(animal1, animal2, animal3).then(successJson => {
+  return createNewAnimalRecord(animal1, animal2, animal3).then(successJson => {
     let status = successJson.success ? 200 : 500;
     response.set('Content-Type', 'application/json');
     response.status(status).send(JSON.stringify(successJson));
