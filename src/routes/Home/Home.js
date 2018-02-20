@@ -20,7 +20,6 @@ const Container = styled.div`
   max-width: 1000px;
   box-sizing: border-box;
   margin: 0 auto;
-  height: 100vh;
 `;
 
 const token = window.location.href.startsWith('http://localhost')

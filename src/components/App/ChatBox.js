@@ -22,6 +22,8 @@ const Host = 'https://animixer.beta.rehab';
 const Container = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
+  height: 100vh;
+  position: relative;
 `;
 
 const InputField = styled.div`
@@ -55,22 +57,19 @@ const ScrollChat = styled.div`
   }
 `;
 
-const Chevron = styled.div`
-  @media (max-width: 992px) {
-    visibility: hidden;
-  }
-`;
-
 const InputContainer = styled.div`
-  position: relative;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 20px;
+  z-index: 2;
 
   @media (max-width: 992px) {
-    bottom: 100px;
+    bottom: 60px;
   }
 
   @media (max-width: 600px) {
-    position: absolute;
-    bottom: 20px;
+    bottom: 0px;
     left: 0.75rem;
     right: 0.75rem;
     margin: 10px;
@@ -78,11 +77,18 @@ const InputContainer = styled.div`
 `;
 
 const ChatBoxContainer = styled.div`
-  height: 70vh;
+  height: 75%;
+  position: relative;
+  top: 70px;
 
   @media (max-width: 992px) {
     margin-bottom: 0px;
-    height: calc(100vh - 130px);
+    height: 85%;
+  }
+
+  @media (max-height: 600px) {
+    margin-bottom: 0px;
+    height: 80%;
   }
 `;
 
@@ -96,9 +102,15 @@ class ChatBox extends React.Component<{}, {}> {
       speaking: false,
       currentQuery: null,
       startChat: false,
-      audioUrl: null
+      audioUrl: null,
+      heightCss: '100vh'
     };
     this.scrollUp = this.props.scrollUp || function() {};
+
+    // Work around 100vh not compatible with mobile devices
+    if (this.state.artyom.Device.isMobile) {
+      this.state.heightCss = window.innerHeight + 'px';
+    }
   }
 
   componentDidMount() {
@@ -106,6 +118,9 @@ class ChatBox extends React.Component<{}, {}> {
       'keydown',
       this.queryInputKeyDown.bind(this)
     );
+    if (this.state.artyom.Device.isMobile) {
+      window.addEventListener('resize', this.updateChatBoxSize.bind(this));
+    }
   }
 
   componentWillUnmount() {
@@ -113,6 +128,10 @@ class ChatBox extends React.Component<{}, {}> {
       'keydown',
       this.queryInputKeyDown.bind(this)
     );
+
+    if (this.state.artyom.Device.isMobile) {
+      window.removeEventListener('resize', this.updateChatBoxSize.bind(this));
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -129,6 +148,12 @@ class ChatBox extends React.Component<{}, {}> {
     ) {
       this.stopChat();
     }
+  }
+
+  updateChatBoxSize() {
+    this.setState({
+      heightCss: window.innerHeight + 'px'
+    });
   }
 
   queryInputKeyDown(event) {
@@ -338,13 +363,11 @@ class ChatBox extends React.Component<{}, {}> {
     return (
       <Container
         innerRef={ele => (this.chatDiv = ele)}
+        style={{ height: this.state.heightCss }}
         className={
           this.state.startChat ? 'container fadein' : 'container fadeout'
         }
       >
-        <div className="row" onClick={this.scrollUp}>
-          <Chevron className="col s4 offset-s4" style={{ height: '50px' }} />
-        </div>
         <ChatBoxContainer className="row">
           <ScrollChat
             className="col s12"
@@ -365,7 +388,10 @@ class ChatBox extends React.Component<{}, {}> {
                   style={{
                     marginBottom: '0px',
                     borderBottom: 'none',
-                    marginLeft: '5px'
+                    marginLeft: '5px',
+                    outlineStyle: 'none',
+                    boxShadow: 'none',
+                    borderColor: 'transparent'
                   }}
                 />
               </div>
