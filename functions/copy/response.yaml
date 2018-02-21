@@ -25,8 +25,8 @@ exit:
   text: Come back to the Animal Mixer safari any time.
 
 unknownAnimalResponse:
-  unknown_1: I haven’t seen a wild ${0} on this safari. How about ${1} ${2}?
-  unknown_2: That doesn’t seem to be an animal. How about ${0} ${1}?
+  unknown_1: I haven’t seen a wild ${0} on this safari. You could try saying ${1} ${2}?
+  unknown_2: That doesn’t seem to be an animal. You could try saying ${0} ${1}?
 
 changeAnimal:
   text: Yes, I can see it now! Looks like the ${0} ${1} actually ${2} ${3}!
