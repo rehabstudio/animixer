@@ -462,4 +462,4 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
 // Main
 // ------------------------------------------------------------------
 
-renderAnimals(undefined, 'C:\\Users\\rehabstudio\\Projects\\animixer\\generateGif\\ae_project\\permutations.json', undefined);
+//renderAnimals(undefined, 'C:\\Users\\rehabstudio\\Projects\\animixer\\generateGif\\ae_project\\permutations.json', undefined);
