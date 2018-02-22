@@ -174,14 +174,15 @@ function placeLegs(bodyMarkers, legsMarkers, legLayer) {
  * Place the body of the new animal lower if head is tall
  */
 function placeBodyTallHead(headLayer, bodyLayer) {
-  // Find center of body
-  var center = bodyLayer.transform.position.value;
-
   // Make body if head is tall
   if (headLayer.name.endsWith('_tall') === true) {
-    bodyLayer.transform.position.setValueAtTime(0, [
-      center[0], center[1] + 500
-    ]);
+    for(var i=0;i<19;i++){
+        // Find center of body
+        var center = bodyLayer.transform.position.valueAtTime(i, false);
+        bodyLayer.transform.position.setValueAtTime(i, [
+          center[0], center[1] + 250
+        ]);
+    }
   }
 }
 
@@ -424,7 +425,7 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
 
     } catch (err) {
       errorStr += 'Error missing element / badly named element, skipping animal.\n';
-      errorStr += 'Error: ' + err + '\n';
+      errorStr += 'Error: ' + err.toString() + '\n';
       $.writeln(errorStr);
     }
 
@@ -461,4 +462,4 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
 // Main
 // ------------------------------------------------------------------
 
-//renderAnimals(undefined, 'C:\\Users\\rehabstudio\\Projects\\animixer\\generateGif\\ae_project\\permutations.json', undefined);
+renderAnimals(undefined, 'C:\\Users\\rehabstudio\\Projects\\animixer\\generateGif\\ae_project\\permutations.json', undefined);

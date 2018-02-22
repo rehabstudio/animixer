@@ -34,6 +34,7 @@ FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_FILE = os.path.join(FILE_DIR, 'ae_project', 'animixer_anim.aep')
 PERMUTATIONS_FILE = os.path.join(FILE_DIR, 'ae_project', 'permutations.json')
 IMAGE_FOLDER = os.path.join(ROOT_DIR, 'images')
+GIF_FOLDER = os.path.join(ROOT_DIR, 'gifs')
 THUMBNAILS_FOLDER = os.path.join(ROOT_DIR, 'thumbnails')
 ASYNC = True
 CLOUD_BUCKET = 'animixer-1d266.appspot.com'
@@ -88,12 +89,18 @@ def remove_existing(permutations):
         thumbail_name = animal_name + '_thumbnail'
         file_path = os.path.join(THUMBNAILS_FOLDER, thumbail_name)
         image_folder_path = os.path.join(IMAGE_FOLDER, animal_name + '_render')
+        gif_path = os.path.join(GIF_FOLDER, animal_name + '_render.gif'
         if os.path.exists(file_path + '.tif') or os.path.exists(file_path + '.png'):
             remove_indices.append(index)
         elif os.path.exists(image_folder_path):
             print("Deleting animal images as no thumbnail found: {}".format(
                 image_folder_path))
             shutil.rmtree(image_folder_path)
+            if os.path.exists(gif_path):
+                print("Deleting animal gif as no thumbnail found: {}".format(
+                    gif_path))
+                shutil.rmtree(gif_path)
+            
 
     print("Removing {} existing animals".format(len(remove_indices)))
     for index in reversed(remove_indices):
@@ -335,8 +342,8 @@ if __name__ == '__main__':
     thumb_nails = generate_thumbnails(SKIP_EXISTING)
     gif_paths = generate_gifs(SKIP_EXISTING)
     if ASYNC:
-        async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
-        async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
+        async_upload(thumb_nails, skip_existing=False, folder='thumbnails')
+        async_upload(gif_paths, skip_existing=False, folder='gifs')
     else:
         upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
         upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
