@@ -1,6 +1,7 @@
 animals:
   - antelope
   - buffalo
+  - cat
   - chicken
   - crocodile
   - dog
@@ -17,7 +18,6 @@ animals:
   - ostrich
   - pony
   - puma
-  - pussycat
   - rhino
   - tiger
   - tortoise
@@ -29,6 +29,7 @@ verbs:
   antelope: bleet
   buffalo: moo
   bunny: squeak
+  cat: meow
   chicken: cock-a-doodle-doo
   crocodile: snap
   dog: bark
@@ -48,7 +49,6 @@ verbs:
   pig: oink
   pony: neigh
   puma: growl
-  pussycat: meow
   rhino: snuffle
   sheep: baa
   tiger: growl
@@ -105,6 +105,10 @@ syllables:
     - Rabb
     - abbi
     - bit
+  cat:
+    - puss
+    - ussy
+    - cat
   chicken:
     - chick
     - ick
@@ -181,10 +185,6 @@ syllables:
     - p
     - um
     - ma
-  pussycat:
-    - puss
-    - ussy
-    - cat
   rhinoceros:
     - rhin
     - oçe

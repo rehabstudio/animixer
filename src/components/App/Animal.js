@@ -67,7 +67,7 @@ const ChatDiv = styled.div`
 
 const buttonMediaCss = `
   @media (max-width: 600px) {
-    width: 100px;
+    width: 200px;
     height: 30px;
   }
 `;

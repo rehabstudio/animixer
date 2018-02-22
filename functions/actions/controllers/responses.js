@@ -51,7 +51,7 @@ function animalsNotValid(app, context) {
  * @param  {Object} context parsed values from dialog flow
  */
 function animalsIdentical(app, context) {
-  let animalName = context.animalHead;
+  let animalName = utils.capitalizeFirstLetter(context.animalHead);
   let imageUrl = utils.getImageUrl(context);
   let audioUrl = utils.getAudioUrl(context);
   let simpleResp = {};
@@ -94,10 +94,12 @@ function animalResponse(app, context) {
   let simpleResp = {};
   let resp;
   // Generate new animal name and search for its assets
-  let animalName = utils.makeAnimalName(
-    context.animalHead,
-    context.animalBody,
-    context.animalLegs
+  let animalName = utils.capitalizeFirstLetter(
+    utils.makeAnimalName(
+      context.animalHead,
+      context.animalBody,
+      context.animalLegs
+    )
   );
   let animalVerb;
   let respData = responseData.animal_response;
@@ -151,10 +153,12 @@ function animalResponse(app, context) {
  * @param  {Object} context parsed values from dialog flow
  */
 function screenSwitch(app, context) {
-  let animalName = utils.makeAnimalName(
-    context.animalHead,
-    context.animalBody,
-    context.animalLegs
+  let animalName = utils.capitalizeFirstLetter(
+    utils.makeAnimalName(
+      context.animalHead,
+      context.animalBody,
+      context.animalLegs
+    )
   );
   let text = responseData.text.format(animalName);
   let notif = responseData.notif;
@@ -178,7 +182,7 @@ function exitResponse(app) {
 function notFoundResponse(app) {
   let simpleResp = {};
   let resp;
-  let respData = responseData.screen_switch;
+  let respData = responseData.not_found;
   simpleResp.speech = `<speak>${respData.text}</speak>`;
   resp = new RichResponse().addSimpleResponse(simpleResp);
 

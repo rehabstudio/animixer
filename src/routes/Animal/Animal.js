@@ -83,14 +83,18 @@ class Animal extends React.Component<{}> {
   }
 
   getAnimalData(parsedArgs) {
+    let animalPath =
+      `/${parsedArgs.animal1}` +
+      `/${parsedArgs.animal2}` +
+      `/${parsedArgs.animal3}`;
     let urlArgs =
       `?animal1=${parsedArgs.animal1}&` +
       `animal2=${parsedArgs.animal2}&` +
       `animal3=${parsedArgs.animal3}`;
-    let animalNameUrl = APIHost + '/api/animalName' + urlArgs;
-    let animalFactUrl = APIHost + '/api/animalFact' + urlArgs;
+    let animalDataUrl = APIHost + '/api/mixipedia' + animalPath;
     let shareUrl = Host + urlArgs;
 
+    // We don't need any data if it's not a mixed animal
     if (
       parsedArgs.animal1 === parsedArgs.animal2 &&
       parsedArgs.animal2 === parsedArgs.animal3
@@ -104,16 +108,16 @@ class Animal extends React.Component<{}> {
         animalData: animalData
       });
     }
-    let namePromise = rp(animalNameUrl);
-    let factPromise = rp(animalFactUrl);
-    return Promise.all([namePromise, factPromise])
+
+    let animalPromise = rp(animalDataUrl);
+    return Promise.all([animalPromise])
       .then(responses => {
         let animalData = JSON.parse(responses[0]);
+        animalData.animalName = animalData.name;
         animalData.animalDiscoverText = `You have discovered the ${
           animalData.animalName
         }!`;
-        let animalFactData = JSON.parse(responses[1]);
-        animalData.animalFactText = animalFactData.animalFact;
+        animalData.animalFactText = animalData.animalFact;
         animalData.shareUrl = shareUrl;
         this.setState({
           animalData: animalData,

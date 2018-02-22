@@ -5,6 +5,7 @@ const express = require('express');
 const animalFactApi = require('./controllers/animalFacts');
 const animalNameApi = require('./controllers/animalName');
 const mixipediaApi = require('./controllers/mixipedia');
+const updateAnimalsApi = require('./controllers/updateAnimals');
 
 const app = express();
 
@@ -22,7 +23,11 @@ app.get('/animalFact', animalFactApi.get);
 app.get('/animalName', animalNameApi.get);
 
 // mixipedia API endpoints
-app.get('/mixipedia', mixipediaApi.get);
+app.get('/mixipedia', mixipediaApi.list);
+app.get('/mixipedia/:animal1/:animal2/:animal3', mixipediaApi.get);
 app.post('/mixipedia', mixipediaApi.post);
+
+// Update animals API endpoints
+app.get('/updateAnimals', updateAnimalsApi.get);
 
 module.exports = app;

@@ -94,10 +94,8 @@ generateGif - animixer.jsx
 
 react app
 
-- Remove unused files
-- remove graphQL
-- Write tests for chatbox
+- Write tests
 
 functions
 
-- Move response strings to separate file.
+- Write tests
