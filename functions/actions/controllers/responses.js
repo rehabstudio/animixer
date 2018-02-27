@@ -160,8 +160,9 @@ function screenSwitch(app, context) {
       context.animalLegs
     )
   );
-  let text = responseData.text.format(animalName);
-  let notif = responseData.notif;
+  let respData = responseData.screen_switch;
+  let text = respData.text.format(animalName);
+  let notif = respData.notif;
   app.askForNewSurface(text, notif, [app.SurfaceCapabilities.SCREEN_OUTPUT]);
 }
 
