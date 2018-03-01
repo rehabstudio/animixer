@@ -12,7 +12,7 @@ const APIHost = window.location.href.startsWith('http://localhost')
 
 const Host = window.location.href.startsWith('http://localhost')
   ? 'http://localhost:3000'
-  : 'https://animixer.beta.rehab';
+  : 'https://safarimixer.beta.rehab';
 
 const AnimalContainer = styled.div`
   height: 90vh;

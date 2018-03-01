@@ -147,7 +147,7 @@ function animalResponse(app, context) {
     )
     .addButton(
       'share',
-      `https://animixer.beta.rehab/animal/?animal1=${context.animalHead}` +
+      `https://safarimixer.beta.rehab/animal/?animal1=${context.animalHead}` +
         `&animal2=${context.animalBody}&animal3=${context.animalLegs}`
     );
   resp = new RichResponse()
