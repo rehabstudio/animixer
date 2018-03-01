@@ -382,7 +382,7 @@ class ChatBox extends React.Component<{}, {}> {
               <div style={{ width: '100%' }}>
                 <Input
                   innerRef={ele => (this.inputField = ele)}
-                  placeholder="Ask me something..."
+                  placeholder="Type to explore..."
                   id="q"
                   type="text"
                   style={{
