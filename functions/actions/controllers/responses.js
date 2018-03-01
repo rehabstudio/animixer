@@ -9,6 +9,7 @@ const yaml = require('js-yaml');
 const utils = require('./../../common/utils');
 const knowledgeGraph = require('./../logic/knowledgeGraph');
 const animalFacts = require('./../../common/animalFacts');
+const mixipedia = require('./../../api/controllers/mixipedia');
 
 const responseData = yaml.safeLoad(
   fs.readFileSync(
@@ -91,7 +92,8 @@ function animalsIdentical(app, context) {
  * @param  {Object} context parsed values from dialog flow
  */
 function animalResponse(app, context) {
-  let simpleResp = {};
+  let animalResp = {};
+  let rediscoverResp = {};
   let resp;
   // Generate new animal name and search for its assets
   let animalName = utils.capitalizeFirstLetter(
@@ -117,16 +119,22 @@ function animalResponse(app, context) {
     respData.rediscover_1,
     respData.rediscover_2
   ]);
+  let funFact;
+  if (!context.animalData.animalFact) {
+    funFact = animalFacts.generateFact();
+  } else {
+    funFact = context.animalData.animalFact;
+  }
 
-  let funFact = animalFacts.generateFact();
   success = success + ' ' + respData.fun_fact.format(animalName, funFact);
 
-  simpleResp.speech =
+  animalResp.speech =
     '<speak>' +
     success +
     `<audio src="${context.audioUrl}"></audio> ` +
-    rediscover +
     '</speak>';
+  rediscoverResp.speech = '<speak>' + rediscover + '</speak>';
+
   let card = new BasicCard()
     .setTitle(animalName)
     .setImage(context.imageUrl, animalName)
@@ -142,7 +150,10 @@ function animalResponse(app, context) {
       `https://animixer.beta.rehab/animal/?animal1=${context.animalHead}` +
         `&animal2=${context.animalBody}&animal3=${context.animalLegs}`
     );
-  resp = new RichResponse().addBasicCard(card).addSimpleResponse(simpleResp);
+  resp = new RichResponse()
+    .addSimpleResponse(animalResp)
+    .addBasicCard(card)
+    .addSimpleResponse(rediscoverResp);
   app.ask(resp);
 }
 

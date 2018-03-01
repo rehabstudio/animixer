@@ -80,7 +80,7 @@ function generateAnimal(app, skipSwitchScreen) {
     uri: context.imageUrl,
     resolveWithFullResponse: true
   });
-  let animalFoundPromise = mixipedia.createNewAnimalRecord(
+  let animalFoundPromise = mixipedia.getOrCreate(
     context.animalHead,
     context.animalBody,
     context.animalLegs
@@ -89,10 +89,11 @@ function generateAnimal(app, skipSwitchScreen) {
   // Wait for assets to be found
   return Promise.all([imagePromise, animalFoundPromise])
     .then(responseData => {
-      if (responseData[0].statusCode === 200 && responseData[1].success === 1) {
+      if (responseData[0].statusCode === 200 && responseData[1]) {
         if (!skipSwitchScreen && surface.shouldSwitchScreen(app, context)) {
           return;
         }
+        context.animalData = responseData[1];
         responses.animalResponse(app, context);
       } else {
         throw new Error('Animal content not found');
