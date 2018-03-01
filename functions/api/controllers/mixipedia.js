@@ -81,6 +81,54 @@ function createNewAnimalRecord(animal1, animal2, animal3) {
     });
 }
 
+/**
+ * Get Animal data for mixed animal
+ * @param  {[type]} animal1 [description]
+ * @param  {[type]} animal2 [description]
+ * @param  {[type]} animal2 [description]
+ * @return {[type]}         [description]
+ */
+function getAnimal(animal1, animal2, animal3) {
+  let animalName = utils.makeAnimalName(animal1, animal2, animal3);
+
+  return database
+    .ref('animals/')
+    .orderByChild('name')
+    .equalTo(animalName)
+    .once('value')
+    .then(snapshot => {
+      let animalEntry = snapshot.val();
+      if (animalEntry) {
+        let animalKey = Object.keys(animalEntry)[0];
+        return animalEntry[animalKey];
+      }
+      return animalEntry;
+    });
+}
+
+/**
+ * Get animal data or create a new one then return data
+ * @param  {string} animal1 animal string to build animal name with
+ * @param  {string} animal2 animal string to build animal name with
+ * @param  {string} animal3 animal string to build animal name with
+ * @return {Promise}        Promise containing animal data object
+ */
+function getOrCreate(animal1, animal2, animal3) {
+  return getAnimal(animal1, animal2, animal3).then(animalData => {
+    if (animalData) {
+      return animalData;
+    } else {
+      return createNewAnimalRecord(animal1, animal2, animal3).then(
+        successJson => {
+          return getAnimal(animal1, animal2, animal3).then(animalData => {
+            return animalData;
+          });
+        }
+      );
+    }
+  });
+}
+
 function mixipediaList(request, response) {
   let limit = request.query.limit || 10;
   let start = request.query.start;
@@ -135,25 +183,19 @@ function mixipediaGet(request, response) {
   const animal1 = request.params.animal1;
   const animal2 = request.params.animal2;
   const animal3 = request.params.animal3;
-  let animalName = utils.makeAnimalName(animal1, animal2, animal3);
 
-  database
-    .ref('animals/')
-    .orderByChild('name')
-    .equalTo(animalName)
-    .once('value')
-    .then(snapshot => {
-      let animalEntry = snapshot.val();
-      let animalKey = Object.keys(animalEntry)[0];
-      response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
-      response.set('Content-Type', 'application/json');
-      response.status(200).send(JSON.stringify(animalEntry[animalKey]));
-    });
+  return getAnimal(animal1, animal2, animal3).then(animalData => {
+    response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+    response.set('Content-Type', 'application/json');
+    response.status(200).send(JSON.stringify(animalData));
+  });
 }
 
 module.exports = {
   get: mixipediaGet,
   list: mixipediaList,
   post: mixipediaPost,
-  createNewAnimalRecord: createNewAnimalRecord
+  createNewAnimalRecord: createNewAnimalRecord,
+  getAnimal: getAnimal,
+  getOrCreate: getOrCreate
 };

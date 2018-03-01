@@ -2,4 +2,4 @@ setup:
 	./setup.sh
 
 run:
-	GOOGLE_APPLICATION_CREDENTIALS='${HOME}/Projects/animixer/animixer-pk.json' generate.sh
+	source ./setup.sh && GOOGLE_APPLICATION_CREDENTIALS='${HOME}/Projects/animixer/animixer-pk.json' python generate_gifs.py

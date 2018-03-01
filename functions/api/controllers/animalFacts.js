@@ -12,6 +12,11 @@ const responseData = yaml.safeLoad(
   )
 );
 
+/**
+ * Generate animal fact from animal fact copy .yaml files
+ * @param  {Object} request  nodejs request object
+ * @param  {Object} response nodejs response object
+ */
 function animalFact(request, response) {
   const animal1 = request.query.animal1;
   const animal2 = request.query.animal2;
