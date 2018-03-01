@@ -76,7 +76,7 @@ function animalsIdentical(app, context) {
     .setBodyText(`The ${context.animalHead}!`)
     .addButton(
       'share',
-      `https://animixer.beta.rehab/animal/?animal1=${context.animalHead}` +
+      `https://safarimixer.beta.rehab/animal/?animal1=${context.animalHead}` +
         `&animal2=${context.animalBody}&animal3=${context.animalLegs}`
     );
   let resp = new RichResponse()

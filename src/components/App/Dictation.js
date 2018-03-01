@@ -20,7 +20,7 @@ class Dictation extends React.Component<{}> {
   constructor(props) {
     super(props);
     this.artyom = props.artyom || new Artyom();
-    this.placeHolderText = 'Click to speak to animixer';
+    this.placeHolderText = 'Click to speak to safarimixer';
     this.userInput = props.userInput || function(text) {};
     this.awaitingInput = props.awaitingInput || function(text) {};
 

@@ -17,7 +17,7 @@ import Dictation from './Dictation';
 import Speech from './Speech';
 
 const ENTER_KEY_CODE = 13;
-const Host = 'https://animixer.beta.rehab';
+const Host = 'https://safarimixer.beta.rehab';
 
 const Container = styled.div`
   overflow-y: auto;
