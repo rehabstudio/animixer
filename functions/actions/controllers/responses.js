@@ -254,7 +254,11 @@ function unknownAnimalResponse(app, noun) {
     let aOrAn = utils.getAOrAn(replacement);
 
     if (found) {
-      unknownResponse = respData.unknown_1.format(noun, aOrAn, replacement);
+      unknownResponse = respData.unknown_1.format(
+        noun.toLowerCase(),
+        aOrAn,
+        replacement
+      );
     } else {
       unknownResponse = respData.unknown_2.format(aOrAn, replacement);
     }
