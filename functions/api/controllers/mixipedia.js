@@ -118,11 +118,13 @@ function getOrCreate(animal1, animal2, animal3) {
     if (animalData) {
       return animalData;
     } else {
-      createNewAnimalRecord(animal1, animal2, animal3).then(successJson => {
-        return getAnimal(animal1, animal2, animal3).then(animalData => {
-          return animalData;
-        });
-      });
+      return createNewAnimalRecord(animal1, animal2, animal3).then(
+        successJson => {
+          return getAnimal(animal1, animal2, animal3).then(animalData => {
+            return animalData;
+          });
+        }
+      );
     }
   });
 }
