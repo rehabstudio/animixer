@@ -165,7 +165,7 @@ generateGif / generateSound - python
 
 - Use std libraries to handle OS separators
 - Add docstrings
-- Add arguments for command Linked
+- Add arguments for generate scripts
 
 generateGif - animixer.jsx
 
