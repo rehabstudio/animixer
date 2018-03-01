@@ -108,10 +108,10 @@ function getAnimal(animal1, animal2, animal3) {
 
 /**
  * Get animal data or create a new one then return data
- * @param  {[type]} animal1 [description]
- * @param  {[type]} animal2 [description]
- * @param  {[type]} animal3 [description]
- * @return {[type]}         [description]
+ * @param  {string} animal1 animal string to build animal name with
+ * @param  {string} animal2 animal string to build animal name with
+ * @param  {string} animal3 animal string to build animal name with
+ * @return {Promise}        Promise containing animal data object
  */
 function getOrCreate(animal1, animal2, animal3) {
   return getAnimal(animal1, animal2, animal3).then(animalData => {
