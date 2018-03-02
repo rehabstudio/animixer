@@ -15,7 +15,7 @@ animal_response:
   fun_fact: Here’s a fun fact about the ${0} - ${1}
 
 screen_switch:
-  text: Would you like me to send a picture of the ${0} to your phone?
+  text: You can see the ${0} if you switch devices
   notif: Your unique animal!
 
 not_found:

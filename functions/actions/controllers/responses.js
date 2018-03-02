@@ -126,12 +126,11 @@ function animalResponse(app, context) {
     funFact = context.animalData.animalFact;
   }
 
-  success = success + ' ' + respData.fun_fact.format(animalName, funFact);
-
   animalResp.speech =
     '<speak>' +
     success +
     `<audio src="${context.audioUrl}"></audio> ` +
+    funFact +
     '</speak>';
   rediscoverResp.speech = '<speak>' + rediscover + '</speak>';
 
