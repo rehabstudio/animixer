@@ -1,6 +1,7 @@
 import Artyom from 'artyom.js';
 import React from 'react';
 import styled from 'styled-components';
+import utils from './../../utils';
 
 const iconSize = '45px';
 
@@ -30,7 +31,12 @@ class Speech extends React.Component<{}> {
       state.enabled = true;
     }
 
-    this.artyom = props.artyom || new Artyom();
+    if (!utils.isIEorEDGE()) {
+      this.artyom = props.artyom || new Artyom();
+    } else {
+      this.artyom = null;
+    }
+
     this.speakingCallback = props.speakingCallback || function(text) {};
     this.state = state;
   }
@@ -61,7 +67,9 @@ class Speech extends React.Component<{}> {
           this.speakingCallback(false);
         }
       };
-      this.artyom.say(text, speakConfig);
+      if (this.artyom) {
+        this.artyom.say(text, speakConfig);
+      }
     }
   }
 
@@ -80,6 +88,7 @@ class Speech extends React.Component<{}> {
       <SpeakerIcon
         className="valign-wrapper"
         onClick={this.toggleSpeech.bind(this)}
+        className={!utils.isIEorEDGE() ? 'valign-wrapper' : 'hidden'}
       >
         <i
           className="center-align small material-icons"
