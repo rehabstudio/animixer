@@ -174,7 +174,7 @@ class Animal extends React.Component<{}> {
             </AnimalContainer>
             <div style={{ width: 'fit-content', margin: 'auto' }}>
               <AudioButton
-                className="valign-wrapper left"
+                className="valign-wrapper"
                 onClick={this.playAnimalSound.bind(this)}
               >
                 <AudioButtonText>

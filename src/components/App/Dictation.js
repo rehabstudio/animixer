@@ -1,6 +1,7 @@
 import Artyom from 'artyom.js';
 import React from 'react';
 import styled from 'styled-components';
+import utils from './../../utils';
 
 const iconSize = '45px';
 
@@ -35,8 +36,13 @@ class Dictation extends React.Component<{}> {
       dictationConfig.onResult = this.onResultMobileWrapper.bind(this);
     }
 
+    let dictation;
+    if (this.artyom.Device.isChrome) {
+      dictation = this.artyom.newDictation(dictationConfig);
+    }
+
     this.state = {
-      dictation: this.artyom.newDictation(dictationConfig),
+      dictation: dictation,
       text: this.placeHolderText,
       recordOn: false,
       recording: false,
@@ -157,7 +163,7 @@ class Dictation extends React.Component<{}> {
   render() {
     return (
       <MicIcon
-        className={this.artyom.Device.isChrome ? 'valign-wrapper' : 'hidden'}
+        className={utils.isChrome() ? 'valign-wrapper' : 'hidden'}
         onClick={this.toggleDictation.bind(this)}
       >
         <i
