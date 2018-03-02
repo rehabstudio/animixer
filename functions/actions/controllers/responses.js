@@ -130,7 +130,7 @@ function animalResponse(app, context) {
     '<speak>' +
     success +
     `<audio src="${context.audioUrl}"></audio> ` +
-    funFact +
+    respData.fun_fact.format(animalName, funFact) +
     '</speak>';
   rediscoverResp.speech = '<speak>' + rediscover + '</speak>';
 
