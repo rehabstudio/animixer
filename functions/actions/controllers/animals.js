@@ -3,7 +3,6 @@ const rp = require('request-promise');
 const contextFn = require('./../logic/context');
 const responses = require('./responses');
 const utils = require('./../../common/utils');
-const surface = require('./surface');
 const { APIHost } = require('./../../config');
 const mixipedia = require('./../../api/controllers/mixipedia');
 
@@ -90,7 +89,7 @@ function generateAnimal(app, skipSwitchScreen) {
   return Promise.all([imagePromise, animalFoundPromise])
     .then(responseData => {
       if (responseData[0].statusCode === 200 && responseData[1]) {
-        if (!skipSwitchScreen && surface.shouldSwitchScreen(app, context)) {
+        if (!skipSwitchScreen && shouldSwitchScreen(app, context)) {
           return;
         }
         context.animalData = responseData[1];
@@ -125,6 +124,32 @@ function changeAnimal(app) {
     // else return response to continue journey
     return responses.changeAnimal(app, context);
   }
+}
+
+/**
+ * If we don't have a screen ask a user to switch to phone
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {Object} context parsed values from dialog flow
+ */
+function shouldSwitchScreen(app, context) {
+  let hasScreen;
+  let screenAvailable;
+  try {
+    hasScreen = app.hasSurfaceCapability(app.SurfaceCapabilities.SCREEN_OUTPUT);
+    screenAvailable = app.hasAvailableSurfaceCapabilities(
+      app.SurfaceCapabilities.SCREEN_OUTPUT
+    );
+  } catch (err) {
+    hasScreen = false;
+    screenAvailable = false;
+  }
+
+  if (!hasScreen && screenAvailable) {
+    responses.screenSwitch(app, context);
+    return true;
+  }
+  return false;
 }
 
 module.exports = {

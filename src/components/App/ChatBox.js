@@ -298,15 +298,19 @@ class ChatBox extends React.Component<{}, {}> {
     let outputText = /<speak>(.*?)<\/speak>/g.exec(speech)[1];
 
     if (audioContent) {
-      let audioSrc = /src="(.*?)"/g.exec(audioContent[1])[1];
-      outputText = outputText.replace(audioContent[0], '');
-      this.setState({ audioUrl: audioSrc });
+      for (let i = 1; i < audioContent.length; i++) {
+        outputText = outputText.replace(audioContent[i], '');
+      }
+      if (audioContent) {
+        let audioSrc = /src="(.*?)"/g.exec(audioContent[1])[1];
+        this.setState({ audioUrl: audioSrc });
+      }
     }
 
     text.innerHTML = outputText;
     node.appendChild(text);
 
-    this.setState({ speak: text.innerHTML });
+    this.setState({ speak: speech });
   }
 
   setResponseOnNode(response, node) {
