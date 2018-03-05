@@ -98,7 +98,7 @@ syllables:
     - elo
     - lope
   buffalo:
-    - buff
+    - b
     - uffa
     - lo
   bunny:
@@ -106,13 +106,13 @@ syllables:
     - abbi
     - bit
   cat:
-    - puss
-    - ussy
-    - cat
+    - c
+    - a
+    - t
   chicken:
-    - chick
     - ick
-    - ken
+    - en
+    - en
   crocodile:
     - croc
     - oco
@@ -130,8 +130,8 @@ syllables:
     - epha
     - phant
   fox:
-    - F
     - ox
+    - o
     - x
   flamingo:
     - flam
@@ -147,7 +147,7 @@ syllables:
     - raffe
   gorilla:
     - gorr
-    - illa
+    - il
     - rilla
   hippo:
     - hipp
@@ -183,7 +183,7 @@ syllables:
     - ny
   puma:
     - p
-    - um
+    - a
     - ma
   rhinoceros:
     - rhin
