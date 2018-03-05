@@ -86,6 +86,9 @@ class Animal extends React.Component<{}> {
     this.titleEnabled =
       props.titleEnabled === undefined ? true : props.titleEnabled;
     this.onLoad = props.onLoad || function() {};
+    this.state = {
+      shareMessage: ''
+    };
   }
 
   componentWillReceiveProps(newProps) {
@@ -94,6 +97,10 @@ class Animal extends React.Component<{}> {
         this.shareEnabled = newProps[param];
       }
     }
+    if (newProps.animalData && newProps !== this.props) {
+      this.updateShareMetaTags(newProps.animalData);
+      this.updateShareMessage(newProps.animalData);
+    }
   }
 
   componentDidMount() {
@@ -101,6 +108,36 @@ class Animal extends React.Component<{}> {
     if (this.animalImg && this.props.animalData) {
       this.animalImg.src = this.props.animalData.imageUrl;
     }
+  }
+
+  updateShareMetaTags(animalData) {
+    let shareData = {
+      'meta[property="og:image"]': animalData.image_url,
+      'meta[property="og:image:secure_url"]': animalData.image_url,
+      'meta[name="twitter:image"]': animalData.image_url,
+      'meta[name="twitter:card"]': animalData.image_url
+    };
+    let keys = Object.keys(shareData);
+
+    for (let i = 0; i < keys.length; i++) {
+      document
+        .querySelector(keys[i])
+        .setAttribute('content', shareData[keys[i]]);
+    }
+  }
+
+  updateShareMessage(animalData) {
+    let funFact = animalData.animalFact
+      ? ' Here’s a fun fact - ' + animalData.animalFact
+      : '';
+    let message =
+      'I discovered the ' +
+      animalData.animalName +
+      funFact +
+      "! Try making your own animal. Say '#HeyGoogle', talk to Safari Mixer.";
+    this.setState({
+      shareMessage: message
+    });
   }
 
   playAnimalSound() {
@@ -123,11 +160,6 @@ class Animal extends React.Component<{}> {
   }
 
   render() {
-    let title =
-      this.props.animalData !== {}
-        ? this.props.animalData.animalDiscoverText
-        : '';
-
     return (
       <Container>
         <TitleContainer
@@ -196,15 +228,17 @@ class Animal extends React.Component<{}> {
             <ShareContainer>
               <FacebookShareButton
                 url={this.props.animalData.shareUrl}
-                quote={title}
+                quote={this.state.shareMessage}
                 className="share-button"
+                hashtag="#HeyGoogle"
               >
                 <FacebookIcon size={32} round />
               </FacebookShareButton>
               <TwitterShareButton
                 url={this.props.animalData.shareUrl}
-                title={title}
+                title={this.state.shareMessage}
                 className="share-button"
+                hashtag="#HeyGoogle"
               >
                 <TwitterIcon size={32} round />
               </TwitterShareButton>
