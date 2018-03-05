@@ -11,6 +11,9 @@ const knowledgeGraph = require('./../logic/knowledgeGraph');
 const animalFacts = require('./../../common/animalFacts');
 const mixipedia = require('./../../api/controllers/mixipedia');
 
+const chimeSrc =
+  'https://storage.googleapis.com/animixer-1d266.appspot.com/chime.ogg';
+
 const responseData = yaml.safeLoad(
   fs.readFileSync(
     path.join(__dirname, '..', '..', 'copy/response.yaml'),
@@ -36,13 +39,38 @@ String.prototype.format = function() {
 };
 
 /**
+ * Wrapper around app.ask to add end of response sound
+ * NOTE: There is a max of 3 responses on a rich response so this might not
+ * Add the end of response sound to large responses
+ *
+ * @param  {Object} {string} either object or response data
+ */
+function ask(app, response) {
+  let resp;
+  if (typeof response === 'string') {
+    let respObj = {
+      speech:
+        '<speak>' + response + `<audio src="${chimeSrc}"></audio>` + '</speak>'
+    };
+    resp = new RichResponse();
+    resp.addSimpleResponse(respObj);
+  } else {
+    let respObj = {
+      speech: '<speak>' + `<audio src="${chimeSrc}"></audio>` + '</speak>'
+    };
+    resp = response.addSimpleResponse(respObj);
+  }
+  app.ask(resp);
+}
+
+/**
  * Invalid animals recieved response
  *
  * @param  {Object} app     app actions on google app object
  * @param  {Object} context parsed values from dialog flow
  */
 function animalsNotValid(app, context) {
-  return app.ask(responseData.animals_not_valid.text);
+  return ask(app, responseData.animals_not_valid.text);
 }
 
 /**
@@ -82,7 +110,67 @@ function animalsIdentical(app, context) {
   let resp = new RichResponse()
     .addBasicCard(card)
     .addSimpleResponse(simpleResp);
-  app.ask(resp);
+  ask(app, resp);
+}
+
+/**
+ * Welcome response
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {Object} context parsed values from dialog flow
+ */
+function welcome(app, context) {
+  let resp = utils.randomSelection([
+    responseData.welcome.text_1,
+    responseData.welcome.text_2
+  ]);
+  return ask(app, resp);
+}
+
+/**
+ * restart response
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {Object} context parsed values from dialog flow
+ */
+function restart(app, context) {
+  let resp = utils.randomSelection([
+    responseData.restart.text_1,
+    responseData.restart.text_2
+  ]);
+  return ask(app, resp);
+}
+
+/**
+ * Animals head response
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {Object} context parsed values from dialog flow
+ */
+function animalHead(app, context) {
+  let resp = utils
+    .randomSelection([
+      responseData.animal_head.text_1,
+      responseData.animal_head.text_2
+    ])
+    .format(context.animalHead);
+  return ask(app, resp);
+}
+
+/**
+ * Animals body response
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {Object} context parsed values from dialog flow
+ */
+function animalBody(app, context) {
+  let resp = utils
+    .randomSelection([
+      responseData.animal_body.text_1,
+      responseData.animal_body.text_2
+    ])
+    .format(context.animalBody);
+  return ask(app, resp);
 }
 
 /**
@@ -132,7 +220,8 @@ function animalResponse(app, context) {
     `<audio src="${context.audioUrl}"></audio> ` +
     respData.fun_fact.format(animalName, funFact) +
     '</speak>';
-  rediscoverResp.speech = '<speak>' + rediscover + '</speak>';
+  rediscoverResp.speech =
+    '<speak>' + rediscover + `<audio src="${chimeSrc}"></audio>` + '</speak>';
 
   let card = new BasicCard()
     .setTitle(animalName)
@@ -153,7 +242,7 @@ function animalResponse(app, context) {
     .addSimpleResponse(animalResp)
     .addBasicCard(card)
     .addSimpleResponse(rediscoverResp);
-  app.ask(resp);
+  ask(app, resp);
 }
 
 /**
@@ -197,7 +286,7 @@ function notFoundResponse(app) {
   simpleResp.speech = `<speak>${respData.text}</speak>`;
   resp = new RichResponse().addSimpleResponse(simpleResp);
 
-  app.ask(resp);
+  ask(app, resp);
 }
 
 /**
@@ -233,7 +322,7 @@ function changeAnimal(app, context) {
   }
   simpleResp.speech = `<speak>${response}</speak>`;
   let resp = new RichResponse().addSimpleResponse(simpleResp);
-  app.ask(resp);
+  ask(app, resp);
 }
 
 /**
@@ -263,17 +352,21 @@ function unknownAnimalResponse(app, noun) {
     }
     simpleResp.speech = `<speak>${unknownResponse}</speak>`;
     resp = new RichResponse().addSimpleResponse(simpleResp);
-    app.ask(resp);
+    ask(app, resp);
   });
 }
 
 module.exports = {
+  animalBody,
+  animalHead,
   animalsIdentical,
   animalsNotValid,
   animalResponse,
   changeAnimal,
   exitResponse,
   notFoundResponse,
+  restart,
   screenSwitch,
-  unknownAnimalResponse
+  unknownAnimalResponse,
+  welcome
 };

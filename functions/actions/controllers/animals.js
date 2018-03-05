@@ -41,6 +41,24 @@ function unknownAnimal(app) {
 }
 
 /**
+ * Handle animal head request
+ * @param  {Object} app actions on google app object
+ */
+function animalHead(app) {
+  let context = contextFn.generateContext(app, [ANIMAL1_ARGUMENT]);
+  responses.animalHead(app, context);
+}
+
+/**
+ * Handle animal body request
+ * @param  {Object} app actions on google app object
+ */
+function animalBody(app) {
+  let context = contextFn.generateContext(app, [ANIMAL2_ARGUMENT]);
+  responses.animalBody(app, context);
+}
+
+/**
  * Handle generate animal request
  *
  * @param  {Object} app     app actions on google app object
@@ -153,6 +171,8 @@ function shouldSwitchScreen(app, context) {
 }
 
 module.exports = {
+  animalBody,
+  animalHead,
   changeAnimal,
   generateAnimal,
   unknownAnimal

@@ -1,3 +1,19 @@
+animal_head:
+  text_1: The head of a wild ${0} - fascinating! What body does it have?
+  text_2: The head of a wild ${0} - how unusual. What body does it have?
+
+animal_body:
+  text_1: Ah the ${0} - I’ve seen an animal with that body. And what legs does it have?
+  text_2: With the body of a magnificent ${0}!  And what legs does it have?
+
+restart:
+  text_1: To start, what head does your animal have? Or, you can tell me all three animals.
+  text_2: To start, what head does your animal have? Or, you try changing the head, body or legs to another animal.
+
+welcome:
+  text_1: Welcome explorer! There are lots of wild animals hiding on this safari. Let’s find one! What animal shall we start with for the head?
+  text_2: Welcome back explorer! Let’s discover a new wild animal. What head does your animal have?
+
 animals_not_valid:
   text: I've never seen an animal with the same head body or legs, would you like to look again?
 
