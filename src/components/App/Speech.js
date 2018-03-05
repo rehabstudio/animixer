@@ -2,6 +2,7 @@ import Artyom from 'artyom.js';
 import React from 'react';
 import AsyncWorkQueue from 'async-work-queue';
 import styled from 'styled-components';
+import utils from './../../utils';
 
 const iconSize = '45px';
 
@@ -31,7 +32,12 @@ class Speech extends React.Component<{}> {
       state.enabled = true;
     }
 
-    this.artyom = props.artyom || new Artyom();
+    if (!utils.isIEorEDGE()) {
+      this.artyom = props.artyom || new Artyom();
+    } else {
+      this.artyom = null;
+    }
+
     this.speakingCallback = props.speakingCallback || function(text) {};
     this.state = state;
     this.queue = new AsyncWorkQueue(this.speechWorker.bind(this));
@@ -44,6 +50,11 @@ class Speech extends React.Component<{}> {
    * @param  {function} resolve complete callback function
    */
   speechWorker(text, resolve) {
+    if (!this.artyom) {
+      resolve();
+      return;
+    }
+
     let config = {
       onStart: () => {
         this.speakingCallback(true);
@@ -144,6 +155,7 @@ class Speech extends React.Component<{}> {
       <SpeakerIcon
         className="valign-wrapper"
         onClick={this.toggleSpeech.bind(this)}
+        className={!utils.isIEorEDGE() ? 'valign-wrapper' : 'hidden'}
       >
         <audio ref={ele => (this.audio = ele)} controls className="hidden" />
         <i

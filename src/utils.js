@@ -5,6 +5,22 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function isIEorEDGE() {
+  return (
+    navigator.appName == 'Microsoft Internet Explorer' ||
+    (navigator.appName == 'Netscape' &&
+      navigator.appVersion.indexOf('Edge') > -1)
+  );
+}
+
+function isChrome() {
+  return (
+    /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
+  );
+}
+
 export default {
-  capitalizeFirstLetter
+  capitalizeFirstLetter,
+  isChrome,
+  isIEorEDGE
 };
