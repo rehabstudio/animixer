@@ -76,6 +76,14 @@ class Speech extends React.Component<{}> {
     }
   }
 
+  /**
+   * Will take text of ssml text and will synthesize speech and Sounds,
+   * Adds text and audio to speech worker queue to ensure that multiple
+   * audio / sounds do not play at the same time and in the order they are
+   * added to the queue
+   *
+   * @param  {string} text text or ssml
+   */
   speak(text) {
     if (!this.state.enabled) {
       return;
@@ -107,6 +115,11 @@ class Speech extends React.Component<{}> {
     }
   }
 
+  /**
+   * Plays an audio url with simular functionality to artyom
+   * @param  {string} audioSrc audio sound url
+   * @param  {Object} config  object passed to artyom with callbacks
+   */
   playAudio(audioSrc, config) {
     this.audio.src = audioSrc;
     this.audio.onended = config.onEnd;
