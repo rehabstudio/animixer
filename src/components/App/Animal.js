@@ -177,9 +177,7 @@ class Animal extends React.Component<{}> {
                 className="valign-wrapper"
                 onClick={this.playAnimalSound.bind(this)}
               >
-                <AudioButtonText>
-                  Hear me {this.props.animalData.animalVerb}
-                </AudioButtonText>
+                <AudioButtonText>Hear me</AudioButtonText>
               </AudioButton>
             </div>
           </ChatDiv>
