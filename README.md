@@ -2,7 +2,7 @@
 
 Safari Mixer is a Voice Experiment for Google Assistant that lets you combine animals to create new ones.
 
-https://animixer.beta.rehab/
+https://safarimixer.beta.rehab/
 
 **Setting up:**
 
