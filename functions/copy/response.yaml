@@ -1,5 +1,5 @@
 animal_head:
-  text_1: We’re looking for something with the head of a wild ${0} - fascinating! What body does it have?
+  text_1: We’re looking for something with the head of a wild ${0}! What body does it have?
   text_2: We’re looking for something with the head of a wild ${0} - how unusual. What body does it have?
 
 animal_body:
@@ -8,7 +8,7 @@ animal_body:
 
 restart:
   text_1: To start, what head does your animal have? Or, you can tell me all three animals.
-  text_2: To start, what head does your animal have? Or, you try changing the head, body or legs to another animal.
+  #text_2: To start, what head does your animal have? Or, you try changing the head, body or legs to another animal.
 
 welcome:
   text_1: Welcome explorer! There are lots of wild animals hiding on this safari. Let’s find one! What animal shall we start with for the head?

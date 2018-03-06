@@ -138,10 +138,7 @@ function welcome(app, context) {
  * @param  {Object} context parsed values from dialog flow
  */
 function restart(app, context) {
-  let resp = utils.randomSelection([
-    responseData.restart.text_1,
-    responseData.restart.text_2
-  ]);
+  let resp = utils.randomSelection([responseData.restart.text_1]);
   return ask(app, resp);
 }
 
