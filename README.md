@@ -22,11 +22,9 @@ $ make run
 $ make deploy
 ```
 
-> NOEL this is the new content for you to look at
-
 ## Technology
 
-Mystery Animal is built on [Actions on Google](https://developers.google.com/actions/), the platform that allows you to make things for the Google Assistant and the Google Home. It uses [Dialogflow](https://dialogflow.com/) to handle understanding what the player says, [Firebase Cloud Functions](https://firebase.google.com/docs/functions/) for backend code, and [Firebase Database](https://firebase.google.com/docs/database/) to save data. The project is written in JavaScript, using Actions on Google’s [Node.js client library](https://developers.google.com/actions/nodejs-client-library-release-notes).
+Safari Mixer is built on [Actions on Google](https://developers.google.com/actions/), the platform that allows you to make things for the Google Assistant and the Google Home. It uses [Dialogflow](https://dialogflow.com/) to handle understanding what the player says, [Firebase Cloud Functions](https://firebase.google.com/docs/functions/) for backend code, and [Firebase Database](https://firebase.google.com/docs/database/) to save data. The project is written in JavaScript, using Actions on Google’s [Node.js client library](https://developers.google.com/actions/nodejs-client-library-release-notes).
 
 This repo contains a pre-built Dialogflow Agent you can import into your own project. It contains all the Intents and Entities for Mystery Animal. This is all in the `dialogflow_agent` folder.
 
@@ -44,26 +42,10 @@ When your agent is created, click on the gear icon to get to the “Export and I
 
 ### Setting up the webhook
 
-**Install the Firebase CLI.**
-
-**Go to the `functions` folder**:
-
-`cd functions`
-
-**Install dependencies by going to the running either**
-
-`yarn` or `npm install`
-
-**Initialize Firebase**
-
-`firebase init`
+run `make setup` above.
 
 Select “functions” and optionally “database” if you’d also like to save the questions and responses.
 Select your Google Project ID as your default project. (This can be found in your Dialogflow agent settings.)
-
-**Deploy your webhook**
-
-`firebase deploy`
 
 **Get your webhook URL and put it in Dialogflow**
 
@@ -83,9 +65,7 @@ The Actions library’s built in `app.data` object is very useful for storing da
 
 ### Saving queries and responses to a Firebase Database
 
-The repo contains a module called `FirebaseDatabase.js`, which allows you to save info about what happens in a game to a Firebase Database. If you want to do this, you’ll have to set up your own service account. If you don’t want to use it, you can remove all the Firebase Database code from `index.js`.
-
-> NOEL this is the end of the new content for you to look at
+The repo contains a module called `config.js` in functions which contains all the account information for interacting with firebase real time database. This will need to be updated to your account credentials. This allows you to save info about which animals are discovered to a Firebase Database.
 
 ## Authentication
 
@@ -143,27 +123,3 @@ This used the actions-on-google SDK.
 ## Firebase starter project
 
 Built using the react firebase starter project: https://github.com/kriasoft/react-firebase-starter
-
-# TODO:
-
-Feedback after reviewing project:
-
-generateGif / generateSound - python
-
-- Use std libraries to handle OS separators
-- Add docstrings
-- Add arguments for command Linked
-
-generateGif - animixer.jsx
-
-- Break up into smaller files
-- Bad naming change renderComp -> buildComp
-- Break up functions so each does one thing
-
-react app
-
-- Write tests
-
-functions
-
-- Write tests
