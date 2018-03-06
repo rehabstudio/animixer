@@ -97,7 +97,7 @@ function generateAnimal(app, skipSwitchScreen) {
     uri: context.imageUrl,
     resolveWithFullResponse: true
   });
-  let animalFoundPromise = animalsModel.getOrCreate(
+  let animalFoundPromise = animalsModel.UpdateOrCreate(
     context.animalHead,
     context.animalBody,
     context.animalLegs

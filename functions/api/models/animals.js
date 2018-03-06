@@ -7,7 +7,7 @@ const { config } = require('./../../config');
 const firebase = require('./../../common/firebase');
 const utils = require('./../../common/utils');
 
-const animalData = yaml.safeLoad(
+const animalYamlData = yaml.safeLoad(
   fs.readFileSync(
     path.join(__dirname, '..', '..', 'copy/animals.yaml'),
     'utf-8'
@@ -40,7 +40,7 @@ function createUpdateAnimal(animal1, animal2, animal3) {
     animal2: animal2,
     animal3: animal3,
     animalFact: animalFacts.generateFact(),
-    animalVerb: animalData.verbs[animal1]
+    animalVerb: animalYamlData.verbs[animal1]
   };
 
   return database
@@ -53,7 +53,7 @@ function createUpdateAnimal(animal1, animal2, animal3) {
       if (animalEntry) {
         return updateAnimal(animalName, animalObj);
       } else {
-        return createAnimal(animalName, animalData);
+        return createAnimal(animalName, animalObj);
       }
     });
 }
@@ -88,12 +88,9 @@ function updateAnimal(animalName, animalData) {
  * @return {Promise}           Promise object to resolve when db action complete
  */
 function createAnimal(animalName, animalData) {
-  let animalKey = 'animals/' + animalName;
-  let animalObj = {};
-  animalObj[animalKey] = animalData;
   return database
-    .ref('animals/')
-    .push(animalObj)
+    .ref('animals/' + animalName)
+    .set(animalData)
     .then(function() {
       console.info('Animal Written to DB: ' + animalName);
       return { success: 1 };
@@ -150,10 +147,36 @@ function getOrCreate(animal1, animal2, animal3) {
   });
 }
 
+/**
+ * Update animal data or create a new one then return data
+ * @param  {string} animal1 animal string to build animal name with
+ * @param  {string} animal2 animal string to build animal name with
+ * @param  {string} animal3 animal string to build animal name with
+ * @return {Promise}        Promise containing animal data object
+ */
+function UpdateOrCreate(animal1, animal2, animal3) {
+  return getAnimal(animal1, animal2, animal3).then(animalData => {
+    if (animalData) {
+      animalData.date_found = new Date().getTime();
+      animalData.date_found_inv = new Date().getTime() * -1;
+      return updateAnimal(animalData.name, animalData).then(successJson => {
+        return animalData;
+      });
+    } else {
+      return createUpdateAnimal(animal1, animal2, animal3).then(successJson => {
+        return getAnimal(animal1, animal2, animal3).then(animalData => {
+          return animalData;
+        });
+      });
+    }
+  });
+}
+
 module.exports = {
   createAnimal,
   createUpdateAnimal,
   getAnimal,
   getOrCreate,
-  updateAnimal
+  updateAnimal,
+  UpdateOrCreate
 };
