@@ -8,6 +8,6 @@ module.exports = {
   api: functions.https.onRequest(api.app),
   cleanUserDataWrite: functions.database
     .ref('/users/{sessionId}')
-    .onWrite(triggers.users.clearOldUserDataTrigger),
-  test: functions.https.onRequest(triggers.users.clearOldUserDataTrigger)
+    .onWrite(triggers.users.clearOldUserDataTrigger)
+  //cleanUserDataWriteTest: functions.https.onRequest(triggers.users.clearOldUserDataTrigger)
 };

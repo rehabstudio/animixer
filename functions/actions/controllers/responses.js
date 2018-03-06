@@ -303,12 +303,7 @@ function changeAnimal(app, context) {
   let verb = context.changed === 'legs' ? 'were' : 'was';
   let newValue = context[animalMap[context.changed]];
   let aOrAn = utils.getAOrAn(newValue);
-  let response = responseData.text.format(
-    context.changed,
-    verb,
-    aOrAn,
-    newValue
-  );
+  let response = respData.text.format(context.changed, verb, aOrAn, newValue);
 
   if (!context.animalHead) {
     response += respData.missing_head;
