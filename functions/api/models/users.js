@@ -28,7 +28,8 @@ function getUserState(app) {
 function setUserState(app, data) {
   let sessionId = app.body_.sessionId;
   let userKey = 'users/' + sessionId;
-  data.timestamp = new Date();
+  data.timestamp = new Date().getTime();
+  data.timestamp_inv = data.timestamp * -1;
   let updateObj = {};
   updateObj[userKey] = data;
   return database
