@@ -342,13 +342,17 @@ function unknownAnimalResponse(app, noun) {
     let aOrAn = utils.getAOrAn(replacement);
 
     if (found) {
-      unknownResponse = respData.unknown_1.format(
-        noun.toLowerCase(),
-        aOrAn,
-        replacement
-      );
+      let unknown = utils.randomSelection([
+        respData.unknown_animal_1,
+        respData.unknown_animal_2
+      ]);
+      unknownResponse = unknown.format(aOrAn, replacement);
     } else {
-      unknownResponse = respData.unknown_2.format(aOrAn, replacement);
+      let unknown = utils.randomSelection([
+        respData.unknown_1,
+        respData.unknown_2
+      ]);
+      unknownResponse = unknown.format(aOrAn, replacement);
     }
     simpleResp.speech = `<speak>${unknownResponse}</speak>`;
     resp = new RichResponse().addSimpleResponse(simpleResp);
