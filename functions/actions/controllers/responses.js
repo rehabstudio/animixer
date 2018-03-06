@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 const utils = require('./../../common/utils');
 const knowledgeGraph = require('./../logic/knowledgeGraph');
 const animalFacts = require('./../../common/animalFacts');
-const mixipedia = require('./../../api/controllers/mixipedia');
+const userModel = require('./../../api/models/users');
 
 const chimeSrc =
   'https://storage.googleapis.com/animixer-1d266.appspot.com/chime.ogg';
@@ -48,9 +48,10 @@ String.prototype.format = function() {
 function ask(app, response) {
   let resp;
   if (typeof response === 'string') {
+    let speechStr =
+      '<speak>' + response + `<audio src="${chimeSrc}"></audio>` + '</speak>';
     let respObj = {
-      speech:
-        '<speak>' + response + `<audio src="${chimeSrc}"></audio>` + '</speak>'
+      speech: speechStr
     };
     resp = new RichResponse();
     resp.addSimpleResponse(respObj);
@@ -120,11 +121,17 @@ function animalsIdentical(app, context) {
  * @param  {Object} context parsed values from dialog flow
  */
 function welcome(app, context) {
-  let resp = utils.randomSelection([
-    responseData.welcome.text_1,
-    responseData.welcome.text_2
-  ]);
-  return ask(app, resp);
+  let resp;
+  return userModel.getUserState(app).then(state => {
+    if (state) {
+      resp = responseData.welcome.text_1;
+    } else {
+      resp = responseData.welcome.text_2;
+      // Creates empty state so we can recognise returning users
+      userModel.setUserState(app, {});
+    }
+    return ask(app, resp);
+  });
 }
 
 /**

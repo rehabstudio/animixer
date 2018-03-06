@@ -4,7 +4,7 @@ const contextFn = require('./../logic/context');
 const responses = require('./responses');
 const utils = require('./../../common/utils');
 const { APIHost } = require('./../../config');
-const mixipedia = require('./../../api/controllers/mixipedia');
+const animalsModel = require('./../../api/models/animals');
 
 // the parameters that are parsed from the generate_animal intent
 const ANIMAL1_ARGUMENT = 'animalHead';
@@ -75,7 +75,7 @@ function generateAnimal(app, skipSwitchScreen) {
 
   // If only one animal selected
   if (contextFn.animalsIdentical(context)) {
-    let animalFoundPromise = mixipedia.createNewAnimalRecord(
+    let animalFoundPromise = animalsModel.createUpdateAnimal(
       context.animalHead,
       context.animalBody,
       context.animalLegs
@@ -97,7 +97,7 @@ function generateAnimal(app, skipSwitchScreen) {
     uri: context.imageUrl,
     resolveWithFullResponse: true
   });
-  let animalFoundPromise = mixipedia.getOrCreate(
+  let animalFoundPromise = animalsModel.getOrCreate(
     context.animalHead,
     context.animalBody,
     context.animalLegs
@@ -172,6 +172,7 @@ function shouldSwitchScreen(app, context) {
 
 module.exports = {
   animalBody,
+  animalFoundPost,
   animalHead,
   changeAnimal,
   generateAnimal,
