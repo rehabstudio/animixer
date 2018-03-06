@@ -124,9 +124,9 @@ function welcome(app, context) {
   let resp;
   return userModel.getUserState(app).then(state => {
     if (state) {
-      resp = responseData.welcome.text_1;
-    } else {
       resp = responseData.welcome.text_2;
+    } else {
+      resp = responseData.welcome.text_1;
       // Creates empty state so we can recognise returning users
       userModel.setUserState(app, {});
     }
