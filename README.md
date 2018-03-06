@@ -1,33 +1,81 @@
-# Animixer
+# Safari Mixer
 
-A google assistant chat bot to combine animals to create new ones.
+Safari Mixer is a Voice Experiment for Google Assistant that lets you combine animals to create new ones.
 
-https://animixer.beta.rehab/
+https://safarimixer.beta.rehab/
 
-Setup:
+**Setting up:**
 
 ```
 $ make setup
 ```
-Running:
+
+**Running:**
+
 ```
 $ make run
 ```
-Deploying:
+
+**Deploying:**
+
 ```
 $ make deploy
 ```
 
+## Technology
+
+Safari Mixer is built on [Actions on Google](https://developers.google.com/actions/), the platform that allows you to make things for the Google Assistant and the Google Home. It uses [Dialogflow](https://dialogflow.com/) to handle understanding what the player says, [Firebase Cloud Functions](https://firebase.google.com/docs/functions/) for backend code, and [Firebase Database](https://firebase.google.com/docs/database/) to save data. The project is written in JavaScript, using Actions on Google’s [Node.js client library](https://developers.google.com/actions/nodejs-client-library-release-notes).
+
+This repo contains a pre-built Dialogflow Agent you can import into your own project. It contains all the Intents and Entities for Mystery Animal. This is all in the `dialogflow_agent` folder.
+
+Everything in the `functions` folder is used in Firebase Cloud Functions, which hosts the webhook code for Dialogflow. The webhook handles all the response logic for Mystery Animal. The bulk of the code is in `index.js`.
+
+### Importing the Dialogflow Agent
+
+Go to the [Actions on Google developer console](https://actions-console.corp.google.com/), and create a new project.
+
+Click “BUILD” on the Dialogflow card, and follow the flow to create a new Dialogflow agent.
+
+When your agent is created, click on the gear icon to get to the “Export and Import” tab. You can then compress the `dialogflow_agent` folder from this repo into a zip file, and then import it. You should then see all of Mystery Animal’s Intents and Entities in your project.
+
+[Here](https://dialogflow.com/docs/getting-started/basics)’s some more info about how Dialogflow works in general.
+
+### Setting up the webhook
+
+run `make setup` above.
+
+Select “functions” and optionally “database” if you’d also like to save the questions and responses.
+Select your Google Project ID as your default project. (This can be found in your Dialogflow agent settings.)
+
+**Get your webhook URL and put it in Dialogflow**
+
+Once you’ve successfully deployed your webhook, your terminal should give you a url called “Function URL.” In Dialogflow, click the “Fulfillment” tab and toggle the “Enable” switch for the webhook. Paste that url into the text field.
+
+**You can read more documentation about using Firebase Cloud Functions for Dialogflow fulfillment [here](https://dialogflow.com/docs/how-tos/getting-started-fulfillment).**
+
+### Testing your app
+
+You should now be able to test your app in the Dialogflow test console. You can also go to Dialogflow’s Integration tab, and try it on the Actions on Google simulator, where you can also hear it on a Google Home or Assistant device.
+
+### Playing with response logic
+
+The bulk of the response logic is in `index.js` with some custom classes in the `module` folder. You can read the docs about the Actions on Google Node SDK, which is called in with `const App = require("actions-on-google").DialogflowApp;`
+
+The Actions library’s built in `app.data` object is very useful for storing data within a session.
+
+### Saving queries and responses to a Firebase Database
+
+The repo contains a module called `config.js` in functions which contains all the account information for interacting with firebase real time database. This will need to be updated to your account credentials. This allows you to save info about which animals are discovered to a Firebase Database.
+
 ## Authentication
 
-For deploying this sounds and gifs this project uses a service private generated from:
+For deploying this sounds and GIFs this project uses a service private generated from:
 https://console.cloud.google.com/apis/credentials?project=animixer-1d266
 
 save the key at the root of this project with the name:
-animixer-pk.json
+`animixer-pk.json`
 
 The Makefiles in generateGif and generateSound have commands with the env vars required which will need to be updated.
-
 
 ## Overview
 
@@ -39,13 +87,12 @@ Python3 script that generates mixed animal sounds using Tensor Flow, Highly reco
 setting up GPU processing to reduce the time it takes to generate sound from 24hours ->
 a few hours.
 
-- Gif Generation
+- GIF Generation
 
 A .jsx AfterEffects script that will automate generation of .tif images from this AE
 scene: https://drive.google.com/file/d/1T84PRjxq8eqHTxoyzsaFqBLzBU7p5NP9/view?usp=sharing
 
-A python file to generate .gif files from the .tifs, (After Effects 2018 has no native gif generation) and upload them to a google storage bucket that the chatbot and webapp will
-link to.
+A Python file to generate .gif files from the .tifs, (After Effects 2018 has no native GIF generation) and upload them to a Google storage bucket that the dialog service and webapp will link to.
 
 - React Static Page
 
@@ -53,11 +100,12 @@ The web app is a static page that is hosted on firebase and this project is buil
 popular starter template (Linked below), the commands above generate the static content and uploads it to
 firebase.
 
-### Chatbot
+### Dialog service
 
-- Dialog Flow
+- Dialogflow
 
-The chatbot is setup on dialog flow:
+The dialog service uses Dialogflow:
+
 https://console.dialogflow.com/api-client/#/agent/2e0fe896-f947-4f7f-a252-8da8889f316f
 
 - Firebase Functions
@@ -75,27 +123,3 @@ This used the actions-on-google SDK.
 ## Firebase starter project
 
 Built using the react firebase starter project: https://github.com/kriasoft/react-firebase-starter
-
-# TODO:
-
-Feedback after reviewing project:
-
-generateGif / generateSound - python
-
-- Use std libraries to handle OS separators
-- Add docstrings
-- Add arguments for command Linked
-
-generateGif - animixer.jsx
-
-- Break up into smaller files
-- Bad naming change renderComp -> buildComp
-- Break up functions so each does one thing
-
-react app
-
-- Write tests
-
-functions
-
-- Write tests
