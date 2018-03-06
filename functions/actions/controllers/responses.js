@@ -56,10 +56,7 @@ function ask(app, response) {
     resp = new RichResponse();
     resp.addSimpleResponse(respObj);
   } else {
-    let respObj = {
-      speech: '<speak>' + `<audio src="${chimeSrc}"></audio>` + '</speak>'
-    };
-    resp = response.addSimpleResponse(respObj);
+    resp = response;
   }
   app.ask(resp);
 }
@@ -288,10 +285,7 @@ function exitResponse(app) {
  */
 function notFoundResponse(app) {
   let simpleResp = {};
-  let resp;
-  let respData = responseData.not_found;
-  simpleResp.speech = `<speak>${respData.text}</speak>`;
-  resp = new RichResponse().addSimpleResponse(simpleResp);
+  let resp = responseData.not_found.text;
 
   ask(app, resp);
 }
@@ -303,7 +297,6 @@ function notFoundResponse(app) {
  * @param  {Object} context parsed values from dialog flow
  */
 function changeAnimal(app, context) {
-  let simpleResp = {};
   let animalMap = {
     head: 'animalHead',
     body: 'animalBody',
@@ -327,9 +320,7 @@ function changeAnimal(app, context) {
   } else if (!context.animalLegs) {
     response += respData.missing_legs;
   }
-  simpleResp.speech = `<speak>${response}</speak>`;
-  let resp = new RichResponse().addSimpleResponse(simpleResp);
-  ask(app, resp);
+  ask(app, response);
 }
 
 /**
@@ -342,7 +333,6 @@ function unknownAnimalResponse(app, noun) {
   return knowledgeGraph.replacementAnimal(noun).then(results => {
     let found = results[0];
     let replacement = results[1];
-    let simpleResp = {};
     let resp;
     let respData = responseData.unknownAnimalResponse;
     let unknownResponse;
@@ -361,9 +351,7 @@ function unknownAnimalResponse(app, noun) {
       ]);
       unknownResponse = unknown.format(aOrAn, replacement);
     }
-    simpleResp.speech = `<speak>${unknownResponse}</speak>`;
-    resp = new RichResponse().addSimpleResponse(simpleResp);
-    ask(app, resp);
+    ask(app, unknownResponse);
   });
 }
 
