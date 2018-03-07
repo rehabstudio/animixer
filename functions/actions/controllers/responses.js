@@ -261,8 +261,8 @@ function screenSwitch(app, context) {
     )
   );
   let respData = responseData.screen_switch;
-  let text = respData.text.format(animalName);
-  let notif = respData.notif;
+  let text = respData.text;
+  let notif = respData.notif.format(animalName);
   app.askForNewSurface(text, notif, [app.SurfaceCapabilities.SCREEN_OUTPUT]);
 }
 
@@ -339,7 +339,8 @@ function unknownAnimalResponse(app, noun) {
     } else {
       let unknown = utils.randomSelection([
         respData.unknown_1,
-        respData.unknown_2
+        respData.unknown_2,
+        respData.unknown_3
       ]);
       unknownResponse = unknown.format(aOrAn, replacement);
     }

@@ -87,7 +87,8 @@ class Animal extends React.Component<{}> {
       props.titleEnabled === undefined ? true : props.titleEnabled;
     this.onLoad = props.onLoad || function() {};
     this.state = {
-      shareMessage: ''
+      shareMessage: '',
+      rediscoverMessage: ''
     };
   }
 
@@ -99,7 +100,7 @@ class Animal extends React.Component<{}> {
     }
     if (newProps.animalData && newProps !== this.props) {
       this.updateShareMetaTags(newProps.animalData);
-      this.updateShareMessage(newProps.animalData);
+      this.updateAnimalMessage(newProps.animalData);
     }
   }
 
@@ -126,17 +127,24 @@ class Animal extends React.Component<{}> {
     }
   }
 
-  updateShareMessage(animalData) {
+  updateAnimalMessage(animalData) {
     let funFact = animalData.animalFact
       ? ' Here’s a fun fact - ' + animalData.animalFact
       : '';
     let message =
       'I discovered the ' +
       animalData.animalName +
+      '! Here’s a fun fact - ' +
       funFact +
-      "! Try making your own animal. Say '#HeyGoogle', talk to Safari Mixer.";
+      " Try making your own animal. Say '#HeyGoogle, talk to Safari Mixer'.";
+
+    let rediscoverMessage =
+      utils.capitalizeFirstLetter(animalData.animalFact) +
+      ' Say ‘#HeyGoogle, talk to Safari Mixer’ to find a new animal.';
+
     this.setState({
-      shareMessage: message
+      shareMessage: message,
+      rediscoverMessage: rediscoverMessage
     });
   }
 
@@ -218,7 +226,7 @@ class Animal extends React.Component<{}> {
           >
             <div className="col s12 m8 offset-m2">
               <Text className="col s12 clearfix center-align">
-                {this.props.animalData.animalFactText}
+                {this.state.rediscoverMessage}
               </Text>
             </div>
           </ChatDiv>
