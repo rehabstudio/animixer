@@ -134,7 +134,7 @@ class Animal extends React.Component<{}> {
     let message =
       'I discovered the ' +
       animalData.animalName +
-      '! Here’s a fun fact - ' +
+      '! ' +
       funFact +
       " Try making your own animal. Say '#HeyGoogle, talk to Safari Mixer'.";
 
