@@ -414,6 +414,7 @@ class ChatBox extends React.Component<{}, {}> {
                     userInput={this.userInput.bind(this)}
                     awaitingInput={this.awaitingInput.bind(this)}
                     recordPause={this.state.speaking}
+                    enabled={true}
                   />
                 </div>
                 <Speech

@@ -40,11 +40,12 @@ class Dictation extends React.Component<{}> {
     if (this.artyom.Device.isChrome) {
       dictation = this.artyom.newDictation(dictationConfig);
     }
+    let enabled = this.props.enabled !== undefined ? this.props.enabled : false;
 
     this.state = {
       dictation: dictation,
       text: this.placeHolderText,
-      recordOn: false,
+      recordOn: enabled,
       recording: false,
       recordPause: false,
       currentPhrase: '',
@@ -177,7 +178,7 @@ class Dictation extends React.Component<{}> {
           style={{ width: '100%' }}
           ref={ele => (this.icon = ele)}
         >
-          mic_off
+          {this.recordOn ? 'mic_off' : 'mic'}
         </i>
       </MicIcon>
     );

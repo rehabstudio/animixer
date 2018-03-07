@@ -13,6 +13,10 @@ function isIEorEDGE() {
   );
 }
 
+function isSafari() {
+  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+}
+
 function isChrome() {
   return (
     /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
@@ -22,5 +26,6 @@ function isChrome() {
 export default {
   capitalizeFirstLetter,
   isChrome,
-  isIEorEDGE
+  isIEorEDGE,
+  isSafari
 };

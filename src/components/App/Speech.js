@@ -151,7 +151,7 @@ class Speech extends React.Component<{}> {
    * @param  {Object} config  object passed to artyom with callbacks
    */
   playAudio(audioSrc, config) {
-    if (!this.artyom.Device.isMobile) {
+    if (!this.artyom.Device.isMobile && !utils.isSafari()) {
       this.audio.src = audioSrc;
       this.audio.onended = config.onEnd;
       if (config.onStart) {
