@@ -73,9 +73,13 @@ class Dictation extends React.Component<{}> {
   }
 
   startDictation() {
-    if (!this.state.recording && !this.state.recordPause) {
-      this.state.dictation.start();
-      this.setState({ recording: true });
+    try {
+      if (!this.state.recording && !this.state.recordPause) {
+        this.state.dictation.start();
+        this.setState({ recording: true });
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -87,7 +91,7 @@ class Dictation extends React.Component<{}> {
   }
 
   toggleDictation() {
-    if (this.state.recording) {
+    if (this.state.recordOn) {
       this.icon.innerHTML = 'mic_off';
       this.stopDictation();
       this.setState({

@@ -1,10 +1,14 @@
-animals_not_valid:
-  text: I've never seen an animal with the same head body or legs, would you like to look again?
+welcome:
+  text_1: Welcome explorer to Safari Mixer! Here, there are very special wild animals hiding - so let’s find one! Which type of animal head should we look for first?
+  text_2: Welcome back explorer! Which type of animal head should we look for?
 
-animals_idential:
-  success_1: Congratulations, you’ve just discovered... ${0} ${1}! There are some amazing mixed up animals here. Let’s see what else is hiding.
-  success_2: There’s something hiding over there. It’s... ${0} ${1}! There are some really unusual animals on this safari. Let’s find a new one.
-  restart: To start, what head does your animal have?
+animal_head:
+  text_1: We’re looking for something with the head of a wild ${0}! What body does it have?
+  text_2: We’re looking for something with the head of a wild ${0} - how unusual. What body does it have?
+
+animal_body:
+  text_1: Ah the ${0} - I’ve seen an animal with that body. And what legs does it have?
+  text_2: With the body of a magnificent ${0}!  And what legs does it have?
 
 animal_response:
   success_1: Congratulations, you’ve found the wild ${0}! This is what it sounds like...
@@ -14,19 +18,34 @@ animal_response:
   body: Head of ${0}, body of ${1} and legs of ${2}
   fun_fact: Here’s a fun fact about the ${0} - ${1}
 
+animals_not_valid:
+  text: I've never seen an animal with the same head body or legs, would you like to look again?
+
+animals_idential:
+  success_1: You’ve found a ${0} ${1}! Let’s look again - I think we can find a more unusual animal on this safari.
+  success_2: You’ve found a ${0} ${1}! That’s a great animal, but I’ve seen some really surprising ones on this safari. Let’s find one.
+  restart: To start, what head does your animal have?
+
+restart:
+  text_1: To start, what head does your animal have? Or, you can tell me all three animals.
+  #text_2: To start, what head does your animal have? Or, you try changing the head, body or legs to another animal.
+
 screen_switch:
-  text: You can see the ${0} if you switch devices
-  notif: Your unique animal!
+  text: Great - check your phone to see what you’ve found!
+  notif: You’ve found the wild ${0}!
 
 not_found:
-  text: I haven’t discovered that animal yet on this safari. Would you like to try a different combination?
+  text: I haven’t discovered that animal yet on this safari. How about trying a different combination?
 
 exit:
-  text: Come back to the Animal Mixer safari any time.
+  text: Come back to the Safari Mixer any time.
 
 unknownAnimalResponse:
-  unknown_1: I haven’t seen a wild ${0} on this safari. You could try saying ${1} ${2}?
-  unknown_2: That doesn’t seem to be an animal. You could try saying ${0} ${1}?
+  unknown_animal_1: I haven’t seen that animal on this safari. You could try saying ${0} ${1}?
+  unknown_animal_2: I’m not sure I’ve seen that animal around here. What about saying ${0} ${1}?
+  unknown_1: That doesn’t seem to be an animal. You could try saying ${0} ${1}?
+  unknown_2: That wouldn’t make a very good animal. How about saying ${0} ${1}?
+  unknown_3: I don’t think you’ll see that on this safari! How about saying ${0} ${1}?
 
 changeAnimal:
   text: Yes, I can see it now! Looks like the ${0} ${1} actually ${2} ${3}!

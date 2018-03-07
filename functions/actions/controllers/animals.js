@@ -4,7 +4,7 @@ const contextFn = require('./../logic/context');
 const responses = require('./responses');
 const utils = require('./../../common/utils');
 const { APIHost } = require('./../../config');
-const mixipedia = require('./../../api/controllers/mixipedia');
+const animalsModel = require('./../../api/models/animals');
 
 // the parameters that are parsed from the generate_animal intent
 const ANIMAL1_ARGUMENT = 'animalHead';
@@ -41,6 +41,24 @@ function unknownAnimal(app) {
 }
 
 /**
+ * Handle animal head request
+ * @param  {Object} app actions on google app object
+ */
+function animalHead(app) {
+  let context = contextFn.generateContext(app, [ANIMAL1_ARGUMENT]);
+  responses.animalHead(app, context);
+}
+
+/**
+ * Handle animal body request
+ * @param  {Object} app actions on google app object
+ */
+function animalBody(app) {
+  let context = contextFn.generateContext(app, [ANIMAL2_ARGUMENT]);
+  responses.animalBody(app, context);
+}
+
+/**
  * Handle generate animal request
  *
  * @param  {Object} app     app actions on google app object
@@ -57,7 +75,7 @@ function generateAnimal(app, skipSwitchScreen) {
 
   // If only one animal selected
   if (contextFn.animalsIdentical(context)) {
-    let animalFoundPromise = mixipedia.createNewAnimalRecord(
+    let animalFoundPromise = animalsModel.createUpdateAnimal(
       context.animalHead,
       context.animalBody,
       context.animalLegs
@@ -79,7 +97,7 @@ function generateAnimal(app, skipSwitchScreen) {
     uri: context.imageUrl,
     resolveWithFullResponse: true
   });
-  let animalFoundPromise = mixipedia.getOrCreate(
+  let animalFoundPromise = animalsModel.UpdateOrCreate(
     context.animalHead,
     context.animalBody,
     context.animalLegs
@@ -153,6 +171,9 @@ function shouldSwitchScreen(app, context) {
 }
 
 module.exports = {
+  animalBody,
+  animalFoundPost,
+  animalHead,
   changeAnimal,
   generateAnimal,
   unknownAnimal

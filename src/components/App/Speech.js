@@ -26,7 +26,8 @@ class Speech extends React.Component<{}> {
       throw new Error('Expecting Artyom instance in props');
     }
     let state = {
-      enabled: false
+      enabled: false,
+      speaking: false
     };
     if (this.props.enabled) {
       state.enabled = true;
@@ -55,15 +56,31 @@ class Speech extends React.Component<{}> {
       return;
     }
 
-    let config = {
-      onStart: () => {
+    let config = {};
+
+    if (!this.state.speaking) {
+      config.onStart = () => {
         this.speakingCallback(true);
-      },
-      onEnd: () => {
+      };
+      this.setState({
+        speaking: true
+      });
+    }
+
+    if (this.queue.length < 1) {
+      config.onEnd = () => {
         this.speakingCallback(false);
+        this.setState({
+          speaking: false
+        });
         resolve();
-      }
-    };
+      };
+    } else {
+      config.onEnd = () => {
+        resolve();
+      };
+    }
+
     let audioData = /src="(.*?)"/g.exec(text);
     if (audioData) {
       this.playAudio(audioData[1], config);

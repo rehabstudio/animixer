@@ -13,8 +13,6 @@ const app = express();
 app.use(cors({ origin: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// Add middleware to authenticate requests
-//app.use(myMiddleware);
 
 // animal fact endpoint
 app.get('/animalFact', animalFactApi.get);
