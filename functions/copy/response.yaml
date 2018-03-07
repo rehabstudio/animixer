@@ -38,7 +38,7 @@ not_found:
   text: I haven’t discovered that animal yet on this safari. How about trying a different combination?
 
 exit:
-  text: Come back to the Safari Mixer safari any time.
+  text: Come back to the Safari Mixer any time.
 
 unknownAnimalResponse:
   unknown_animal_1: I haven’t seen that animal on this safari. You could try saying ${0} ${1}?
