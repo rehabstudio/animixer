@@ -3,6 +3,11 @@ const mixipedia = require('./mixipedia');
 const utils = require('./../../common/utils');
 const database = firebase.database();
 
+/**
+ * Helper API endpoint to refresh all animals if schema changes
+ * @param  {Object} request  nodejs request object
+ * @param  {Object} response nodejs response object
+ */
 function updateAnimals(request, response) {
   database
     .ref('/animals')

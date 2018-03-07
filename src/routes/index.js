@@ -14,7 +14,7 @@ const routes = [
     path: '',
     components: () => [import(/* webpackChunkName: 'home' */ './Home')],
     render: ({ location, components: [Home] }) => ({
-      title: 'Animixer',
+      title: 'Safari Mixer',
       body: <Home />
     })
   },
@@ -22,7 +22,7 @@ const routes = [
     path: '/animal',
     components: () => [import(/* webpackChunkName: 'animal' */ './Animal')],
     render: ({ location, components: [Animal] }) => ({
-      title: 'Animal • Animixer',
+      title: 'Animal • Safari Mixer',
       body: <Animal location={location} />
     })
   },
@@ -30,7 +30,7 @@ const routes = [
     path: '/mixipedia',
     components: () => [import(/* webpackChunkName: 'about' */ './Mixipedia')],
     render: ({ location, components: [Mixipedia] }) => ({
-      title: 'Mixipedia • Animixer',
+      title: 'Mixipedia • Safari Mixer',
       body: <Mixipedia />
     })
   },
@@ -38,7 +38,7 @@ const routes = [
     path: '(.*)',
     components: () => [import(/* webpackChunkName: 'error' */ './ErrorPage')],
     render: ({ location, components: [ErrorPage] }) => ({
-      title: 'Not Found • Animixer',
+      title: 'Not Found • Safari Mixer',
       body: <ErrorPage error={{ status: 404 }} />
     })
   }

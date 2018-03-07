@@ -100,7 +100,7 @@ def remove_existing(permutations):
                 print("Deleting animal gif as no thumbnail found: {}".format(
                     gif_path))
                 shutil.rmtree(gif_path)
-            
+
 
     print("Removing {} existing animals".format(len(remove_indices)))
     for index in reversed(remove_indices):
@@ -109,6 +109,10 @@ def remove_existing(permutations):
     return permutations
 
 def generate_permuations(number_animals, skip_existing=True):
+    """
+    Generate array of indices used to generate all the possible permutations of
+    animals
+    """
     # generate originals
     print("Generating list of animals to create")
     originals = [[x, x, x] for x in range(number_animals)]
@@ -148,7 +152,7 @@ def run_command(cmd, timeout=1800):
             print("Process completed with output: {}".format(output))
         except Exception as e:
             print("Processing failed 2nd time skipping")
-    
+
 
 def generate_tiffs_ae(skip_existing=True):
     """
@@ -308,10 +312,10 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None):
                 blob_name = '/'.join([folder, file_name])
             else:
                 blob_name = file_name
-                
+
             if blob_name in blobs and skip_existing:
                 continue
-            
+
             blob = bucket.blob(blob_name)
             blob.upload_from_filename(file_path)
             blob.make_public()

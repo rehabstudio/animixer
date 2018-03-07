@@ -17,7 +17,7 @@ import Dictation from './Dictation';
 import Speech from './Speech';
 
 const ENTER_KEY_CODE = 13;
-const Host = 'https://animixer.beta.rehab';
+const Host = 'https://safarimixer.beta.rehab';
 
 const Container = styled.div`
   overflow-y: auto;
@@ -31,7 +31,7 @@ const InputField = styled.div`
   border-radius: 34px;
   background-color: #ffffff;
   display: flex;
-  padding-left: 5px;
+  padding-left: 15px;
   padding-right: 5px;
   padding-top: 2.5px;
   padding-bottom: 2.5px;
@@ -41,7 +41,10 @@ const Input = styled.input`
   font-family: 'Nanum Gothic';
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
+  padding-bottom: 10px;
+  background-color: transparent;
+  outline: none;
+  line-height: 1.33333;
 `;
 
 const ScrollChat = styled.div`
@@ -163,7 +166,9 @@ class ChatBox extends React.Component<{}, {}> {
 
     let value = this.inputField.value;
     this.inputField.value = '';
-    this.userInput(value);
+    if (value) {
+      this.userInput(value);
+    }
   }
 
   userInput(value) {
@@ -295,15 +300,19 @@ class ChatBox extends React.Component<{}, {}> {
     let outputText = /<speak>(.*?)<\/speak>/g.exec(speech)[1];
 
     if (audioContent) {
-      let audioSrc = /src="(.*?)"/g.exec(audioContent[1])[1];
-      outputText = outputText.replace(audioContent[0], '');
-      this.setState({ audioUrl: audioSrc });
+      for (let i = 1; i < audioContent.length; i++) {
+        outputText = outputText.replace(audioContent[i], '');
+      }
+      if (audioContent) {
+        let audioSrc = /src="(.*?)"/g.exec(audioContent[1])[1];
+        this.setState({ audioUrl: audioSrc });
+      }
     }
 
     text.innerHTML = outputText;
     node.appendChild(text);
 
-    this.setState({ speak: text.innerHTML });
+    this.setState({ speak: speech });
   }
 
   setResponseOnNode(response, node) {
@@ -382,7 +391,7 @@ class ChatBox extends React.Component<{}, {}> {
               <div style={{ width: '100%' }}>
                 <Input
                   innerRef={ele => (this.inputField = ele)}
-                  placeholder="Ask me something..."
+                  placeholder="Type to explore..."
                   id="q"
                   type="text"
                   style={{

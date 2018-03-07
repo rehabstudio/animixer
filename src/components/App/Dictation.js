@@ -1,6 +1,7 @@
 import Artyom from 'artyom.js';
 import React from 'react';
 import styled from 'styled-components';
+import utils from './../../utils';
 
 const iconSize = '45px';
 
@@ -20,7 +21,7 @@ class Dictation extends React.Component<{}> {
   constructor(props) {
     super(props);
     this.artyom = props.artyom || new Artyom();
-    this.placeHolderText = 'Click to speak to animixer';
+    this.placeHolderText = 'Click to speak to safarimixer';
     this.userInput = props.userInput || function(text) {};
     this.awaitingInput = props.awaitingInput || function(text) {};
 
@@ -35,8 +36,13 @@ class Dictation extends React.Component<{}> {
       dictationConfig.onResult = this.onResultMobileWrapper.bind(this);
     }
 
+    let dictation;
+    if (this.artyom.Device.isChrome) {
+      dictation = this.artyom.newDictation(dictationConfig);
+    }
+
     this.state = {
-      dictation: this.artyom.newDictation(dictationConfig),
+      dictation: dictation,
       text: this.placeHolderText,
       recordOn: false,
       recording: false,
@@ -54,6 +60,8 @@ class Dictation extends React.Component<{}> {
         this.setState({ recordPause: false }, this.startDictation.bind(this));
       } else if (newProps.recordPause) {
         this.setState({ recordPause: true });
+      } else if (!newProps.recordPause) {
+        this.setState({ recordPause: false });
       }
     }
   }
@@ -67,9 +75,13 @@ class Dictation extends React.Component<{}> {
   }
 
   startDictation() {
-    if (!this.state.recording && !this.state.recordPause) {
-      this.state.dictation.start();
-      this.setState({ recording: true });
+    try {
+      if (!this.state.recording && !this.state.recordPause) {
+        this.state.dictation.start();
+        this.setState({ recording: true });
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -81,7 +93,7 @@ class Dictation extends React.Component<{}> {
   }
 
   toggleDictation() {
-    if (this.state.recording) {
+    if (this.state.recordOn) {
       this.icon.innerHTML = 'mic_off';
       this.stopDictation();
       this.setState({
@@ -157,7 +169,7 @@ class Dictation extends React.Component<{}> {
   render() {
     return (
       <MicIcon
-        className={this.artyom.Device.isChrome ? 'valign-wrapper' : 'hidden'}
+        className={utils.isChrome() ? 'valign-wrapper' : 'hidden'}
         onClick={this.toggleDictation.bind(this)}
       >
         <i
