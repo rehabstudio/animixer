@@ -137,6 +137,7 @@ function changeAnimal(app) {
   ]);
   // if have all animals treat as generate animal response
   if (context.animalHead && context.animalBody && context.animalLegs) {
+    app.setContext('animalcomplete', 1);
     return generateAnimal(app);
   } else {
     // else return response to continue journey
