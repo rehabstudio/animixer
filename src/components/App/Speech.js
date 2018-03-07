@@ -39,7 +39,7 @@ class Speech extends React.Component<{}> {
       this.artyom = null;
     }
 
-    this.speakingCallback = props.speakingCallback || function(text) {};
+    this.speakingCallback = props.speakingCallback || function(bool) {};
     this.state = state;
     this.queue = new AsyncWorkQueue(this.speechWorker.bind(this));
   }
@@ -67,7 +67,7 @@ class Speech extends React.Component<{}> {
       });
     }
 
-    if (this.queue.length < 1) {
+    if (this.queue.queue.length < 2) {
       config.onEnd = () => {
         this.speakingCallback(false);
         this.setState({
