@@ -6,13 +6,6 @@ const utils = require('./../../common/utils');
 const { APIHost } = require('./../../config');
 const animalsModel = require('./../../api/models/animals');
 
-// the parameters that are parsed from the generate_animal intent
-const ANIMAL1_ARGUMENT = 'animalHead';
-const ANIMAL2_ARGUMENT = 'animalBody';
-const ANIMAL3_ARGUMENT = 'animalLegs';
-const ANIMAL_CHANGED_ARGUMENT = 'changed';
-const UNKNOWN_ARGUMENT = 'noun';
-
 /**
  * Make animal found POST request to api return promise
  * @param  {Object} context dialog flow context with convo values
@@ -23,9 +16,9 @@ function animalFoundPost(context) {
     uri: APIHost + '/api/mixipedia',
     method: 'POST',
     body: {
-      animal1: context[ANIMAL1_ARGUMENT],
-      animal2: context[ANIMAL2_ARGUMENT],
-      animal3: context[ANIMAL3_ARGUMENT]
+      animal1: context[contextFn.ANIMAL1_ARGUMENT],
+      animal2: context[contextFn.ANIMAL2_ARGUMENT],
+      animal3: context[contextFn.ANIMAL3_ARGUMENT]
     },
     json: true
   });
@@ -36,7 +29,7 @@ function animalFoundPost(context) {
  * @param  {Object} app actions on google app object
  */
 function unknownAnimal(app) {
-  let context = contextFn.generateContext(app, [UNKNOWN_ARGUMENT]);
+  let context = contextFn.generateContext(app, [contextFn.UNKNOWN_ARGUMENT]);
   responses.unknownAnimalResponse(app, context.noun);
 }
 
@@ -45,7 +38,7 @@ function unknownAnimal(app) {
  * @param  {Object} app actions on google app object
  */
 function animalHead(app) {
-  let context = contextFn.generateContext(app, [ANIMAL1_ARGUMENT]);
+  let context = contextFn.generateContext(app, [contextFn.ANIMAL1_ARGUMENT]);
   responses.animalHead(app, context);
 }
 
@@ -54,7 +47,7 @@ function animalHead(app) {
  * @param  {Object} app actions on google app object
  */
 function animalBody(app) {
-  let context = contextFn.generateContext(app, [ANIMAL2_ARGUMENT]);
+  let context = contextFn.generateContext(app, [contextFn.ANIMAL2_ARGUMENT]);
   responses.animalBody(app, context);
 }
 
@@ -66,9 +59,9 @@ function animalBody(app) {
  */
 function generateAnimal(app, skipSwitchScreen) {
   let context = contextFn.generateContext(app, [
-    ANIMAL1_ARGUMENT,
-    ANIMAL2_ARGUMENT,
-    ANIMAL3_ARGUMENT
+    contextFn.ANIMAL1_ARGUMENT,
+    contextFn.ANIMAL2_ARGUMENT,
+    contextFn.ANIMAL3_ARGUMENT
   ]);
   // If we don't have a screen ask to switch device
   skipSwitchScreen = skipSwitchScreen || false;
@@ -130,10 +123,10 @@ function generateAnimal(app, skipSwitchScreen) {
  */
 function changeAnimal(app) {
   let context = contextFn.generateContext(app, [
-    ANIMAL1_ARGUMENT,
-    ANIMAL2_ARGUMENT,
-    ANIMAL3_ARGUMENT,
-    ANIMAL_CHANGED_ARGUMENT
+    contextFn.ANIMAL1_ARGUMENT,
+    contextFn.ANIMAL2_ARGUMENT,
+    contextFn.ANIMAL3_ARGUMENT,
+    contextFn.ANIMAL_CHANGED_ARGUMENT
   ]);
   // if have all animals treat as generate animal response
   if (context.animalHead && context.animalBody && context.animalLegs) {

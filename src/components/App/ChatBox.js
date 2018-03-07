@@ -166,7 +166,9 @@ class ChatBox extends React.Component<{}, {}> {
 
     let value = this.inputField.value;
     this.inputField.value = '';
-    this.userInput(value);
+    if (value) {
+      this.userInput(value);
+    }
   }
 
   userInput(value) {
