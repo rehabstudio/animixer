@@ -39,7 +39,7 @@ class Speech extends React.Component<{}> {
       this.artyom = null;
     }
 
-    this.speakingCallback = props.speakingCallback || function(text) {};
+    this.speakingCallback = props.speakingCallback || function(bool) {};
     this.state = state;
     this.queue = new AsyncWorkQueue(this.speechWorker.bind(this));
   }
@@ -67,7 +67,7 @@ class Speech extends React.Component<{}> {
       });
     }
 
-    if (this.queue.length < 1) {
+    if (this.queue.queue.length < 1) {
       config.onEnd = () => {
         this.speakingCallback(false);
         this.setState({
@@ -145,16 +145,25 @@ class Speech extends React.Component<{}> {
 
   /**
    * Plays an audio url with simular functionality to artyom
+   * NOTE: Doesn't work on mobile
+   *
    * @param  {string} audioSrc audio sound url
    * @param  {Object} config  object passed to artyom with callbacks
    */
   playAudio(audioSrc, config) {
-    this.audio.src = audioSrc;
-    this.audio.onended = config.onEnd;
-    if (config.onStart) {
-      config.onStart();
+    if (!this.artyom.Device.isMobile) {
+      this.audio.src = audioSrc;
+      this.audio.onended = config.onEnd;
+      if (config.onStart) {
+        config.onStart();
+      }
+      this.audio.play();
+    } else {
+      console.log('Skipping audio not supported on mobile');
+      if (config.onEnd) {
+        config.onEnd();
+      }
     }
-    this.audio.play();
   }
 
   toggleSpeech() {
