@@ -73,6 +73,9 @@ class Dictation extends React.Component<{}> {
         { recordOn: newProps.enabled },
         this.updateDictationIcon.bind(this)
       );
+      if (!newProps.enabled && this.state.recording) {
+        this.stopDictation();
+      }
     }
   }
 

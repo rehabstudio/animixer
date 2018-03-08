@@ -239,7 +239,9 @@ class ChatBox extends React.Component<{}, {}> {
     }
     if (restart) {
       this.micTimeout = setTimeout(() => {
-        this.getResponse('bye');
+        if (this.state.startChat) {
+          this.getResponse('bye');
+        }
       }, 30000);
     }
   }
