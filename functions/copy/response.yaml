@@ -15,7 +15,7 @@ animal_response:
   success_2: Congratulations, you’ve just discovered the mysterious ${0}! Hear it ${1}...
   rediscover_1: What an unusual animal! Would you like to discover another one?
   rediscover_2: There are lots more animals hiding. Would you like to find another one?
-  rediscover_3: What an unusual discovery! Here’s a tip: you can find a new one by changing any body part to another animal. Or, you can make a new animal.
+  rediscover_3: You can find new animals by changing its body parts. Or, you can make a new animal.
   body: Head of ${0}, body of ${1} and legs of ${2}
   fun_fact: Here’s a fun fact about the ${0} - ${1}
 
