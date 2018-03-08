@@ -102,7 +102,7 @@ class ChatBox extends React.Component<{}, {}> {
       client: new ApiAiClient({ accessToken: this.props.accessToken }),
       artyom: new Artyom(),
       speak: '',
-      speaking: false,
+      pauseDictation: false,
       currentQuery: null,
       startChat: false,
       audioUrl: null,
@@ -349,7 +349,7 @@ class ChatBox extends React.Component<{}, {}> {
   }
 
   disableDictation(disable) {
-    this.setState({ speaking: disable });
+    this.setState({ pauseDictation: disable });
   }
 
   startChat() {
@@ -361,7 +361,8 @@ class ChatBox extends React.Component<{}, {}> {
 
   stopChat() {
     this.setState({
-      startChat: false
+      startChat: false,
+      pauseDictation: true
     });
     setTimeout(() => {
       this.resultDiv.innerHTML = '';
@@ -413,7 +414,7 @@ class ChatBox extends React.Component<{}, {}> {
                     artyom={this.state.artyom}
                     userInput={this.userInput.bind(this)}
                     awaitingInput={this.awaitingInput.bind(this)}
-                    recordPause={this.state.speaking}
+                    recordPause={this.state.pauseDictation}
                     enabled={true}
                   />
                 </div>

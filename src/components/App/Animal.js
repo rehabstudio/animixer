@@ -106,8 +106,11 @@ class Animal extends React.Component<{}> {
 
   componentDidMount() {
     // If we have an image url load it
-    if (this.animalImg && this.props.animalData) {
-      this.animalImg.src = this.props.animalData.imageUrl;
+    if (this.props.animalData) {
+      if (this.animalImg) {
+        this.animalImg.src = this.props.animalData.imageUrl;
+      }
+      this.updateAnimalMessage(this.props.animalData);
     }
   }
 
@@ -133,7 +136,7 @@ class Animal extends React.Component<{}> {
       : '';
     let message =
       'I discovered the ' +
-      animalData.animalName +
+      utils.capitalizeFirstLetter(animalData.animalName) +
       '! ' +
       funFact +
       " Try making your own animal. Say '#HeyGoogle, talk to Safari Mixer'.";

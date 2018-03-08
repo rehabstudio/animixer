@@ -6,12 +6,12 @@ https://safarimixer.beta.rehab/
 
 ## Web and Firebase functions commands
 
-Setup - Install Web javascript dependancies:
+Setup - Install Web javascript dependencies:
 
 ```
 $ make setup
 ```
-Setup Functions - Install Firebase functions dependancies:
+Setup Functions - Install Firebase functions dependencies:
 
 ```
 $ make setup-functions
@@ -41,7 +41,7 @@ $ make deploy-functions
 
 In the generateGif folder we can run the following commands:
 
-Setup - Install python3 and dependancies:
+Setup - Install python3 and dependencies:
 
 ```
 $ make setup
@@ -57,7 +57,7 @@ $ make run
 
 In the generateSound folder we can run the following commands:
 
-Setup - Install python3 and dependancies for script and Jupyter:
+Setup - Install python3 and dependencies for script and Jupyter:
 
 ```
 $ make setup
@@ -77,11 +77,11 @@ $ make jupyter
 
 ## Technology
 
-Safari Mixer is built on [Actions on Google](https://developers.google.com/actions/), the platform that allows you to make things for the Google Assistant and the Google Home. It uses [Dialogflow](https://dialogflow.com/) to handle understanding what the player says, [Firebase Cloud Functions](https://firebase.google.com/docs/functions/) for backend code, and [Firebase Database](https://firebase.google.com/docs/database/) to save data. The project is written in JavaScript, using Actions on Google’s [Node.js client library](https://developers.google.com/actions/nodejs-client-library-release-notes).
+Safari Mixer is built on [Actions on Google](https://developers.google.com/actions/), the platform that allows you to build  Actions for the Google Assistant on Android phones, iPhones, voice -activated speakers like Google Home and other types of devices. It uses [Dialogflow](https://dialogflow.com/) to handle understanding what the player says, [Firebase Cloud Functions](https://firebase.google.com/docs/functions/) for backend code, and [Firebase Database](https://firebase.google.com/docs/database/) to save data. The project is written in JavaScript, using Actions on Google’s [Node.js client library](https://developers.google.com/actions/nodejs-client-library-release-notes).
 
-This repo contains a pre-built Dialogflow Agent you can import into your own project. It contains all the Intents and Entities for Mystery Animal. This is all in the `dialogflow_agent` folder.
+This repo contains a pre-built Dialogflow Agent you can import into your own project. It contains all the Intents and Entities for Safari Mixer. This is all in the `dialogflow_agent` folder.
 
-Everything in the `functions` folder is used in Firebase Cloud Functions, which hosts the webhook code for Dialogflow. The webhook handles all the response logic for Mystery Animal. The bulk of the code is in `index.js`.
+Everything in the `functions` folder is used in Firebase Cloud Functions, which hosts the webhook code for Dialogflow. The webhook handles all the response logic for Safari Mixer. The bulk of the code is in `index.js`.
 
 ### Importing the Dialogflow Agent
 
@@ -89,7 +89,7 @@ Go to the [Actions on Google developer console](https://actions-console.corp.goo
 
 Click “BUILD” on the Dialogflow card, and follow the flow to create a new Dialogflow agent.
 
-When your agent is created, click on the gear icon to get to the “Export and Import” tab. You can then compress the `dialogflow_agent` folder from this repo into a zip file, and then import it. You should then see all of Mystery Animal’s Intents and Entities in your project.
+When your agent is created, click on the gear icon to get to the “Export and Import” tab. You can then compress the `dialogflow_agent` folder from this repo into a zip file, and then import it. You should then see all of Safari Mixer’s Intents and Entities in your project.
 
 [Here](https://dialogflow.com/docs/getting-started/basics)’s some more info about how Dialogflow works in general.
 
@@ -130,8 +130,7 @@ animixer-pk.json
 
 The Makefiles in generateGif and generateSound have commands with the env vars required which will need to be updated to point at the location of this file.
 
-
-## Overview
+## Project Details
 
 This project contains the following components
 
@@ -156,11 +155,11 @@ The web app is a static page that is hosted on firebase and this project is buil
 popular starter template (Linked below), the commands above generate the static content and uploads it to
 firebase.
 
-### Chatbot
+### Action
 
-- Dialog Flow
+- Dialogflow
 
-The chatbot is setup on dialog flow, we have a simple chat flow, the conversation goes:
+The chatbot is setup on Dialogflow, we have a simple chat flow, the conversation goes:
 
 Intent flow:
 
@@ -188,12 +187,12 @@ https://console.dialogflow.com/api-client/#/agent/2e0fe896-f947-4f7f-a252-8da888
 
 - Firebase Functions
 
-Dialog flow will use webhooks that point to the firebase functions endpoints:
+Dialogflow will use webhooks that point to the firebase functions endpoints:
 
 https://console.firebase.google.com/project/animixer-1d266/functions/list
 
 These are contained in the functions folder which is the backend of this project. The
-functions have their own dependancies and process input from dialog flow to return json
+functions have their own dependencies and process input from Dialogflow to return json
 data to it for the chatbot to respond to input from the user.
 
 This has used the actions-on-google SDK.
