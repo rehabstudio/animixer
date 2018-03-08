@@ -106,8 +106,11 @@ class Animal extends React.Component<{}> {
 
   componentDidMount() {
     // If we have an image url load it
-    if (this.animalImg && this.props.animalData) {
-      this.animalImg.src = this.props.animalData.imageUrl;
+    if (this.props.animalData) {
+      if (this.animalImg) {
+        this.animalImg.src = this.props.animalData.imageUrl;
+      }
+      this.updateAnimalMessage(this.props.animalData);
     }
   }
 
