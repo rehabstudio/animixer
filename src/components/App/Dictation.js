@@ -53,7 +53,17 @@ class Dictation extends React.Component<{}> {
     };
   }
 
+  /**
+   * Will check for recordPause or recordOn props to control if dictation
+   * is turned on or off, needs refactoring.
+   *
+   * recordPause - If we pause dictation due to speech synthesize working
+   * recordOn - To turn on or off dictation, controlled by mic icon and prop.enabled
+   *
+   * @param  {object} newProps new props from react
+   */
   componentWillReceiveProps(newProps) {
+    // If pausing from prop recordPause
     if (newProps.recordPause !== this.props.recordPause) {
       if (newProps.recordPause && this.state.recording) {
         this.stopDictation();
@@ -65,6 +75,7 @@ class Dictation extends React.Component<{}> {
         this.setState({ recordPause: false });
       }
     }
+    // If enabling / disabling from props.enabled
     if (
       newProps.enabled !== undefined &&
       newProps.enabled !== this.props.enabled
