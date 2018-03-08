@@ -1,6 +1,7 @@
 animals:
   - antelope
   - buffalo
+  - bunny
   - cat
   - chicken
   - crocodile
@@ -8,6 +9,7 @@ animals:
   - duck
   - elephant
   - flamingo
+  - fox
   - frog
   - giraffe
   - gorilla
@@ -15,10 +17,13 @@ animals:
   - hyena
   - leopard
   - lion
+  - lizard
   - ostrich
+  - pig
   - pony
   - puma
   - rhino
+  - sheep
   - tiger
   - tortoise
   - warthog
@@ -26,7 +31,7 @@ animals:
   - zebra
 
 verbs:
-  antelope: bleet
+  antelope: bleat
   buffalo: moo
   bunny: squeak
   cat: meow
@@ -94,67 +99,67 @@ types:
 
 syllables:
   antelope:
-    - ant
+    - antel
     - elo
     - lope
   buffalo:
-    - b
+    - buff
     - uffa
-    - lo
+    - ffalo
   bunny:
-    - Rabb
+    - rabb
     - abbi
     - bit
   cat:
-    - c
-    - a
-    - t
+    - kitt
+    - itte
+    - tten
   chicken:
-    - ick
-    - en
-    - en
+    - chick
+    - icke
+    - cken
   crocodile:
     - croc
     - oco
     - dile
   dog:
-    - do
-    - o
-    - g
+    - pupp
+    - uppy
+    - hound
   duck:
-    - d
-    - uc
-    - ck
+    - duck
+    - oose
+    - duck
   elephant:
-    - ele
+    - eleph
     - epha
     - phant
   fox:
-    - ox
-    - o
-    - x
+    - fox
+    - oxy
+    - fox
   flamingo:
     - flam
     - ami
     - mingo
   frog:
     - fr
-    - o
-    - g
+    - oggy
+    - rog
   giraffe:
     - gir
     - ira
     - raffe
   gorilla:
-    - gorr
-    - il
+    - gor
+    - illa
     - rilla
   hippo:
     - hipp
     - opota
     - tamus
   hyena:
-    - hy
+    - hyen
     - ena
     - yena
   leopard:
@@ -162,48 +167,48 @@ syllables:
     - opa
     - pard
   lion:
-    - li
+    - lion
     - io
-    - on
+    - ion
   lizard:
-    - Liz
+    - liz
     - iza
     - zard
   ostrich:
     - ostr
-    - ich
+    - emu
     - rich
   pig:
-    - P
-    - ig
-    - g
+    - pig
+    - iggy
+    - pig
   pony:
-    - p
-    - on
+    - pon
+    - ony
     - ny
   puma:
-    - p
-    - a
+    - pum
+    - uma
     - ma
   rhinoceros:
     - rhin
     - oçe
-    - ros
+    - çeros
   sheep:
-    - Sh
+    - sh
     - ee
-    - ep
+    - ram
   tiger:
-    - ti
+    - tig
     - ige
     - ger
   tortoise:
     - tort
-    - oi
-    - se
+    - ortoi
+    - toise
   warthog:
     - wart
-    - art
+    - artho
     - hog
   wildebeest:
     - wild
