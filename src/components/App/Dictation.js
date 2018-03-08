@@ -55,7 +55,7 @@ class Dictation extends React.Component<{}> {
 
   componentWillReceiveProps(newProps) {
     if (newProps.recordPause !== this.props.recordPause) {
-      if (newProps.recordPause && this.state.recordOn) {
+      if (newProps.recordPause && this.state.recording) {
         this.stopDictation();
       } else if (!newProps.recordPause && this.state.recordOn) {
         this.setState({ recordPause: false }, this.startDictation.bind(this));
