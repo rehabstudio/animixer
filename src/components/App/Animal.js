@@ -133,7 +133,7 @@ class Animal extends React.Component<{}> {
       : '';
     let message =
       'I discovered the ' +
-      animalData.animalName +
+      utils.capitalizeFirstLetter(animalData.animalName) +
       '! ' +
       funFact +
       " Try making your own animal. Say '#HeyGoogle, talk to Safari Mixer'.";
