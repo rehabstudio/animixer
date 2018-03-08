@@ -13,13 +13,15 @@ animal_body:
 animal_response:
   success_1: Congratulations, you’ve found the wild ${0}! This is what it sounds like...
   success_2: Congratulations, you’ve just discovered the mysterious ${0}! Hear it ${1}...
-  rediscover_1: What an unusual animal. Would you like to discover another one?
-  rediscover_2: There are lots more hiding. Would you like to find another animal?
+  rediscover_1: What an unusual animal! Would you like to discover another one?
+  rediscover_2: There are lots more animals hiding. Would you like to find another one?
+  rediscover_3: You can find new animals by changing its body parts. Or, you can make a new animal.
   body: Head of ${0}, body of ${1} and legs of ${2}
   fun_fact: Here’s a fun fact about the ${0} - ${1}
 
 animals_not_valid:
-  text: I've never seen an animal with the same head body or legs, would you like to look again?
+  text_1: I've never seen an animal with the same head, body and legs, would you like to look again?
+  text_2: The animals here are rare and don’t share the same head, body and legs. Try another animal.
 
 animals_idential:
   success_1: You’ve found ${0} ${1}! Let’s look again - I think we can find a more unusual animal on this safari.
