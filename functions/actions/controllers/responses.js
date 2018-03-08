@@ -68,7 +68,11 @@ function ask(app, response) {
  * @param  {Object} context parsed values from dialog flow
  */
 function animalsNotValid(app, context) {
-  return ask(app, responseData.animals_not_valid.text);
+  let resp = utils.randomSelection([
+    responseData.animals_not_valid.text_1,
+    responseData.animals_not_valid.text_2
+  ]);
+  return ask(app, resp);
 }
 
 /**
@@ -206,7 +210,8 @@ function animalResponse(app, context) {
     .format(animalName, animalVerb);
   let rediscover = utils.randomSelection([
     respData.rediscover_1,
-    respData.rediscover_2
+    respData.rediscover_2,
+    respData.rediscover_3
   ]);
   let funFact;
   if (!context.animalData.animalFact) {
