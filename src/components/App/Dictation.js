@@ -69,7 +69,10 @@ class Dictation extends React.Component<{}> {
       newProps.enabled !== undefined &&
       newProps.enabled !== this.props.enabled
     ) {
-      this.setState({ recordOn: newProps.enabled });
+      this.setState(
+        { recordOn: newProps.enabled },
+        this.updateDictationIcon.bind(this)
+      );
     }
   }
 
@@ -101,18 +104,30 @@ class Dictation extends React.Component<{}> {
 
   toggleDictation() {
     if (this.state.recordOn) {
-      this.icon.innerHTML = 'mic_off';
       this.stopDictation();
-      this.setState({
-        text: this.placeHolderText,
-        recordOn: false
-      });
+      this.setState(
+        {
+          text: this.placeHolderText,
+          recordOn: false
+        },
+        this.updateDictationIcon.bind(this)
+      );
     } else {
-      this.icon.innerHTML = 'mic';
       this.startDictation();
-      this.setState({
-        recordOn: true
-      });
+      this.setState(
+        {
+          recordOn: true
+        },
+        this.updateDictationIcon.bind(this)
+      );
+    }
+  }
+
+  updateDictationIcon() {
+    if (this.state.recordOn) {
+      this.icon.innerHTML = 'mic';
+    } else {
+      this.icon.innerHTML = 'mic_off';
     }
   }
 
