@@ -103,6 +103,7 @@ class ChatBox extends React.Component<{}, {}> {
       artyom: new Artyom(),
       speak: '',
       pauseDictation: false,
+      dictationEnabled: true,
       currentQuery: null,
       startChat: false,
       audioUrl: null,
@@ -193,24 +194,28 @@ class ChatBox extends React.Component<{}, {}> {
     let responseNode = this.createResponseNode();
 
     return this.sendText(value)
-      .then(
-        function(response) {
-          let result;
-          try {
-            if (
-              response.result.fulfillment.data !== undefined &&
-              response.result.fulfillment.data.google.rich_response
-            ) {
-              result = response.result.fulfillment.data.google.rich_response;
-            } else {
-              result = response.result.fulfillment.speech;
-            }
-          } catch (error) {
-            result = '';
+      .then(response => {
+        let result;
+        try {
+          if (
+            response.result.fulfillment.data !== undefined &&
+            response.result.fulfillment.data.google.rich_response
+          ) {
+            result = response.result.fulfillment.data.google.rich_response;
+          } else {
+            result = response.result.fulfillment.speech;
           }
-          this.setResponseOnNode(result, responseNode);
-        }.bind(this)
-      )
+        } catch (error) {
+          result = '';
+        }
+        this.setResponseOnNode(result, responseNode);
+        if (response.result.action == 'exit') {
+          setTimeout(() => {
+            this.stopChat();
+            this.scrollUp();
+          }, 2000);
+        }
+      })
       .catch(
         function(err) {
           console.log(err);
@@ -348,21 +353,22 @@ class ChatBox extends React.Component<{}, {}> {
     }
   }
 
-  disableDictation(disable) {
-    this.setState({ pauseDictation: disable });
+  pauseDictation(pause) {
+    this.setState({ pauseDictation: pause });
   }
 
   startChat() {
     this.getResponse('hello');
     this.setState({
-      startChat: true
+      startChat: true,
+      dictationEnabled: true
     });
   }
 
   stopChat() {
     this.setState({
       startChat: false,
-      pauseDictation: true
+      dictationEnabled: false
     });
     setTimeout(() => {
       this.resultDiv.innerHTML = '';
@@ -415,13 +421,13 @@ class ChatBox extends React.Component<{}, {}> {
                     userInput={this.userInput.bind(this)}
                     awaitingInput={this.awaitingInput.bind(this)}
                     recordPause={this.state.pauseDictation}
-                    enabled={true}
+                    enabled={this.state.dictationEnabled}
                   />
                 </div>
                 <Speech
                   artyom={this.state.artyom}
                   text={this.state.speak}
-                  speakingCallback={this.disableDictation.bind(this)}
+                  speakingCallback={this.pauseDictation.bind(this)}
                   enabled={true}
                 />
               </div>

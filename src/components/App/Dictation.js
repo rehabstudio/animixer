@@ -65,6 +65,12 @@ class Dictation extends React.Component<{}> {
         this.setState({ recordPause: false });
       }
     }
+    if (
+      newProps.enabled !== undefined &&
+      newProps.enabled !== this.props.enabled
+    ) {
+      this.setState({ recordOn: newProps.enabled });
+    }
   }
 
   componentWillUnmount() {
