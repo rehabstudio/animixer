@@ -22,8 +22,8 @@ animals_not_valid:
   text: I've never seen an animal with the same head body or legs, would you like to look again?
 
 animals_idential:
-  success_1: You’ve found a ${0} ${1}! Let’s look again - I think we can find a more unusual animal on this safari.
-  success_2: You’ve found a ${0} ${1}! That’s a great animal, but I’ve seen some really surprising ones on this safari. Let’s find one.
+  success_1: You’ve found ${0} ${1}! Let’s look again - I think we can find a more unusual animal on this safari.
+  success_2: You’ve found ${0} ${1}! That’s a great animal, but I’ve seen some really surprising ones on this safari. Let’s find one.
   restart: To start, what head does your animal have?
 
 restart:
