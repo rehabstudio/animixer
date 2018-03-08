@@ -31,7 +31,7 @@ restart:
   #text_2: To start, what head does your animal have? Or, you try changing the head, body or legs to another animal.
 
 screen_switch:
-  text: Great - check your phone to see what you’ve found!
+  text: Great - you can check your phone to see what you’ve found!
   notif: You’ve found the wild ${0}!
 
 not_found:

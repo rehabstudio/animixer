@@ -115,6 +115,8 @@ class ChatBox extends React.Component<{}, {}> {
     if (this.state.artyom.Device.isMobile) {
       this.state.heightCss = window.innerHeight + 'px';
     }
+
+    this.micTimeout = null;
   }
 
   componentDidMount() {
@@ -213,6 +215,9 @@ class ChatBox extends React.Component<{}, {}> {
           this.setState({
             dictationEnabled: false
           });
+          this.micTimeoutFn(false);
+        } else {
+          this.micTimeoutFn(true);
         }
       })
       .catch(
@@ -221,6 +226,17 @@ class ChatBox extends React.Component<{}, {}> {
           this.setResponseOnNode('Something went wrong', responseNode);
         }.bind(this)
       );
+  }
+
+  micTimeoutFn(restart) {
+    if (this.micTimeout) {
+      clearTimeout(this.micTimeout);
+    }
+    if (restart) {
+      this.micTimeout = setTimeout(() => {
+        this.getResponse('bye');
+      }, 30000);
+    }
   }
 
   createQueryNode(query) {
