@@ -129,7 +129,7 @@ syllables:
   duck:
     - duck
     - oose
-    - oose
+    - duck
   elephant:
     - eleph
     - epha
@@ -197,15 +197,15 @@ syllables:
   sheep:
     - sh
     - ee
-    - eep
+    - ram
   tiger:
     - tig
     - ige
     - ger
   tortoise:
     - tort
-    - oi
-    - se
+    - ortoi
+    - toise
   warthog:
     - wart
     - artho
