@@ -185,7 +185,12 @@ class ChatBox extends React.Component<{}, {}> {
       currentQuery: null
     });
 
-    return this.getResponse(value);
+    // Only send alphabetic response to the bot
+    let userValue = value.replace(/[^A-Za-z]/g, '');
+
+    if (userValue) {
+      return this.getResponse(value);
+    }
   }
 
   sendText(text) {
@@ -245,6 +250,7 @@ class ChatBox extends React.Component<{}, {}> {
       'query clearfix left-align right white-text card-panel bring-front margins';
     node.innerHTML = query;
     this.resultDiv.appendChild(node);
+    this.updateScroll();
     return node;
   }
 
@@ -388,6 +394,7 @@ class ChatBox extends React.Component<{}, {}> {
     setTimeout(() => {
       this.resultDiv.innerHTML = '';
     }, 500);
+    this.micTimeoutFn(false);
   }
 
   render() {
