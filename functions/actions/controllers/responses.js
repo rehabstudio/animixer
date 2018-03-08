@@ -263,7 +263,6 @@ function screenSwitch(app, context) {
   let respData = responseData.screen_switch;
   let text = respData.text;
   let notif = respData.notif.format(animalName);
-  app.setContext('ScreenSwitch', 1);
   app.askForNewSurface(text, notif, [app.SurfaceCapabilities.SCREEN_OUTPUT]);
 }
 
