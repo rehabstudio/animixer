@@ -12,14 +12,23 @@ const UNKNOWN_ARGUMENT = 'noun';
  * @param  {array} args     List of values to check for and Return
  * @return {Object}         Object of expected values from dialog flow
  */
-function generateContext(app, args) {
+function generateContext(app, args, argsRequired) {
+  // Default false
+  argsRequired = argsRequired !== undefined ? argsRequired : false;
   let context = {};
   let animalArgs = [ANIMAL1_ARGUMENT, ANIMAL2_ARGUMENT, ANIMAL3_ARGUMENT];
   // Refresh context
   for (let i = 0; i < args.length; i++) {
     context[args[i]] = app.getArgument(args[i]);
     if (!context[args[i]]) {
-      console.warn('Missing expected argument: ' + args[i]);
+      let errorMsg = 'Missing expected argument: ' + args[i];
+
+      if (argsRequired) {
+        console.error(errorMsg);
+        throw new Error(errorMsg);
+      } else {
+        console.warn(errorMsg);
+      }
     }
     if (animalArgs.indexOf(args[i]) > -1 && context[args[i]] instanceof Array) {
       if (context[args[i]]) {
