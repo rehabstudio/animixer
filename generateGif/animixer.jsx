@@ -1,4 +1,4 @@
-/*
+﻿/*
   @Author: Noel Wilson
   @company: Rehab
 
@@ -9,9 +9,13 @@
 // ------------------------------------------------------------------
 // Utils
 // ------------------------------------------------------------------
-
+var path = ((File($.fileName)).path);
 var errorStr = '';
 var rootDir = 'D:/';
+
+var libfile = File(path +'/json2.jsx');
+if(libfile.exists)
+  $.evalFile(libfile);
 
 String.prototype.trim = function(str) {
   return this.replace(/^\s+|\s+$/gm, '');
@@ -42,6 +46,7 @@ function clearComp(comp) {
 
 function permutator(list, maxLen, permutationsFile) {
   // Copy initial values as arrays
+  $.writeln('permutationsFile: ' + permutationsFile);
   if (permutationsFile) {
     var permFile = new File(permutationsFile);
     var existingData;
@@ -49,7 +54,9 @@ function permutator(list, maxLen, permutationsFile) {
       permFile.open("r");
       existingData = JSON.parse(permFile.read());
       permFile.close();
-    } catch (err) {}
+    } catch (err) {
+        $.writeln('Error reading file:' + err.toString());
+    }
 
     if (existingData) {
       $.writeln('Using existing permuation data');
@@ -207,7 +214,7 @@ function renderComposition(renderComp, folderPath, filepath) {
   Folder(folderPath).create();
   output.file = new File(filepath);
 
-  output.applyTemplate('TIFF Sequence with Alpha');
+  output.applyTemplate('PNG Sequence with Alpha');
 
   return renderItem
 }
@@ -405,7 +412,7 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
   // Get all walk comps
   var walkComps = getComps('_walk');
   errorStr = '';
-  var batchSize = 25;
+  var batchSize = 50;
   var batch = 0;
   var comps = [];
 
