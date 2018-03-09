@@ -32,7 +32,7 @@ To generate animal gifs Python3 is used to manage [AfterEffects CC 2018](https:/
 
 * (Optional) [A CUDA GPU](https://developer.nvidia.com/cuda-gpus) for faster sound generation
 
-## ** Weband Firebase functions commands**
+## **Web and Firebase functions commands**
 
 Below are the commands to get the project up and running on Mac OS or Unix based OS using make commands.
 
