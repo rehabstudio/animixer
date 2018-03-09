@@ -56,12 +56,12 @@ Running Functions - Run function emulator locally:
 ```
 $ make run-functions
 ```
-Deploying - Build & Deploy web app to firebase:
+Deploying - Build & Deploy web app to Firebase:
 
 ```
 $ make deploy
 ```
-Deploying Functions - Deploy functions to firebase:
+Deploying Functions - Deploy functions to Firebase:
 
 ```
 $ make deploy-functions
@@ -139,7 +139,7 @@ The Actions library’s built in app.data object is very useful for storing data
 
 ### **Saving queries and responses to a Firebase Database**
 
-The repo contains a module called `config.js` in functions which contains all the account information for interacting with firebase real time database. This will need to be updated to your account credentials. This allows you to save info about which animals are discovered to a Firebase Database.
+The repo contains a module called `config.js` in functions which contains all the account information for interacting with Firebase real time database. This will need to be updated to your account credentials. This allows you to save info about which animals are discovered to a Firebase Database.
 
 ## **Authentication**
 
@@ -253,7 +253,7 @@ prod account: [https://console.dialogflow.com/api-client/#/agent/2e0fe896-f947-4
 
 ## Firebase Functions
 
-Dialogflow will use webhooks that point to the firebase functions endpoints:
+Dialogflow will use webhooks that point to the Firebase functions endpoints:
 
 [https://console.firebase.google.com/project/animixer-1d266/functions/list](https://console.firebase.google.com/project/animixer-1d266/functions/list)
 
@@ -263,7 +263,7 @@ This has used the actions-on-google SDK.
 
 ### Account setup
 
-To setup firebase functions with your account, you will need to update the config file in functions/config.js. Your account will then be used to deploy the app to your firebase functions / hosting and to access your realtime database.
+To setup Firebase functions with your account, you will need to update the config file in functions/config.js. Your account will then be used to deploy the app to your Firebase functions / hosting and to access your realtime database.
 
 Your API key can be found at:
 
