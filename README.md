@@ -1,5 +1,7 @@
 # **Safari Mixer**
 
+![image alt text](https://storage.googleapis.com/animixer-1d266.appspot.com/Docs/image_5.png)
+
 [Safari Mixer](https://safarimixer.beta.rehab/) is a Voice Experiment for the Google Assistant that lets you combine animals to create new ones. Built on [Actions on Google](https://developers.google.com/actions/), the platform that allows you to build Actions for the Google Assistant on Android phones, iPhones, voice-activated speakers like Google Home and other types of devices. It uses [Dialogflow](https://dialogflow.com/) to handle understanding what the player says, [Firebase Cloud Functions](https://firebase.google.com/docs/functions/) for backend code, and [Firebase Database](https://firebase.google.com/docs/database/) to save data. The project is written in JavaScript, using the Actions on Google [Node.js client library](https://developers.google.com/actions/nodejs-client-library-release-notes).
 
 This repo contains a pre-built Dialogflow Agent you can import into your own project. It contains all the Intents and Entities for [Safari Mixer](https://safarimixer.beta.rehab/). This is all in the dialogflow_agent folder.
