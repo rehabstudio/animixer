@@ -39,7 +39,7 @@ $ make deploy-functions
 
 ## Generate Gif commands
 
-In the generateGif folder we can run the following commands:
+In the generateGif folder you can run the following commands:
 
 Setup - Install python3 and dependencies:
 

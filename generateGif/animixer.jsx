@@ -34,6 +34,12 @@ function remove(array, element) {
   array.splice(index, 1);
 }
 
+function clearComp(comp) {
+  for (var i = app.project.item(1).numLayers; i > 0; i--) {
+    app.project.item(1).layer(i).remove();
+  }
+}
+
 function permutator(list, maxLen, permutationsFile) {
   // Copy initial values as arrays
   if (permutationsFile) {
@@ -164,8 +170,8 @@ function placeLegs(bodyMarkers, legsMarkers, legLayer) {
   // Make legs width match markers width
   if (legLayer.name.endsWith('_noscale') === false) {
     legLayer.transform.scale.setValueAtTime(0, [
-      scale * 100,
-      100
+      scale * 25,
+      25
     ]);
   }
 }
@@ -302,7 +308,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   placeBodyTallHead(renderHeadLayer, renderBodyLayer);
 
   // Scale comp
-  scaleComp(renderComp, 0.25);
+  //scaleComp(renderComp, 0.25);
 
   // render
   var renderItem = renderComposition(renderComp, folderPath, filepath);
