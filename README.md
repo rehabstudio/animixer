@@ -2,6 +2,8 @@
 
 ![image alt text](https://storage.googleapis.com/animixer-1d266.appspot.com/Docs/image_5.png)
 
+## **Overview**
+
 [Safari Mixer](https://safarimixer.beta.rehab/) is a Voice Experiment for the Google Assistant that lets you combine animals to create new ones. Built on [Actions on Google](https://developers.google.com/actions/), the platform that allows you to build Actions for the Google Assistant on Android phones, iPhones, voice-activated speakers like Google Home and other types of devices. It uses [Dialogflow](https://dialogflow.com/) to handle understanding what the player says, [Firebase Cloud Functions](https://firebase.google.com/docs/functions/) for backend code, and [Firebase Database](https://firebase.google.com/docs/database/) to save data. The project is written in JavaScript, using the Actions on Google [Node.js client library](https://developers.google.com/actions/nodejs-client-library-release-notes).
 
 This repo contains a pre-built Dialogflow Agent you can import into your own project. It contains all the Intents and Entities for [Safari Mixer](https://safarimixer.beta.rehab/). This is all in the dialogflow_agent folder.
@@ -12,7 +14,7 @@ Everything in the functions folder is used in Firebase Cloud Functions, which ho
 
 The web app is powered by an API which is also hosted on Firebase Cloud Functions the code for this can be found in the functions/api/ folder.
 
-To generate the sounds P[ython3](https://www.python.org/downloads/) is used with [TensorFlow](https://www.tensorflow.org/) and [Magenta](https://magenta.tensorflow.org/) to synthesize new sounds, this is detailed below and the code can be found in the generateSound folder.
+To generate the sounds [Python3](https://www.python.org/downloads/) is used with [TensorFlow](https://www.tensorflow.org/) and [Magenta](https://magenta.tensorflow.org/) to synthesize new sounds, this is detailed below and the code can be found in the generateSound folder.
 
 To generate animal gifs Python3 is used to manage [AfterEffects CC 2018](https://www.adobe.com/uk/products/aftereffects.html) to render all combinations of animals, The generateGif folder contains the AfterEffects scene as well as AfterEffects scripts which are .jsx files, this is detailed below and the code can be found in the generateGif folder.
 
@@ -69,7 +71,7 @@ $ make deploy-functions
 
 In the generateGif folder you can run the following commands:
 
-Setup - Install python3 and dependencies:
+Setup - Install Python3 and dependencies:
 
 ```
 $ make setup
@@ -85,7 +87,7 @@ $ make run
 
 In the generateSound folder we can run the following commands:
 
-Setup - Install python3 and dependencies for script and Jupyter:
+Setup - Install Python3 and dependencies for script and Jupyter:
 
 ```
 $ make setup
