@@ -347,9 +347,9 @@ if __name__ == '__main__':
     gif_paths = generate_gifs(SKIP_EXISTING)
     
     if ASYNC:
-        #async_upload(thumb_nails, skip_existing=false, folder='thumbnails')
-        async_upload(gif_paths, skip_existing=false, folder='gifs')
+        async_upload(thumb_nails, skip_existing=False, folder='thumbnails')
+        async_upload(gif_paths, skip_existing=False, folder='gifs')
     else:
-        #upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
+        upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
         upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
     
