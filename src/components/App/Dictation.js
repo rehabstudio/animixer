@@ -53,9 +53,19 @@ class Dictation extends React.Component<{}> {
     };
   }
 
+  /**
+   * Will check for recordPause or recordOn props to control if dictation
+   * is turned on or off, needs refactoring.
+   *
+   * recordPause - If we pause dictation due to speech synthesize working
+   * recordOn - To turn on or off dictation, controlled by mic icon and prop.enabled
+   *
+   * @param  {object} newProps new props from react
+   */
   componentWillReceiveProps(newProps) {
+    // If pausing from prop recordPause
     if (newProps.recordPause !== this.props.recordPause) {
-      if (newProps.recordPause && this.state.recordOn) {
+      if (newProps.recordPause && this.state.recording) {
         this.stopDictation();
       } else if (!newProps.recordPause && this.state.recordOn) {
         this.setState({ recordPause: false }, this.startDictation.bind(this));
@@ -63,6 +73,19 @@ class Dictation extends React.Component<{}> {
         this.setState({ recordPause: true });
       } else if (!newProps.recordPause) {
         this.setState({ recordPause: false });
+      }
+    }
+    // If enabling / disabling from props.enabled
+    if (
+      newProps.enabled !== undefined &&
+      newProps.enabled !== this.props.enabled
+    ) {
+      this.setState(
+        { recordOn: newProps.enabled },
+        this.updateDictationIcon.bind(this)
+      );
+      if (!newProps.enabled && this.state.recording) {
+        this.stopDictation();
       }
     }
   }
@@ -95,18 +118,30 @@ class Dictation extends React.Component<{}> {
 
   toggleDictation() {
     if (this.state.recordOn) {
-      this.icon.innerHTML = 'mic_off';
       this.stopDictation();
-      this.setState({
-        text: this.placeHolderText,
-        recordOn: false
-      });
+      this.setState(
+        {
+          text: this.placeHolderText,
+          recordOn: false
+        },
+        this.updateDictationIcon.bind(this)
+      );
     } else {
-      this.icon.innerHTML = 'mic';
       this.startDictation();
-      this.setState({
-        recordOn: true
-      });
+      this.setState(
+        {
+          recordOn: true
+        },
+        this.updateDictationIcon.bind(this)
+      );
+    }
+  }
+
+  updateDictationIcon() {
+    if (this.state.recordOn) {
+      this.icon.innerHTML = 'mic';
+    } else {
+      this.icon.innerHTML = 'mic_off';
     }
   }
 

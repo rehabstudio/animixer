@@ -99,7 +99,7 @@ def remove_existing(permutations):
             if os.path.exists(gif_path):
                 print("Deleting animal gif as no thumbnail found: {}".format(
                     gif_path))
-                shutil.rmtree(gif_path)
+                os.remove(gif_path)
 
 
     print("Removing {} existing animals".format(len(remove_indices)))
@@ -162,7 +162,7 @@ def generate_tiffs_ae(skip_existing=True):
     permutations_file = None
     number_animals = 30
     permutations = generate_permuations(number_animals)
-    batch_size = 50
+    batch_size = 100
     jobs = math.ceil(len(permutations) / batch_size)
 
     # Batch render animals and restart AE between batches
@@ -213,12 +213,12 @@ def generate_gifs(skip_existing=True):
         gif_path = os.path.join(ROOT_DIR, 'gifs', (subdir_name + '.gif'))
 
         if(os.path.exists(gif_path) and skip_existing):
-            gif_paths.append(gif_path)
+            #gif_paths.append(gif_path)
             continue
 
         filenames = [
             os.path.join(subdir, f) for f in os.listdir(subdir)
-            if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.tif')]
+            if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.png')]
         images = []
         for filename in sorted(filenames):
             try:
@@ -255,12 +255,12 @@ def generate_thumbnails(skip_existing=True):
         thumbnail_path = os.path.join(ROOT_DIR, 'thumbnails', (subdir_name + '.png'))
 
         if(os.path.exists(thumbnail_path) and skip_existing):
-            thumbnail_paths.append(thumbnail_path)
+            #thumbnail_paths.append(thumbnail_path)
             continue
 
         filenames = [
             os.path.join(subdir, f) for f in os.listdir(subdir)
-            if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.tif')]
+            if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.png')]
 
         if not filenames:
             print('Skipping folder: {}'.format(subdir))
@@ -345,9 +345,11 @@ if __name__ == '__main__':
     generate_tiffs_ae(SKIP_EXISTING)
     thumb_nails = generate_thumbnails(SKIP_EXISTING)
     gif_paths = generate_gifs(SKIP_EXISTING)
+    
     if ASYNC:
         async_upload(thumb_nails, skip_existing=False, folder='thumbnails')
         async_upload(gif_paths, skip_existing=False, folder='gifs')
     else:
         upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
         upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
+    

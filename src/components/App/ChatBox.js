@@ -103,6 +103,7 @@ class ChatBox extends React.Component<{}, {}> {
       artyom: new Artyom(),
       speak: '',
       pauseDictation: false,
+      dictationEnabled: true,
       currentQuery: null,
       startChat: false,
       audioUrl: null,
@@ -114,6 +115,8 @@ class ChatBox extends React.Component<{}, {}> {
     if (this.state.artyom.Device.isMobile) {
       this.state.heightCss = window.innerHeight + 'px';
     }
+
+    this.micTimeout = null;
   }
 
   componentDidMount() {
@@ -182,7 +185,12 @@ class ChatBox extends React.Component<{}, {}> {
       currentQuery: null
     });
 
-    return this.getResponse(value);
+    // Only send alphabetic response to the bot
+    let userValue = value.replace(/[^A-Za-z]/g, '');
+
+    if (userValue) {
+      return this.getResponse(value);
+    }
   }
 
   sendText(text) {
@@ -193,24 +201,30 @@ class ChatBox extends React.Component<{}, {}> {
     let responseNode = this.createResponseNode();
 
     return this.sendText(value)
-      .then(
-        function(response) {
-          let result;
-          try {
-            if (
-              response.result.fulfillment.data !== undefined &&
-              response.result.fulfillment.data.google.rich_response
-            ) {
-              result = response.result.fulfillment.data.google.rich_response;
-            } else {
-              result = response.result.fulfillment.speech;
-            }
-          } catch (error) {
-            result = '';
+      .then(response => {
+        let result;
+        try {
+          if (
+            response.result.fulfillment.data !== undefined &&
+            response.result.fulfillment.data.google.rich_response
+          ) {
+            result = response.result.fulfillment.data.google.rich_response;
+          } else {
+            result = response.result.fulfillment.speech;
           }
-          this.setResponseOnNode(result, responseNode);
-        }.bind(this)
-      )
+        } catch (error) {
+          result = '';
+        }
+        this.setResponseOnNode(result, responseNode);
+        if (response.result.action == 'exit') {
+          this.setState({
+            dictationEnabled: false
+          });
+          this.micTimeoutFn(false);
+        } else {
+          this.micTimeoutFn(true);
+        }
+      })
       .catch(
         function(err) {
           console.log(err);
@@ -219,12 +233,26 @@ class ChatBox extends React.Component<{}, {}> {
       );
   }
 
+  micTimeoutFn(restart) {
+    if (this.micTimeout) {
+      clearTimeout(this.micTimeout);
+    }
+    if (restart) {
+      this.micTimeout = setTimeout(() => {
+        if (this.state.startChat) {
+          this.getResponse('bye');
+        }
+      }, 30000);
+    }
+  }
+
   createQueryNode(query) {
     let node = document.createElement('div');
     node.className =
       'query clearfix left-align right white-text card-panel bring-front margins';
     node.innerHTML = query;
     this.resultDiv.appendChild(node);
+    this.updateScroll();
     return node;
   }
 
@@ -348,25 +376,27 @@ class ChatBox extends React.Component<{}, {}> {
     }
   }
 
-  disableDictation(disable) {
-    this.setState({ pauseDictation: disable });
+  pauseDictation(pause) {
+    this.setState({ pauseDictation: pause });
   }
 
   startChat() {
     this.getResponse('hello');
     this.setState({
-      startChat: true
+      startChat: true,
+      dictationEnabled: true
     });
   }
 
   stopChat() {
     this.setState({
       startChat: false,
-      pauseDictation: true
+      dictationEnabled: false
     });
     setTimeout(() => {
       this.resultDiv.innerHTML = '';
     }, 500);
+    this.micTimeoutFn(false);
   }
 
   render() {
@@ -415,13 +445,13 @@ class ChatBox extends React.Component<{}, {}> {
                     userInput={this.userInput.bind(this)}
                     awaitingInput={this.awaitingInput.bind(this)}
                     recordPause={this.state.pauseDictation}
-                    enabled={true}
+                    enabled={this.state.dictationEnabled}
                   />
                 </div>
                 <Speech
                   artyom={this.state.artyom}
                   text={this.state.speak}
-                  speakingCallback={this.disableDictation.bind(this)}
+                  speakingCallback={this.pauseDictation.bind(this)}
                   enabled={true}
                 />
               </div>
