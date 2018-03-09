@@ -105,7 +105,7 @@ function animalsIdentical(app, context) {
     .setImage(imageUrl, animalName)
     .setBodyText(`The ${context.animalHead}!`)
     .addButton(
-      'share',
+      'Share me',
       `https://safarimixer.beta.rehab/animal/?animal1=${context.animalHead}` +
         `&animal2=${context.animalBody}&animal3=${context.animalLegs}`
     );
@@ -327,30 +327,36 @@ function changeAnimal(app, context) {
  * @param  {string} noun    noun from user input
  */
 function unknownAnimalResponse(app, noun) {
-  return knowledgeGraph.replacementAnimal(noun).then(results => {
-    let found = results[0];
-    let replacement = results[1];
-    let resp;
-    let respData = responseData.unknownAnimalResponse;
-    let unknownResponse;
-    let aOrAn = utils.getAOrAn(replacement);
+  let respData = responseData.unknownAnimalResponse;
+  return knowledgeGraph
+    .replacementAnimal(noun)
+    .then(results => {
+      let found = results[0];
+      let replacement = results[1];
+      let resp;
+      let unknownResponse;
+      let aOrAn = utils.getAOrAn(replacement);
 
-    if (found) {
-      let unknown = utils.randomSelection([
-        respData.unknown_animal_1,
-        respData.unknown_animal_2
-      ]);
-      unknownResponse = unknown.format(aOrAn, replacement);
-    } else {
-      let unknown = utils.randomSelection([
-        respData.unknown_1,
-        respData.unknown_2,
-        respData.unknown_3
-      ]);
-      unknownResponse = unknown.format(aOrAn, replacement);
-    }
-    ask(app, unknownResponse);
-  });
+      if (found) {
+        let unknown = utils.randomSelection([
+          respData.unknown_animal_1,
+          respData.unknown_animal_2
+        ]);
+        unknownResponse = unknown.format(aOrAn, replacement);
+      } else {
+        let unknown = utils.randomSelection([
+          respData.unknown_1,
+          respData.unknown_2,
+          respData.unknown_3
+        ]);
+        unknownResponse = unknown.format(aOrAn, replacement);
+      }
+      ask(app, unknownResponse);
+    })
+    .catch(err => {
+      let unknownResponse = respData.unknown_error;
+      ask(app, unknownResponse);
+    });
 }
 
 module.exports = {

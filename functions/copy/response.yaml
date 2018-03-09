@@ -1,5 +1,5 @@
 welcome:
-  text_1: Welcome explorer to Safari Mixer! Here, there are very special wild animals hiding - so let’s find one! Which type of animal head should we look for first?
+  text_1: Welcome explorer to Safari Mixer! Here there are very special wild animals hiding - so let’s find one! Which type of animal head should we look for first?
   text_2: Welcome back explorer! Which type of animal head should we look for?
 
 animal_head:
@@ -48,6 +48,7 @@ unknownAnimalResponse:
   unknown_1: That doesn’t seem to be an animal. You could try saying ${0} ${1}?
   unknown_2: That wouldn’t make a very good animal. How about saying ${0} ${1}?
   unknown_3: I don’t think you’ll see that on this safari! How about saying ${0} ${1}?
+  unknown_error: I'm sorry I didn't understand can you please try saying that another way?
 
 changeAnimal:
   text: Yes, I can see it now! Looks like the ${0} ${1} actually ${2} ${3}!

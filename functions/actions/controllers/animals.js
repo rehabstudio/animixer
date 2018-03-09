@@ -38,7 +38,18 @@ function unknownAnimal(app) {
  * @param  {Object} app actions on google app object
  */
 function animalHead(app) {
-  let context = contextFn.generateContext(app, [contextFn.ANIMAL1_ARGUMENT]);
+  let context;
+  try {
+    context = contextFn.generateContext(
+      app,
+      [contextFn.ANIMAL1_ARGUMENT],
+      true
+    );
+  } catch (e) {
+    app.setContext('HeadComplete', 0);
+    return unknownAnimal(app, '');
+  }
+
   responses.animalHead(app, context);
 }
 
@@ -47,7 +58,19 @@ function animalHead(app) {
  * @param  {Object} app actions on google app object
  */
 function animalBody(app) {
-  let context = contextFn.generateContext(app, [contextFn.ANIMAL2_ARGUMENT]);
+  let context;
+  try {
+    context = contextFn.generateContext(
+      app,
+      [contextFn.ANIMAL2_ARGUMENT],
+      true
+    );
+  } catch (e) {
+    app.setContext('HeadComplete', 10);
+    app.setContext('BodyComplete', 0);
+    return unknownAnimal(app, '');
+  }
+
   responses.animalBody(app, context);
 }
 
@@ -58,11 +81,22 @@ function animalBody(app) {
  * @param  {boolean} skipSwitchScreen will skip switch screen check to avoid circular
  */
 function generateAnimal(app, skipSwitchScreen) {
-  let context = contextFn.generateContext(app, [
-    contextFn.ANIMAL1_ARGUMENT,
-    contextFn.ANIMAL2_ARGUMENT,
-    contextFn.ANIMAL3_ARGUMENT
-  ]);
+  let context;
+  try {
+    context = contextFn.generateContext(
+      app,
+      [
+        contextFn.ANIMAL1_ARGUMENT,
+        contextFn.ANIMAL2_ARGUMENT,
+        contextFn.ANIMAL3_ARGUMENT
+      ],
+      true
+    );
+  } catch (e) {
+    app.setContext('BodyComplete', 10);
+    app.setContext('AnimalComplete', 0);
+    return unknownAnimal(app, '');
+  }
   // If we don't have a screen ask to switch device
   skipSwitchScreen = skipSwitchScreen || false;
 
