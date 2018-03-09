@@ -1,8 +1,8 @@
-# **Safari Mixer**
+# Safari Mixer
 
 ![image alt text](https://storage.googleapis.com/animixer-1d266.appspot.com/Docs/image_5.png)
 
-## **Overview**
+## Overview
 
 [Safari Mixer](https://safarimixer.beta.rehab/) is a Voice Experiment for the Google Assistant that lets you combine animals to create new ones. Built on [Actions on Google](https://developers.google.com/actions/), the platform that allows you to build Actions for the Google Assistant on Android phones, iPhones, voice-activated speakers like Google Home and other types of devices. It uses [Dialogflow](https://dialogflow.com/) to handle understanding what the player says, [Firebase Cloud Functions](https://firebase.google.com/docs/functions/) for backend code, and [Firebase Database](https://firebase.google.com/docs/database/) to save data. The project is written in JavaScript, using the Actions on Google [Node.js client library](https://developers.google.com/actions/nodejs-client-library-release-notes).
 
@@ -18,7 +18,7 @@ To generate the sounds [Python3](https://www.python.org/downloads/) is used with
 
 To generate animal gifs Python3 is used to manage [AfterEffects CC 2018](https://www.adobe.com/uk/products/aftereffects.html) to render all combinations of animals, The generateGif folder contains the AfterEffects scene as well as AfterEffects scripts which are .jsx files, this is detailed below and the code can be found in the generateGif folder.
 
-## **Project Requirements**
+## Project Requirements
 
 * A Firebase account
 
@@ -32,7 +32,7 @@ To generate animal gifs Python3 is used to manage [AfterEffects CC 2018](https:/
 
 * (Optional) [A CUDA GPU](https://developer.nvidia.com/cuda-gpus) for faster sound generation
 
-## **Web and Firebase functions commands**
+## Web and Firebase functions commands
 
 Below are the commands to get the project up and running on Mac OS or Unix based OS using make commands.
 
@@ -67,7 +67,7 @@ Deploying Functions - Deploy functions to Firebase:
 $ make deploy-functions
 ```
 
-## **Generate Gif commands**
+## Generate Gif commands
 
 In the generateGif folder you can run the following commands:
 
@@ -83,7 +83,7 @@ Running - Run generate_gifs.py:
 $ make run
 ```
 
-## **Generate Sounds commands**
+## Generate Sounds commands
 
 In the generateSound folder we can run the following commands:
 
@@ -105,7 +105,7 @@ Jupyter - Start local Jupyter server to experiment and test changes
 $ make jupyter
 ```
 
-### **Importing the Dialogflow Agent**
+### Importing the Dialogflow Agent
 
 Go to the [Actions on Google developer console](https://actions-console.corp.google.com/), and create a new project.
 
@@ -115,7 +115,7 @@ When your agent is created, click on the gear icon to get to the "Export and Imp
 
 [Here](https://dialogflow.com/docs/getting-started/basics) is some more info about how Dialogflow works in general.
 
-### **Setting up the webhook**
+### Setting up the webhook
 
 run `make setup` above.
 
@@ -127,21 +127,21 @@ Once you’ve successfully deployed your webhook, your terminal should give you 
 
 You can read more documentation about using Firebase Cloud Functions for Dialogflow fulfillment [here](https://dialogflow.com/docs/how-tos/getting-started-fulfillment).
 
-### **Testing your Action**
+### Testing your Action
 
 You should now be able to test your Action in the Dialogflow test console. You can also go to Dialogflow’s Integration tab, and try it on the Actions on Google simulator, where you can also hear it on a Google Home or Assistant device.
 
-### **Playing with response logic**
+### Playing with response logic
 
 The bulk of the response logic is in `index.js` with some custom classes in the module folder. You can read the docs about the Actions on Google Node SDK, which is called in with `const App = require("actions-on-google").DialogflowApp;`
 
 The Actions library’s built in app.data object is very useful for storing data within a session.
 
-### **Saving queries and responses to a Firebase Database**
+### Saving queries and responses to a Firebase Database
 
 The repo contains a module called `config.js` in functions which contains all the account information for interacting with Firebase real time database. This will need to be updated to your account credentials. This allows you to save info about which animals are discovered to a Firebase Database.
 
-## **Authentication**
+## Authentication
 
 For deploying the website, sounds and gifs for this project we require a service private key generated from:
 
@@ -151,7 +151,7 @@ save the key at the root of this project with the name: animixer-pk.json
 
 The Makefiles in generateGif and generateSound setup env vars required which will need to be updated to point at the location of this file on your machine.
 
-## **Sound Generation**
+## Sound Generation
 
 ### Jupyter Experimentation
 
@@ -177,7 +177,7 @@ To generate sounds simply run in the generateSounds folder:
 
 By default this will start the process of sampling the audio input files and will start to generate new sounds. This will use CPU processing by default which is very slow we highly recommend setting up GPU processing to reduce the time it takes to generate sounds from 24 hours to a few hours. This process can be setup here for [Windows](https://www.tensorflow.org/install/install_windows), [Mac](https://www.tensorflow.org/install/install_mac) and for [Ubuntu](https://www.tensorflow.org/install/install_linux), although the support Mac is limited so I’d recommend setting up on a Windows or Ubuntu machine.
 
-## **GIF Generation**
+## GIF Generation
 
 To install Python dependencies to manage AfterEffects navigate to the generateGif folder and run:
 
@@ -193,7 +193,7 @@ This will start a Python process that will batch create animations starting and 
 
 A .jsx AfterEffects script that will automate generation of .png images from the AE saved scene in generateGif/ae_project. The location of where these files will be saved will need to be updated in generateGif/generate_gifs.py by the Global variable ROOT_DIR.
 
-A Python file will start an After Effects process to generate the .gifs from the .png files, (After Effects 2018 has no native gif generation) and upload them to a google storage bucket that the chatbot and webapp will link to.
+A Python file will start an After Effects process to generate the .gifs from the .png files, (After Effects 2018 has no native gif generation) and upload them to a google storage bucket that the Assistant app and webapp will link to.
 
 ## Creating new animals
 
@@ -257,7 +257,7 @@ Dialogflow will use webhooks that point to the Firebase functions endpoints:
 
 [https://console.firebase.google.com/project/animixer-1d266/functions/list](https://console.firebase.google.com/project/animixer-1d266/functions/list)
 
-These are contained in the functions folder which is the backend of this project. The functions have their own dependencies and process input from Dialogflow to return json data to it for the chatbot to respond to input from the user.
+These are contained in the functions folder which is the backend of this project. The functions have their own dependencies and process input from Dialogflow to return json data to it for the Assistant app to respond to input from the user.
 
 This has used the actions-on-google SDK.
 
