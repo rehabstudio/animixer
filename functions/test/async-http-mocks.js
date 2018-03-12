@@ -1,3 +1,7 @@
+/**
+ * Taken from https://gist.github.com/chmanie/da3c150cc8fda254a1a5
+ */
+
 var EventEmitter = require('events').EventEmitter;
 var httpMocks = require('node-mocks-http');
 
