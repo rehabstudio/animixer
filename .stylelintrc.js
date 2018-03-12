@@ -14,7 +14,7 @@ module.exports = {
 
   extends: [
     'stylelint-config-standard',
-    'stylelint-config-styled-components-processor',
+    'stylelint-config-styled-components-processor'
   ],
 
   syntax: 'scss',
@@ -22,7 +22,7 @@ module.exports = {
   plugins: [
     // stylelint plugin to sort CSS rules content with specified order
     // https://github.com/hudochenkov/stylelint-order
-    'stylelint-order',
+    'stylelint-order'
   ],
 
   rules: {
@@ -37,12 +37,12 @@ module.exports = {
       'dollar-variables',
       'declarations',
       'at-rules',
-      'rules',
+      'rules'
     ],
 
     'string-quotes': 'single',
 
     // https://github.com/hudochenkov/stylelint-order/blob/master/rules/properties-order/README.md
-    'order/properties-order': primerConfig.rules['order/properties-order'],
-  },
+    'order/properties-order': primerConfig.rules['order/properties-order']
+  }
 };

@@ -20,12 +20,12 @@ function isModifiedEvent(event) {
 }
 
 type Props = {
-  onClick: ?(event: MouseEvent) => void,
+  onClick: ?(event: MouseEvent) => void
 };
 
 class Link extends React.Component<Props> {
   static propTypes = {
-    onClick: PropTypes.func,
+    onClick: PropTypes.func
   };
 
   _handleClick = (event: MouseEvent) => {

@@ -128,7 +128,7 @@ class Speech extends React.Component<{}> {
           let texts = ssmlText.split(audioData[i]);
           outputFiles.push(texts[0]);
           outputFiles.push(audioData[i]);
-          if (texts[1] && i == audioData.length - 1) {
+          if (texts[1] && i === audioData.length - 1) {
             outputFiles.push(texts[1]);
           }
         }
@@ -179,7 +179,6 @@ class Speech extends React.Component<{}> {
   render() {
     return (
       <SpeakerIcon
-        className="valign-wrapper"
         onClick={this.toggleSpeech.bind(this)}
         className={!utils.isIEorEDGE() ? 'valign-wrapper' : 'hidden'}
       >

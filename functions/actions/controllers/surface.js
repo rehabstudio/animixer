@@ -1,5 +1,4 @@
 const animals = require('./animals');
-const responses = require('./responses');
 
 /**
  * Check that surface switch action was successfull
