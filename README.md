@@ -191,9 +191,9 @@ We used a combination of batch processing in [Adobe Audition](https://www.adobe.
 
 2. Source a background ambience sound
 
-3. Using the SoX command line utility combine each clip from step 1 with the ambience from step 2
-    For each file run:
-		`sox -m step1.wav step2.wav final_result.wav`
+3. Using the SoX command line utility combine each clip from step 1 with the ambience from step 2. For each file run:
+
+`$ sox -m step1.wav step2.wav final_result.wav`
 
 ## GIF Generation
 
