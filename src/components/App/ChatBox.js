@@ -216,7 +216,7 @@ class ChatBox extends React.Component<{}, {}> {
           result = '';
         }
         this.setResponseOnNode(result, responseNode);
-        if (response.result.action == 'exit') {
+        if (response.result.action === 'exit') {
           this.setState({
             dictationEnabled: false
           });

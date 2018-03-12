@@ -14,20 +14,20 @@ import history from '../../history';
 import utils from '../../utils';
 
 const Title = styled.h5`
-  text-align: center;
   font-weight: bold;
+  text-align: center;
 `;
 
 const Text = styled.p`
-  text-align: center;
   margin: 10px auto;
+  text-align: center;
 `;
 
 const Container = styled.div`
-  overflow: hidden;
   position: relative;
-  color: #4e6174;
+  overflow: hidden;
   font-family: 'Nanum Gothic';
+  color: #4e6174;
 `;
 
 const ShareContainer = styled.div`
@@ -74,9 +74,6 @@ const buttonMediaCss = `
 
 const AudioButton = Buttons.TitleLink(null, null, 'auto', buttonMediaCss);
 const AudioButtonText = Buttons.TitleText();
-
-const ShareButton = Buttons.TitleLink(null, null, 'auto 5px', buttonMediaCss);
-const ShareButtonText = Buttons.TitleText();
 
 class Animal extends React.Component<{}> {
   constructor(props) {

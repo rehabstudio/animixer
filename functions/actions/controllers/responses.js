@@ -286,7 +286,6 @@ function exitResponse(app) {
  * @param  {Object} app     app actions on google app object
  */
 function notFoundResponse(app) {
-  let simpleResp = {};
   let resp = responseData.not_found.text;
 
   ask(app, resp);
@@ -333,7 +332,6 @@ function unknownAnimalResponse(app, noun) {
     .then(results => {
       let found = results[0];
       let replacement = results[1];
-      let resp;
       let unknownResponse;
       let aOrAn = utils.getAOrAn(replacement);
 

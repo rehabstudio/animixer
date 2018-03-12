@@ -24,6 +24,7 @@ jobs:
           command: |
             yarn lint
             yarn test --forceExit
+            cd functions && yarn test
       - run:
           name: Build
           command: yarn build
@@ -34,4 +35,3 @@ jobs:
               yarn global add firebase-tools
               $(yarn global bin)/firebase deploy --token=$FIREBASE_TOKEN
             fi
-

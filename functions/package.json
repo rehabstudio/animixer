@@ -6,7 +6,8 @@
     "shell": "firebase experimental:functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "test": "./node_modules/.bin/mocha --exit"
   },
   "dependencies": {
     "@google-cloud/storage": "^1.5.2",
@@ -22,5 +23,14 @@
     "request": "^2.83.0",
     "request-promise": "^4.2.2"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "events": "^2.0.0",
+    "mocha": "^5.0.4",
+    "mock-express": "^1.2.0",
+    "node-mocks-http": "^1.5.8",
+    "sinon": "^4.4.3"
+  }
 }

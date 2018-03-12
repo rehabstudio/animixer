@@ -42,10 +42,6 @@ const LHSContainer = styled.div`
   }
 `;
 
-const Copyright = styled.span`
-  padding-right: 0.5em;
-`;
-
 const linkCss = `
   font-family: Nanum Gothic;
   &,
@@ -79,11 +75,6 @@ const RehabLink = styled.a`
   text-align: right;
 `;
 
-const Separator = styled.span`
-  padding-right: 0.5em;
-  padding-left: 0.5em;
-`;
-
 const RehabImg = styled.img`
   width: 80px;
   display: block;
@@ -95,7 +86,10 @@ class Footer extends React.Component<{}> {
     return (
       <FooterContainer className={this.props.hide ? 'hidden' : ''}>
         <LHSContainer>
-          <img src="/static/img/voice_experiment.png" />
+          <img
+            src="/static/img/voice_experiment.png"
+            alt="Google voice experiment logo"
+          />
         </LHSContainer>
         <RHSContainer>
           <PrivacyLink href="http://beta.rehab/terms">
@@ -103,7 +97,7 @@ class Footer extends React.Component<{}> {
           </PrivacyLink>
           <RehabLink href="https://beta.rehab/">
             MADE BY
-            <RehabImg src="/static/img/rehab.png" />
+            <RehabImg src="/static/img/rehab.png" alt="Rehab logo" />
           </RehabLink>
         </RHSContainer>
       </FooterContainer>
