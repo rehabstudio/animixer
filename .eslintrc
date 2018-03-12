@@ -11,6 +11,7 @@
         "semi": true,
         "singleQuote": true
       }
-    ]
+    ],
+    "radix": 0
   }
 }

@@ -1,6 +1,5 @@
 const firebase = require('./../../common/firebase');
 const mixipedia = require('./mixipedia');
-const utils = require('./../../common/utils');
 const database = firebase.database();
 
 /**

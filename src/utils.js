@@ -7,8 +7,8 @@ function capitalizeFirstLetter(string) {
 
 function isIEorEDGE() {
   return (
-    navigator.appName == 'Microsoft Internet Explorer' ||
-    (navigator.appName == 'Netscape' &&
+    navigator.appName === 'Microsoft Internet Explorer' ||
+    (navigator.appName === 'Netscape' &&
       navigator.appVersion.indexOf('Edge') > -1)
   );
 }

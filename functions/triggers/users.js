@@ -1,4 +1,3 @@
-const functions = require('firebase-functions');
 const firebase = require('./../common/firebase');
 
 const database = firebase.database();
@@ -34,7 +33,7 @@ function clearOldUserDataTrigger(event) {
       }
       if (update) {
         return clearOldUserData(clearData).then(successJson => {
-          if (successJson.success == 1) {
+          if (successJson.success === 1) {
             clearData.timestamp_inv = now.getTime() * -1;
             clearData.timestamp = now.getTime();
             return database
