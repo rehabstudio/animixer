@@ -177,6 +177,24 @@ To generate sounds simply run in the generateSounds folder:
 
 By default this will start the process of sampling the audio input files and will start to generate new sounds. This will use CPU processing by default which is very slow we highly recommend setting up GPU processing to reduce the time it takes to generate sounds from 24 hours to a few hours. This process can be setup here for [Windows](https://www.tensorflow.org/install/install_windows), [Mac](https://www.tensorflow.org/install/install_mac) and for [Ubuntu](https://www.tensorflow.org/install/install_linux), although the support Mac is limited so I’d recommend setting up on a Windows or Ubuntu machine.
 
+### Post processing sounds
+
+We used a combination of batch processing in [Adobe Audition](https://www.adobe.com/uk/products/audition.html) and [SoX](http://sox.sourceforge.net/) to soften our ML generated sounds and then bed them within general rainforest ambience.
+
+1. Batch apply the following steps
+
+* Change Compression (In Audition: Multiband/Kill the Harshness)
+* Add Reverb (In Audition: Reverb/Liquid Speakers)
+* Reduce treble (In Audition: Parametric Equaliser)
+* Amplify (x5)
+* Fade In/Out (In Audition: Fade Envelope)
+
+2. Source a background ambience sound
+
+3. Using the SoX command line utility combine each clip from step 1 with the ambience from step 2
+    For each file run:
+		`sox -m step1.wav step2.wav final_result.wav`
+
 ## GIF Generation
 
 To install Python dependencies to manage AfterEffects navigate to the generateGif folder and run:
