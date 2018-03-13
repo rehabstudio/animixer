@@ -240,7 +240,7 @@ function animalResponse(app, context) {
       )
     )
     .addButton(
-      'share',
+      'Share me',
       `https://safarimixer.beta.rehab/animal/?animal1=${context.animalHead}` +
         `&animal2=${context.animalBody}&animal3=${context.animalLegs}`
     );
