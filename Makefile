@@ -1,3 +1,6 @@
+include .env
+export
+
 setup:
 	yarn install
 

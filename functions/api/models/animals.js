@@ -3,7 +3,7 @@ const path = require('path');
 const yaml = require('js-yaml');
 
 const animalFacts = require('./../../common/animalFacts');
-const { config } = require('./../../config');
+const { firebaseConfig } = require('./../../config');
 const firebase = require('./../../common/firebase');
 const utils = require('./../../common/utils');
 
@@ -22,7 +22,8 @@ const database = firebase.database();
  * @param  {string} animal2
  * @param  {string} animal3
  */
-function createUpdateAnimal(animal1, animal2, animal3) {
+function createUpdateAnimal(animal1, animal2, animal3, additionalData) {
+  additionalData = additionalData || {};
   let animalName = utils.makeAnimalName(animal1, animal2, animal3);
   if (!animalName) {
     return { success: 0, error: 'Invalid animals' };
@@ -34,14 +35,15 @@ function createUpdateAnimal(animal1, animal2, animal3) {
     found: true,
     date_found: new Date().getTime(),
     date_found_inv: new Date().getTime() * -1,
-    gif_url: bucketUrl + config.storageBucket + '/gifs/' + gifName,
-    image_url: bucketUrl + config.storageBucket + '/thumbnails/' + imageName,
+    gif_url: bucketUrl + firebaseConfig.storageBucket + '/gifs/' + gifName,
+    image_url: bucketUrl + firebaseConfig.storageBucket + '/thumbnails/' + imageName,
     animal1: animal1,
     animal2: animal2,
     animal3: animal3,
     animalFact: animalFacts.generateFact(),
     animalVerb: animalYamlData.verbs[animal1]
   };
+  Object.assign(animalObj, additionalData);
 
   return database
     .ref('animals/')
@@ -155,21 +157,25 @@ function getOrCreate(animal1, animal2, animal3) {
  * @return {Promise}        Promise containing animal data object
  */
 function UpdateOrCreate(animal1, animal2, animal3) {
-  return getAnimal(animal1, animal2, animal3).then(animalData => {
-    if (animalData) {
-      animalData.date_found = new Date().getTime();
-      animalData.date_found_inv = new Date().getTime() * -1;
-      return updateAnimal(animalData.name, animalData).then(successJson => {
-        return animalData;
-      });
-    } else {
-      return createUpdateAnimal(animal1, animal2, animal3).then(successJson => {
-        return getAnimal(animal1, animal2, animal3).then(animalData => {
-          return animalData;
-        });
-      });
-    }
-  });
+  return getAnimal(animal1, animal2, animal3)
+    .then(animalData => {
+      if (animalData) {
+        animalData.date_found = new Date().getTime();
+        animalData.date_found_inv = new Date().getTime() * -1;
+        return updateAnimal(animalData.name, animalData)
+          .then(successJson => {
+            return animalData;
+          });
+      } else {
+        return createUpdateAnimal(animal1, animal2, animal3)
+          .then(successJson => {
+            return getAnimal(animal1, animal2, animal3)
+              .then(animalData => {
+                return animalData;
+              });
+          });
+      }
+    });
 }
 
 module.exports = {
