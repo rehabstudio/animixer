@@ -3,7 +3,7 @@
   "plugins": ["flowtype", "prettier"],
   "rules": {
     "prettier/prettier": [
-      "error",
+      "warn",
       {
         "printWidth": 80,
         "tabWidth": 2,

@@ -31,24 +31,23 @@ function clearOldUserDataTrigger(event) {
         clearData = {};
       }
       if (update) {
-        return clearOldUserData(clearData)
-          .then(successJson => {
-            if (successJson.success === 1) {
-              clearData.timestamp_inv = now.getTime() * -1;
-              clearData.timestamp = now.getTime();
-              return database
-                .ref('/clearData')
-                .set(clearData)
-                .then(() => {
-                  console.log('Reset timer for clearing user data');
-                  return { success: 1 };
-                })
-                .catch(error => {
-                  console.error('Clear data Write to DB failed: ' + error);
-                  return { error: error };
-                });
-              }
-            });
+        return clearOldUserData(clearData).then(successJson => {
+          if (successJson.success === 1) {
+            clearData.timestamp_inv = now.getTime() * -1;
+            clearData.timestamp = now.getTime();
+            return database
+              .ref('/clearData')
+              .set(clearData)
+              .then(() => {
+                console.log('Reset timer for clearing user data');
+                return { success: 1 };
+              })
+              .catch(error => {
+                console.error('Clear data Write to DB failed: ' + error);
+                return { error: error };
+              });
+          }
+        });
       } else {
         console.log('Clear user data trigger called too soon skipping.');
         return { success: 1 };
@@ -102,12 +101,11 @@ function clearOldUserData(clearData) {
  * @return {Promise}
  */
 function clearOldUserDataTriggerRequest(request, response) {
-  return clearOldUserDataTrigger()
-    .then(succesJson => {
-      response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
-      response.set('Content-Type', 'application/json');
-      response.status(200).send(JSON.stringify(succesJson));
-    });
+  return clearOldUserDataTrigger().then(succesJson => {
+    response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+    response.set('Content-Type', 'application/json');
+    response.status(200).send(JSON.stringify(succesJson));
+  });
 }
 
 module.exports = {

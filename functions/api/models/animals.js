@@ -36,7 +36,8 @@ function createUpdateAnimal(animal1, animal2, animal3, additionalData) {
     date_found: new Date().getTime(),
     date_found_inv: new Date().getTime() * -1,
     gif_url: bucketUrl + firebaseConfig.storageBucket + '/gifs/' + gifName,
-    image_url: bucketUrl + firebaseConfig.storageBucket + '/thumbnails/' + imageName,
+    image_url:
+      bucketUrl + firebaseConfig.storageBucket + '/thumbnails/' + imageName,
     animal1: animal1,
     animal2: animal2,
     animal3: animal3,
@@ -157,25 +158,21 @@ function getOrCreate(animal1, animal2, animal3) {
  * @return {Promise}        Promise containing animal data object
  */
 function UpdateOrCreate(animal1, animal2, animal3) {
-  return getAnimal(animal1, animal2, animal3)
-    .then(animalData => {
-      if (animalData) {
-        animalData.date_found = new Date().getTime();
-        animalData.date_found_inv = new Date().getTime() * -1;
-        return updateAnimal(animalData.name, animalData)
-          .then(successJson => {
-            return animalData;
-          });
-      } else {
-        return createUpdateAnimal(animal1, animal2, animal3)
-          .then(successJson => {
-            return getAnimal(animal1, animal2, animal3)
-              .then(animalData => {
-                return animalData;
-              });
-          });
-      }
-    });
+  return getAnimal(animal1, animal2, animal3).then(animalData => {
+    if (animalData) {
+      animalData.date_found = new Date().getTime();
+      animalData.date_found_inv = new Date().getTime() * -1;
+      return updateAnimal(animalData.name, animalData).then(successJson => {
+        return animalData;
+      });
+    } else {
+      return createUpdateAnimal(animal1, animal2, animal3).then(successJson => {
+        return getAnimal(animal1, animal2, animal3).then(animalData => {
+          return animalData;
+        });
+      });
+    }
+  });
 }
 
 module.exports = {
