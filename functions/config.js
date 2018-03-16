@@ -9,9 +9,6 @@ const envKeys = [
   'TWITTER_ACCESS_TOKEN_KEY',
   'TWITTER_ACCESS_TOKEN_SECRET'
 ];
-let envVars = envKeys.every(key => {
-  return eval(`process.env.${key}`) !== undefined;
-});
 let animixerConfig;
 
 try {
@@ -23,6 +20,9 @@ try {
 // Will use regular env variables on circle or locally
 if (!animixerConfig) {
   animixerConfig = {};
+  let envVars = envKeys.every(key => {
+    return eval(`process.env.${key}`) !== undefined;
+  });
   if (envVars) {
     animixerConfig.firebase_api_key = process.env.FIREBASE_API_KEY;
     animixerConfig.twitter_api_key = process.env.TWITTER_CONSUMER_KEY;
