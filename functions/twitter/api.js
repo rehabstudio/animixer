@@ -12,22 +12,18 @@ var rp = require('request-promise');
  */
 function postTweetImage(status, image) {
   console.info('Posting image to twitter');
-  console.log('twitterConfig', twitterConfig);
   return uploadImage(image)
-    .then((data) => {
+    .then(data => {
       if (!data) throw new Error('No image data returned');
       let params = { status: status, media_ids: data.media_id_string };
-      console.log(JSON.stringify(params));
-      client.post('statuses/update', params, function (err, data, response) {
-        if (err) throw new Error(JSON.stringify(err));
-        console.log(data);
-        //console.log(response);
-        console.info('Animal posted to Twitter: ', JSON.stringify(data));
+      return client.post('statuses/update', params).then(data => {
+        console.info('Animal posted to Twitter: ', status);
         return data;
       });
     })
     .catch(err => {
       console.error('Unable to upload image ', err);
+      return err;
     });
 }
 
@@ -42,23 +38,25 @@ function uploadImage(image) {
     uri: image,
     resolveWithFullResponse: true,
     encoding: null
-  }
+  };
   return rp(config)
-    .then((response) => {
-      if (response.statusCode == 200) {
+    .then(response => {
+      if (response.statusCode === 200) {
         let body = response.body;
-        data = "data:" + response.headers["content-type"] + ";base64," + new Buffer(body).toString('base64');
-        return client.post('media/upload', {media: body});
-      }
-      else {
+        return client.post('media/upload', { media: body });
+      } else {
         throw new Error('Unexpected statusCode:', response.statusCode);
       }
     })
     .catch(err => {
-      console.error('Error uploading image to twitter: ', image, err, err.message);
+      console.error(
+        'Error uploading image to twitter: ',
+        image,
+        err,
+        err.message
+      );
       return Promise.resolve();
     });
-
 }
 
 module.exports = {

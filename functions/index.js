@@ -11,7 +11,7 @@ module.exports = {
     .onWrite(triggers.users.clearOldUserDataTrigger),
   uploadTwitter: functions.database
     .ref('/animals/{animalName}')
-    .onWrite(triggers.twitter.postAnimal),
-  uploadTwitterTest:functions.https.onRequest(triggers.twitter.postAnimalRequest)
+    .onWrite(triggers.twitter.postAnimal)
+  //uploadTwitterTest:functions.https.onRequest(triggers.twitter.postAnimalRequest)
   //cleanUserDataWriteTest: functions.https.onRequest(triggers.users.clearOldUserDataTriggerRequest)
 };
