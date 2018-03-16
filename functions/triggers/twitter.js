@@ -28,7 +28,9 @@ function postAnimal(event) {
         );
       });
   } else {
-    console.info('Animal already posted to twitter, skipping');
+    console.info(
+      `Animal ${animalData.name}already posted to twitter, skipping`
+    );
     return Promise.resolve();
   }
 }

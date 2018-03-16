@@ -3,11 +3,33 @@ process.env.DEBUG = 'actions-on-google:*';
 
 const ENV = process.env.ENV;
 const animixerConfig = functions.config().animixer;
+const envKeys = [
+  'FIREBASE_API_KEY',
+  'TWITTER_CONSUMER_KEY',
+  'TWITTER_CONSUMER_SECRET',
+  'TWITTER_ACCESS_TOKEN_KEY',
+  'TWITTER_ACCESS_TOKEN_SECRET'
+];
 
+// Will use regular env variables on circle or locally
 if (!animixerConfig) {
-  throw new Error(
-    'No config values please look at Account setup in README then run: `$firebase functions:config:get > functions/.runtimeconfig.json`'
-  );
+  if (
+    envKeys.every(key => {
+      return process.env[key] !== undefined;
+    })
+  ) {
+    animixerConfig.firebase_api_key = process.env.FIREBASE_API_KEY;
+    (animixerConfig.twitter_api_key = process.env.TWITTER_CONSUMER_KEY),
+      (animixerConfig.twitter_api_secret = process.env.TWITTER_CONSUMER_SECRET),
+      (animixerConfig.twitter_api_token_key =
+        process.env.TWITTER_ACCESS_TOKEN_KEY),
+      (animixerConfig.twitter_api_token_secret =
+        process.env.TWITTER_ACCESS_TOKEN_SECRET);
+  } else {
+    throw new Error(
+      'No config values please look at Account setup in README then run: `$firebase functions:config:get > functions/.runtimeconfig.json`'
+    );
+  }
 }
 
 const firebaseConfig = {
