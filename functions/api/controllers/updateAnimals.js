@@ -44,19 +44,17 @@ function postAnimalsTwitter(request, response) {
     .once('value')
     .then(function(snapshot) {
       let animals = snapshot.val();
-      Object.keys(animals)
-        .slice(0, 1)
-        .forEach(animalKey => {
-          let animalData = animals[animalKey];
-          let mockEvent = {
-            data: {
-              val: () => {
-                return animalData;
-              }
+      Object.keys(animals).forEach(animalKey => {
+        let animalData = animals[animalKey];
+        let mockEvent = {
+          data: {
+            val: () => {
+              return animalData;
             }
-          };
-          twitter.postAnimal(mockEvent);
-        });
+          }
+        };
+        twitter.postAnimal(mockEvent);
+      });
       response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
       response.status(200).send('Success');
     })
