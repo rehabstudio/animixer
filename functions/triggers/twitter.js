@@ -26,6 +26,9 @@ function postAnimal(event) {
           animalData.animal3,
           { tweetImage: imageUrl }
         );
+      })
+      .catch(err => {
+        console.error(`Unable to post animal ${animalData.name}`);
       });
   } else {
     console.info(

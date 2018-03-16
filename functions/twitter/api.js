@@ -22,8 +22,7 @@ function postTweetImage(status, image) {
       });
     })
     .catch(err => {
-      console.error('Unable to upload image ', err);
-      return err;
+      console.error('Unable to upload image ');
     });
 }
 
