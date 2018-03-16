@@ -9,6 +9,7 @@ venv
 
 # Private key
 animixer-pk.json
+functions/.runtimeconfig.json
 
 # Testing
 /coverage

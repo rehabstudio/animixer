@@ -2,8 +2,14 @@ const functions = require('firebase-functions');
 process.env.DEBUG = 'actions-on-google:*';
 
 const ENV = process.env.ENV;
-console.log('functions.config()', functions.config());
 const animixerConfig = functions.config().animixer;
+
+if (!animixerConfig) {
+  throw new Error(
+    'No config values please look at Account setup in README then run: `$firebase functions:config:get > functions/.runtimeconfig.json`'
+  );
+}
+
 const firebaseConfig = {
   apiKey: animixerConfig.firebase_api_key,
   authDomain: 'animixer-1d266.firebaseapp.com',
