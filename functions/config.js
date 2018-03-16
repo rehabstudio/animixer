@@ -1,8 +1,11 @@
+const functions = require('firebase-functions');
 process.env.DEBUG = 'actions-on-google:*';
 
 const ENV = process.env.ENV;
+console.log('functions.config()', functions.config());
+const animixerConfig = functions.config().animixer;
 const firebaseConfig = {
-  apiKey: 'AIzaSyB9j98cQ4v_tu7mLr-gClzWxSNTmAOd8es',
+  apiKey: animixerConfig.firebase_api_key,
   authDomain: 'animixer-1d266.firebaseapp.com',
   databaseURL: 'https://animixer-1d266.firebaseio.com',
   projectId: 'animixer-1d266',
@@ -10,10 +13,10 @@ const firebaseConfig = {
   messagingSenderId: '74799871575'
 };
 const twitterConfig = {
-  consumer_key: process.env.TWITTER_CONSUMER_KEY,
-  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-  access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
-  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
+  consumer_key: animixerConfig.twitter_api_key,
+  consumer_secret: animixerConfig.twitter_api_secret,
+  access_token_key: animixerConfig.twitter_api_token_key,
+  access_token_secret: animixerConfig.twitter_api_token_secret
 };
 
 const APIHost =

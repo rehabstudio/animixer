@@ -292,3 +292,9 @@ messagingSenderId can be found at:
 [https://console.firebase.google.com/project/](https://console.firebase.google.com/project/)<your-project-id>/settings/cloudmessaging/
 
 For the rest replace "animixer-1d266" with <your-project-id>
+
+The keys are stored in the firebase environment by using the firebase CLI push your firebase API key and twitter credentials (If you want to automatically post animals to twitter) using:
+
+firebase functions:config:set animixer.firebase_api_key=<API_KEY>
+
+firebase functions:config:set animixer.twitter_api_key=<API_KEY> animixer.twitter_api_secret=<SECRET> animixer.twitter_api_token_key=<TOKEN> animixer.twitter_api_token_secret=<SECRET>
