@@ -9,11 +9,16 @@ const envKeys = [
   'TWITTER_ACCESS_TOKEN_KEY',
   'TWITTER_ACCESS_TOKEN_SECRET'
 ];
-let animixerConfig = functions.config().animixer;
-
 let envVars = envKeys.every(key => {
   return eval(`process.env.${key}`) !== undefined;
 });
+let animixerConfig;
+
+try {
+  animixerConfig = functions.config().animixer;
+} catch (err) {
+  console.info('firebase config unavailable');
+}
 
 // Will use regular env variables on circle or locally
 if (!animixerConfig) {
