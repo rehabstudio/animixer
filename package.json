@@ -25,7 +25,6 @@
     "request": "^2.79.0",
     "request-promise": "^4.2.2",
     "styled-components": "^2.1.2",
-    "twitter": "^1.7.1",
     "universal-router": "^5.0.0"
   },
   "devDependencies": {
