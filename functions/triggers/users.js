@@ -16,7 +16,6 @@ const sessionDataTTL = 1000 * 60 * 60 * 24 * 7;
  */
 function clearOldUserDataTrigger(event) {
   console.log('Clear user data trigger started');
-  //const original = event.data.val();
   return database
     .ref('/clearData')
     .once('value')
@@ -51,7 +50,7 @@ function clearOldUserDataTrigger(event) {
         });
       } else {
         console.log('Clear user data trigger called too soon skipping.');
-        return null;
+        return { success: 1 };
       }
     });
 }
@@ -95,7 +94,22 @@ function clearOldUserData(clearData) {
     });
 }
 
+/**
+ * Wrapper around clearOldUserDataTrigger trigger to allow easy testing and debugging
+ * @param  {Object} request
+ * @param  {Object} response
+ * @return {Promise}
+ */
+function clearOldUserDataTriggerRequest(request, response) {
+  return clearOldUserDataTrigger().then(succesJson => {
+    response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+    response.set('Content-Type', 'application/json');
+    response.status(200).send(JSON.stringify(succesJson));
+  });
+}
+
 module.exports = {
   clearOldUserData,
-  clearOldUserDataTrigger
+  clearOldUserDataTrigger,
+  clearOldUserDataTriggerRequest
 };

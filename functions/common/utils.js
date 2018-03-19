@@ -1,4 +1,4 @@
-const { config } = require('./../config');
+const { firebaseConfig } = require('./../config');
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
@@ -59,7 +59,7 @@ function getImageUrl(context) {
     context.animalLegs +
     '_render.gif';
   let imageUrl = `https://storage.googleapis.com/${
-    config.storageBucket
+    firebaseConfig.storageBucket
   }/gifs/${imageName}`;
   return imageUrl;
 }
@@ -71,7 +71,7 @@ function getAudioUrl(context) {
   let audioName =
     [context.animalHead, context.animalBody].sort().join('') + '.wav';
   let audioUrl = `https://storage.googleapis.com/${
-    config.storageBucket
+    firebaseConfig.storageBucket
   }/sounds/${audioName}`;
   return audioUrl;
 }

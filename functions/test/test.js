@@ -4,7 +4,7 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const httpMocks = require('./async-http-mocks');
 const sinon = require('sinon');
-const { config } = require('./../config');
+const { firebaseConfig } = require('./../config');
 const testData = require('./testData');
 
 const assert = chai.assert;
@@ -19,7 +19,7 @@ describe('Cloud Functions', () => {
     adminInitStub = sinon.stub(admin, 'initializeApp');
     functions = require('firebase-functions');
     configStub = sinon.stub(functions, 'config').returns({
-      firebase: config
+      firebase: firebaseConfig
     });
     smFunctions = require('../index');
   });
@@ -49,11 +49,15 @@ describe('Cloud Functions', () => {
         body: body
       });
       let response = httpMocks.createResponse();
-      let expectedResult =
+      let expectedResults = [
         '<speak>Welcome back explorer! Which type of animal head should we look for?' +
-        '<audio src="https://storage.googleapis.com/animixer-1d266.appspot.com/chime.ogg"></audio></speak>';
+          '<audio src="https://storage.googleapis.com/animixer-1d266.appspot.com/chime.ogg"></audio></speak>',
+        '<speak>Welcome explorer to Safari Mixer! Here there are very special wild animals hiding ' +
+          '- so let’s find one! Which type of animal head should we look for first?' +
+          '<audio src="https://storage.googleapis.com/animixer-1d266.appspot.com/chime.ogg"></audio></speak>'
+      ];
       response.on('end', function(body) {
-        assert.equal(body.speech, expectedResult);
+        assert.include(expectedResults, body.speech);
         assert.equal(response.statusCode, 200);
         done();
       });
