@@ -15,7 +15,7 @@ function postAnimal(event) {
     return twitter.api
       .postTweetImage(
         `The ${animalData.name} has been discovered!`,
-        animalData.image_url
+        animalData.gif_url
       )
       .then(tweetData => {
         console.log('Updating animal data');
