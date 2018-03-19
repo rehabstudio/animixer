@@ -142,7 +142,14 @@ class Animal extends React.Component<{}> {
       utils.capitalizeFirstLetter(animalData.animalFact) +
       ' Say ‘#HeyGoogle, talk to Safari Mixer’ to find a new animal.';
 
+    let twitterMessage = message;
+
+    if (animalData.tweetImage) {
+      twitterMessage += ' ' + animalData.tweetImage;
+    }
+
     this.setState({
+      twitterMessage: twitterMessage,
       shareMessage: message,
       rediscoverMessage: rediscoverMessage
     });
@@ -242,7 +249,7 @@ class Animal extends React.Component<{}> {
               </FacebookShareButton>
               <TwitterShareButton
                 url={this.props.animalData.shareUrl}
-                title={this.state.shareMessage}
+                title={this.state.twitterMessage}
                 className="share-button"
                 hashtag="#HeyGoogle"
               >

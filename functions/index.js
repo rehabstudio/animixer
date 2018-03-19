@@ -8,6 +8,10 @@ module.exports = {
   api: functions.https.onRequest(api.app),
   cleanUserDataWrite: functions.database
     .ref('/users/{sessionId}')
-    .onWrite(triggers.users.clearOldUserDataTrigger)
-  //cleanUserDataWriteTest: functions.https.onRequest(triggers.users.clearOldUserDataTrigger)
+    .onWrite(triggers.users.clearOldUserDataTrigger),
+  uploadTwitter: functions.database
+    .ref('/animals/{animalName}')
+    .onWrite(triggers.twitter.postAnimal)
+  //uploadTwitterTest:functions.https.onRequest(triggers.twitter.postAnimalRequest)
+  //cleanUserDataWriteTest: functions.https.onRequest(triggers.users.clearOldUserDataTriggerRequest)
 };

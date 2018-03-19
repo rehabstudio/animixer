@@ -26,6 +26,7 @@ app.get('/mixipedia/:animal1/:animal2/:animal3', mixipediaApi.get);
 app.post('/mixipedia', mixipediaApi.post);
 
 // Update animals API endpoints
-app.get('/updateAnimals', updateAnimalsApi.get);
+app.get('/updateAnimals', updateAnimalsApi.updateAnimals);
+app.get('/postAnimalsTwitter', updateAnimalsApi.postAnimalsTwitter);
 
 module.exports = app;
