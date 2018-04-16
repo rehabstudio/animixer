@@ -32,13 +32,12 @@ function isChrome() {
 }
 
 function getAnimalUrl(animal1, animal2, animal3) {
-  let animalPath = `/${animal1}` + `/${animal2}` + `/${animal3}`;
+  let animalPath = `/${animal1}/${animal2}/${animal3}`;
   return APIHost + '/api/mixipedia' + animalPath;
 }
 
 function getShareUrl(animal1, animal2, animal3) {
-  let urlArgs =
-    `?animal1=${animal1}&` + `animal2=${animal2}&` + `animal3=${animal3}`;
+  let urlArgs = `?animal1=${animal1}&animal2=${animal2}&animal3=${animal3}`;
   return Host + urlArgs;
 }
 
