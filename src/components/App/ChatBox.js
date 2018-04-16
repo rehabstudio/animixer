@@ -302,7 +302,7 @@ class ChatBox extends React.Component<{}, {}> {
     }
     let animalNode = document.createElement('div');
     let animalData = {
-      animalName: cardData.basic_card.title,
+      name: cardData.basic_card.title,
       imageUrl: cardData.basic_card.image.url,
       audioUrl: this.state.audioUrl,
       shareUrl: shareUrl,

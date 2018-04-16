@@ -5,14 +5,7 @@ import styled from 'styled-components';
 
 import ErrorPage from '../ErrorPage';
 import { default as AnimalComponent } from '../../components/App/Animal';
-
-const APIHost = window.location.href.startsWith('http://localhost')
-  ? 'http://localhost:5000/animixer-1d266/us-central1'
-  : 'https://us-central1-animixer-1d266.cloudfunctions.net';
-
-const Host = window.location.href.startsWith('http://localhost')
-  ? 'http://localhost:3000'
-  : 'https://safarimixer.beta.rehab';
+import utils from '../../utils';
 
 const AnimalContainer = styled.div`
   height: 90vh;
@@ -83,16 +76,16 @@ class Animal extends React.Component<{}> {
   }
 
   getAnimalData(parsedArgs) {
-    let animalPath =
-      `/${parsedArgs.animal1}` +
-      `/${parsedArgs.animal2}` +
-      `/${parsedArgs.animal3}`;
-    let urlArgs =
-      `?animal1=${parsedArgs.animal1}&` +
-      `animal2=${parsedArgs.animal2}&` +
-      `animal3=${parsedArgs.animal3}`;
-    let animalDataUrl = APIHost + '/api/mixipedia' + animalPath;
-    let shareUrl = Host + urlArgs;
+    let animalDataUrl = utils.getAnimalUrl(
+      parsedArgs.animal1,
+      parsedArgs.animal2,
+      parsedArgs.animal3
+    );
+    let shareUrl = utils.getShareUrl(
+      parsedArgs.animal1,
+      parsedArgs.animal2,
+      parsedArgs.animal3
+    );
 
     // We don't need any data if it's not a mixed animal
     if (

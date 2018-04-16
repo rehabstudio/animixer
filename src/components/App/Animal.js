@@ -1,4 +1,6 @@
 import React from 'react';
+import rp from 'request-promise';
+import qs from 'query-string';
 import {
   FacebookShareButton,
   FacebookIcon,
@@ -98,6 +100,7 @@ class Animal extends React.Component<{}> {
     if (newProps.animalData && newProps !== this.props) {
       this.updateShareMetaTags(newProps.animalData);
       this.updateAnimalMessage(newProps.animalData);
+      this.getTweetImage(newProps.animalData);
     }
   }
 
@@ -108,6 +111,7 @@ class Animal extends React.Component<{}> {
         this.animalImg.src = this.props.animalData.imageUrl;
       }
       this.updateAnimalMessage(this.props.animalData);
+      this.getTweetImage(this.props.animalData);
     }
   }
 
@@ -133,7 +137,7 @@ class Animal extends React.Component<{}> {
       : '';
     let message =
       'I discovered the ' +
-      utils.capitalizeFirstLetter(animalData.animalName) +
+      utils.capitalizeFirstLetter(animalData.name) +
       '! ' +
       funFact +
       " Try making your own animal. Say '#HeyGoogle, talk to Safari Mixer'.";
@@ -174,6 +178,41 @@ class Animal extends React.Component<{}> {
     }
   }
 
+  getTweetImage(animalData) {
+    let animal1, animal2, animal3;
+    if (animalData.tweetImage) {
+      return;
+    }
+
+    if (
+      this.props.animalData.animal1 &&
+      this.props.animalData.animal2 &&
+      this.props.animalData.animal3
+    ) {
+      animal1 = animalData.animal1;
+      animal2 = animalData.animal2;
+      animal3 = animalData.animal3;
+    } else if (animalData.animalUrl) {
+      let args = qs.parse(animalData.animalUrl.split('?')[1]);
+      animal1 = args.animal1;
+      animal2 = args.animal2;
+      animal3 = args.animal3;
+    }
+
+    if ((animal1, animal2, animal3)) {
+      let animalDataUrl = utils.getAnimalUrl(animal1, animal2, animal3);
+      let animalPromise = rp(animalDataUrl);
+      return Promise.all([animalPromise]).then(responses => {
+        let animalData = JSON.parse(responses[0]);
+        if (animalData.tweetImage) {
+          this.updateAnimalMessage(animalData);
+        } else {
+          this.getTweetImage(animalData);
+        }
+      });
+    }
+  }
+
   render() {
     return (
       <Container>
@@ -187,7 +226,7 @@ class Animal extends React.Component<{}> {
           </div>
           <div style={{ textAlign: 'center' }}>
             <AnimalText className="card-panel text-darken-2 hoverable bring-front margins">
-              {utils.capitalizeFirstLetter(this.props.animalData.animalName)}
+              {utils.capitalizeFirstLetter(this.props.animalData.name)}
             </AnimalText>
           </div>
         </TitleContainer>
