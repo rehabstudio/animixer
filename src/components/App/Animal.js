@@ -137,7 +137,7 @@ class Animal extends React.Component<{}> {
       : '';
     let message =
       'I discovered the ' +
-      utils.capitalizeFirstLetter(animalData.animalName) +
+      utils.capitalizeFirstLetter(animalData.name) +
       '! ' +
       funFact +
       " Try making your own animal. Say '#HeyGoogle, talk to Safari Mixer'.";
@@ -226,7 +226,7 @@ class Animal extends React.Component<{}> {
           </div>
           <div style={{ textAlign: 'center' }}>
             <AnimalText className="card-panel text-darken-2 hoverable bring-front margins">
-              {utils.capitalizeFirstLetter(this.props.animalData.animalName)}
+              {utils.capitalizeFirstLetter(this.props.animalData.name)}
             </AnimalText>
           </div>
         </TitleContainer>
