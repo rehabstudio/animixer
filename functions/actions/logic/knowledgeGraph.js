@@ -65,6 +65,7 @@ function replacementAnimal(context) {
         resultType = resultArray[0];
         found = true;
       } else {
+        // Filter out animals in context to avoid duplicates
         let filteredAcceptableTypes = acceptableTypes.filter(type => {
           if (animals.indexOf(type) === -1) {
             return true;
