@@ -76,6 +76,10 @@ def get_audio_files(directory):
 
 
 def generate_sounds(skip_existing=True):
+    # Slow imports doing here
+    from magenta.models.nsynth import utils
+    from magenta.models.nsynth.wavenet import fastgen
+
     print('Generating Sounds')
     output_files = []
     filenames = get_audio_files(INPUT_DIR)
@@ -128,15 +132,16 @@ def upload_to_cloud(skip_existing=True):
     print('Uploading to cloud')
     for sound in tqdm(file_paths):
         file_name = sound.split(SEPARATOR)[-1]
-        if file_name in blobs and skip_existing:
+        file_path = '/'.join(['sounds', file_name])
+        if file_path in blobs and skip_existing:
             continue
-        blob = bucket.blob(file_name)
+        blob = bucket.blob(file_path)
         blob.upload_from_filename(sound)
         blob.make_public()
 
 
 if __name__ == '__main__':
-    skip_existing = SKIP_EXISTING
-    generate_sounds(skip_existing)
-    add_original(skip_existing)
-    upload_to_cloud(skip_existing)
+    #skip_existing = SKIP_EXISTING
+    #generate_sounds(skip_existing)
+    #add_original(skip_existing)
+    upload_to_cloud(Fals)

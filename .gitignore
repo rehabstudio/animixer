@@ -9,6 +9,7 @@ venv
 
 # Private key
 animixer-pk.json
+functions/.runtimeconfig.json
 
 # Testing
 /coverage
@@ -23,6 +24,7 @@ __generated__
 .env.development.local
 .env.test.local
 .env.production.local
+.env
 
 npm-debug.log*
 yarn-debug.log*
@@ -34,3 +36,4 @@ firebase-error.log*
 .vscode/*
 !.vscode/snippets
 !.vscode/settings.json
+package-lock.json

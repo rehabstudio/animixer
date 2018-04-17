@@ -1,12 +1,15 @@
 animals:
   - antelope
   - buffalo
+  - bunny
+  - cat
   - chicken
   - crocodile
   - dog
   - duck
   - elephant
   - flamingo
+  - fox
   - frog
   - giraffe
   - gorilla
@@ -14,11 +17,13 @@ animals:
   - hyena
   - leopard
   - lion
+  - lizard
   - ostrich
+  - pig
   - pony
   - puma
-  - pussycat
   - rhino
+  - sheep
   - tiger
   - tortoise
   - warthog
@@ -26,9 +31,10 @@ animals:
   - zebra
 
 verbs:
-  antelope: bleet
+  antelope: bleat
   buffalo: moo
   bunny: squeak
+  cat: meow
   chicken: cock-a-doodle-doo
   crocodile: snap
   dog: bark
@@ -48,7 +54,6 @@ verbs:
   pig: oink
   pony: neigh
   puma: growl
-  pussycat: meow
   rhino: snuffle
   sheep: baa
   tiger: growl
@@ -94,55 +99,59 @@ types:
 
 syllables:
   antelope:
-    - ant
+    - antel
     - elo
     - lope
   buffalo:
     - buff
     - uffa
-    - lo
+    - ffalo
   bunny:
-    - Rabb
+    - rabb
     - abbi
     - bit
+  cat:
+    - kitt
+    - itte
+    - tten
   chicken:
     - chick
-    - ick
-    - ken
+    - icke
+    - cken
   crocodile:
     - croc
     - oco
     - dile
   dog:
-    - do
-    - o
-    - g
+    - pupp
+    - uppy
+    - hound
   duck:
-    - d
-    - uc
-    - ck
+    - duck
+    - oose
+    - duck
   elephant:
-    - ele
+    - eleph
     - epha
     - phant
   fox:
-    - F
-    - ox
-    - x
+    - fox
+    - oxy
+    - fox
   flamingo:
     - flam
     - ami
     - mingo
   frog:
     - fr
-    - o
-    - g
+    - oggy
+    - rog
   giraffe:
     - gir
     - ira
     - raffe
   gorilla:
-    - gorr
+    - gor
     - illa
     - rilla
   hippo:
@@ -150,7 +159,7 @@ syllables:
     - opota
     - tamus
   hyena:
-    - hy
+    - hyen
     - ena
     - yena
   leopard:
@@ -158,52 +167,48 @@ syllables:
     - opa
     - pard
   lion:
-    - li
-    - i
-    - on
+    - lion
+    - io
+    - ion
   lizard:
-    - Liz
+    - liz
     - iza
     - zard
   ostrich:
     - ostr
-    - ich
-    - ich
+    - emu
+    - rich
   pig:
-    - P
-    - ig
-    - g
+    - pig
+    - iggy
+    - pig
   pony:
-    - p
-    - on
+    - pon
+    - ony
     - ny
   puma:
-    - p
-    - um
+    - pum
+    - uma
     - ma
-  pussycat:
-    - puss
-    - ussy
-    - cat
   rhinoceros:
     - rhin
     - oçe
-    - ros
+    - çeros
   sheep:
-    - Sh
+    - sh
     - ee
-    - ep
+    - ram
   tiger:
-    - ti
+    - tig
     - ige
     - ger
   tortoise:
     - tort
-    - oi
-    - se
+    - ortoi
+    - toise
   warthog:
     - wart
-    - art
+    - artho
     - hog
   wildebeest:
     - wild

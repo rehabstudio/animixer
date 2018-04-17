@@ -3,16 +3,8 @@ const rp = require('request-promise');
 const contextFn = require('./../logic/context');
 const responses = require('./responses');
 const utils = require('./../../common/utils');
-const surface = require('./surface');
 const { APIHost } = require('./../../config');
-
-// the parameters that are parsed from the generate_animal intent
-const ANIMAL1_ARGUMENT = 'animalHead';
-const ANIMAL2_ARGUMENT = 'animalBody';
-const ANIMAL3_ARGUMENT = 'animalLegs';
-const ANIMAL_CHANGED_ARGUMENT = 'changed';
-const UNKNOWN_ARGUMENT = 'noun';
-const ANIMAL_SUGGESTION = 'suggestion';
+const animalsModel = require('./../../api/models/animals');
 
 /**
  * Make animal found POST request to api return promise
@@ -24,9 +16,9 @@ function animalFoundPost(context) {
     uri: APIHost + '/api/mixipedia',
     method: 'POST',
     body: {
-      animal1: context[ANIMAL1_ARGUMENT],
-      animal2: context[ANIMAL2_ARGUMENT],
-      animal3: context[ANIMAL3_ARGUMENT]
+      animal1: context[contextFn.ANIMAL1_ARGUMENT],
+      animal2: context[contextFn.ANIMAL2_ARGUMENT],
+      animal3: context[contextFn.ANIMAL3_ARGUMENT]
     },
     json: true
   });
@@ -37,8 +29,49 @@ function animalFoundPost(context) {
  * @param  {Object} app actions on google app object
  */
 function unknownAnimal(app) {
-  let context = contextFn.generateContext(app, [UNKNOWN_ARGUMENT]);
+  let context = contextFn.generateContext(app, [contextFn.UNKNOWN_ARGUMENT]);
   responses.unknownAnimalResponse(app, context.noun);
+}
+
+/**
+ * Handle animal head request
+ * @param  {Object} app actions on google app object
+ */
+function animalHead(app) {
+  let context;
+  try {
+    context = contextFn.generateContext(
+      app,
+      [contextFn.ANIMAL1_ARGUMENT],
+      true
+    );
+  } catch (e) {
+    app.setContext('HeadComplete', 0);
+    return unknownAnimal(app, '');
+  }
+
+  responses.animalHead(app, context);
+}
+
+/**
+ * Handle animal body request
+ * @param  {Object} app actions on google app object
+ */
+function animalBody(app) {
+  let context;
+  try {
+    context = contextFn.generateContext(
+      app,
+      [contextFn.ANIMAL2_ARGUMENT],
+      true
+    );
+  } catch (e) {
+    app.setContext('HeadComplete', 10);
+    app.setContext('BodyComplete', 0);
+    return unknownAnimal(app, '');
+  }
+
+  responses.animalBody(app, context);
 }
 
 /**
@@ -48,17 +81,32 @@ function unknownAnimal(app) {
  * @param  {boolean} skipSwitchScreen will skip switch screen check to avoid circular
  */
 function generateAnimal(app, skipSwitchScreen) {
-  let context = contextFn.generateContext(app, [
-    ANIMAL1_ARGUMENT,
-    ANIMAL2_ARGUMENT,
-    ANIMAL3_ARGUMENT
-  ]);
+  let context;
+  try {
+    context = contextFn.generateContext(
+      app,
+      [
+        contextFn.ANIMAL1_ARGUMENT,
+        contextFn.ANIMAL2_ARGUMENT,
+        contextFn.ANIMAL3_ARGUMENT
+      ],
+      true
+    );
+  } catch (e) {
+    app.setContext('BodyComplete', 10);
+    app.setContext('AnimalComplete', 0);
+    return unknownAnimal(app, '');
+  }
   // If we don't have a screen ask to switch device
   skipSwitchScreen = skipSwitchScreen || false;
 
   // If only one animal selected
   if (contextFn.animalsIdentical(context)) {
-    let animalFoundPromise = animalFoundPost(context);
+    let animalFoundPromise = animalsModel.createUpdateAnimal(
+      context.animalHead,
+      context.animalBody,
+      context.animalLegs
+    );
     return Promise.resolve(animalFoundPromise).then(resp => {
       return responses.animalsIdentical(app, context);
     });
@@ -76,22 +124,23 @@ function generateAnimal(app, skipSwitchScreen) {
     uri: context.imageUrl,
     resolveWithFullResponse: true
   });
-  //let audioPromise = rp({ uri: context.audioUrl, resolveWithFullResponse: true });
-  let animalFoundPromise = animalFoundPost(context);
+  let animalFoundPromise = animalsModel.UpdateOrCreate(
+    context.animalHead,
+    context.animalBody,
+    context.animalLegs
+  );
 
   // Wait for assets to be found
   return Promise.all([imagePromise, animalFoundPromise])
     .then(responseData => {
-      if (
-        responseData[0].statusCode === 200 &&
-        responseData[0].statusCode === 200
-      ) {
-        if (!skipSwitchScreen && surface.shouldSwitchScreen(app, context)) {
+      if (responseData[0].statusCode === 200 && responseData[1]) {
+        if (!skipSwitchScreen && shouldSwitchScreen(app, context)) {
           return;
         }
+        context.animalData = responseData[1];
         responses.animalResponse(app, context);
       } else {
-        throw 'Animal content not found';
+        throw new Error('Animal content not found');
       }
     })
     .catch(err => {
@@ -108,18 +157,45 @@ function generateAnimal(app, skipSwitchScreen) {
  */
 function changeAnimal(app) {
   let context = contextFn.generateContext(app, [
-    ANIMAL1_ARGUMENT,
-    ANIMAL2_ARGUMENT,
-    ANIMAL3_ARGUMENT,
-    ANIMAL_CHANGED_ARGUMENT
+    contextFn.ANIMAL1_ARGUMENT,
+    contextFn.ANIMAL2_ARGUMENT,
+    contextFn.ANIMAL3_ARGUMENT,
+    contextFn.ANIMAL_CHANGED_ARGUMENT
   ]);
   // if have all animals treat as generate animal response
   if (context.animalHead && context.animalBody && context.animalLegs) {
+    app.setContext('animalcomplete', 1);
     return generateAnimal(app);
   } else {
     // else return response to continue journey
     return responses.changeAnimal(app, context);
   }
+}
+
+/**
+ * If we don't have a screen ask a user to switch to phone
+ *
+ * @param  {Object} app     app actions on google app object
+ * @param  {Object} context parsed values from dialog flow
+ */
+function shouldSwitchScreen(app, context) {
+  let hasScreen;
+  let screenAvailable;
+  try {
+    hasScreen = app.hasSurfaceCapability(app.SurfaceCapabilities.SCREEN_OUTPUT);
+    screenAvailable = app.hasAvailableSurfaceCapabilities(
+      app.SurfaceCapabilities.SCREEN_OUTPUT
+    );
+  } catch (err) {
+    hasScreen = false;
+    screenAvailable = false;
+  }
+
+  if (!hasScreen && screenAvailable) {
+    responses.screenSwitch(app, context);
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -129,30 +205,38 @@ function changeAnimal(app) {
 function suggestion(app) {
   let context = contextFn.generateContext(
     app,
-    [ANIMAL1_ARGUMENT, ANIMAL2_ARGUMENT, ANIMAL3_ARGUMENT, ANIMAL_SUGGESTION],
+    [
+      contextFn.ANIMAL1_ARGUMENT,
+      contextFn.ANIMAL2_ARGUMENT,
+      contextFn.ANIMAL3_ARGUMENT,
+      contextFn.ANIMAL_SUGGESTION
+    ],
     false
   );
   let animalContext;
   let params = {};
-  params[ANIMAL1_ARGUMENT] = context[ANIMAL1_ARGUMENT];
-  params[ANIMAL2_ARGUMENT] = context[ANIMAL2_ARGUMENT];
-  params[ANIMAL3_ARGUMENT] = context[ANIMAL3_ARGUMENT];
+  params[contextFn.ANIMAL1_ARGUMENT] = context[contextFn.ANIMAL1_ARGUMENT];
+  params[contextFn.ANIMAL2_ARGUMENT] = context[contextFn.ANIMAL2_ARGUMENT];
+  params[contextFn.ANIMAL3_ARGUMENT] = context[contextFn.ANIMAL3_ARGUMENT];
 
   if (!context.animal1) {
-    animalContext = ANIMAL1_ARGUMENT;
-    params[ANIMAL1_ARGUMENT] = context[ANIMAL_SUGGESTION];
+    animalContext = contextFn.ANIMAL1_ARGUMENT;
+    params[contextFn.ANIMAL1_ARGUMENT] = context[contextFn.ANIMAL_SUGGESTION];
   } else if (!context.animal2) {
-    animalContext = ANIMAL2_ARGUMENT;
-    params[ANIMAL2_ARGUMENT] = context[ANIMAL2_ARGUMENT];
+    animalContext = contextFn.ANIMAL2_ARGUMENT;
+    params[contextFn.ANIMAL2_ARGUMENT] = context[contextFn.ANIMAL_SUGGESTION];
   } else if (!context.animal3) {
-    animalContext = ANIMAL3_ARGUMENT;
-    params[ANIMAL3_ARGUMENT] = context[ANIMAL3_ARGUMENT];
+    animalContext = contextFn.ANIMAL3_ARGUMENT;
+    params[contextFn.ANIMAL3_ARGUMENT] = context[contextFn.ANIMAL_SUGGESTION];
   }
 
   app.setContext(animalContext, 5, params);
 }
 
 module.exports = {
+  animalBody,
+  animalFoundPost,
+  animalHead,
   changeAnimal,
   generateAnimal,
   unknownAnimal,

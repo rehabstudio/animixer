@@ -1,11 +1,8 @@
-const utils = require('./../../common/utils');
-const { config } = require('./../../config');
 const firebase = require('./../../common/firebase');
+const animals = require('./../models/animals');
 const database = firebase.database();
 
-const bucketUrl = 'https://storage.googleapis.com/';
-
-function mixipediaGet(request, response) {
+function mixipediaList(request, response) {
   let limit = request.query.limit || 10;
   let start = request.query.start;
 
@@ -41,73 +38,36 @@ function mixipediaPost(request, response) {
   const animal1 = request.body.animal1;
   const animal2 = request.body.animal2;
   const animal3 = request.body.animal3;
-  let animalName = utils.makeAnimalName(animal1, animal2, animal3);
-  if (!animalName) {
+
+  if (!animal1 || !animal2 || !animal3) {
     return response
       .status(400)
       .send(JSON.stringify({ success: 0, error: 'Invalid animals' }));
   }
-  let gifName = animal1 + '_' + animal2 + '_' + animal3 + '_render.gif';
-  let imageName = animal1 + '_' + animal2 + '_' + animal3 + '_thumbnail.png';
-  let animalData = {
-    name: animalName,
-    found: true,
-    date_found: new Date().getTime(),
-    date_found_inv: new Date().getTime() * -1,
-    gif_url: bucketUrl + config.storageBucket + '/gifs/' + gifName,
-    image_url: bucketUrl + config.storageBucket + '/thumbnails/' + imageName,
-    animal1: animal1,
-    animal2: animal2,
-    animal3: animal3
-  };
 
-  database
-    .ref('animals/')
-    .orderByChild('name')
-    .equalTo(animalName)
-    .once('value')
-    .then(snapshot => {
-      let animalEntry = snapshot.val();
-      if (animalEntry) {
-        let animalKey = 'animals/' + Object.keys(animalEntry)[0];
-        let updateObj = {};
-        updateObj[animalKey] = animalData;
-        database
-          .ref()
-          .update(updateObj)
-          .then(function() {
-            console.info('Animal Updated in DB: ' + animalName);
-            response.set('Content-Type', 'application/json');
-            response.status(200).send(JSON.stringify({ success: 1 }));
-          })
-          .catch(function(error) {
-            console.error('Animal Update in DB failed: ' + animalName);
-            response.set('Content-Type', 'application/json');
-            response
-              .status(500)
-              .send(JSON.stringify({ success: 0, error: error }));
-          });
-      } else {
-        database
-          .ref('animals/')
-          .push(animalData)
-          .then(function() {
-            console.info('Animal Written to DB: ' + animalName);
-            response.set('Content-Type', 'application/json');
-            response.status(200).send(JSON.stringify({ success: 1 }));
-          })
-          .catch(function(error) {
-            console.error('Animal Write to DB failed: ' + animalName);
-            response.set('Content-Type', 'application/json');
-            response
-              .status(500)
-              .send(JSON.stringify({ success: 0, error: error }));
-          });
-      }
+  return animals
+    .createNewAnimalRecord(animal1, animal2, animal3)
+    .then(successJson => {
+      let status = successJson.success ? 200 : 500;
+      response.set('Content-Type', 'application/json');
+      response.status(status).send(JSON.stringify(successJson));
     });
+}
+
+function mixipediaGet(request, response) {
+  const animal1 = request.params.animal1;
+  const animal2 = request.params.animal2;
+  const animal3 = request.params.animal3;
+
+  return animals.getAnimal(animal1, animal2, animal3).then(animalData => {
+    response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+    response.set('Content-Type', 'application/json');
+    response.status(200).send(JSON.stringify(animalData));
+  });
 }
 
 module.exports = {
   get: mixipediaGet,
+  list: mixipediaList,
   post: mixipediaPost
 };

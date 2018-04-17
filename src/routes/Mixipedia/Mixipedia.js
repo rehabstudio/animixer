@@ -212,7 +212,7 @@ class Mixipedia extends React.Component<{}> {
           <LoadingSpinner
             className="clearfix"
             innerRef={ele => (this.spinner = ele)}
-            src="/static/img/loading_spinner.gif"
+            src="/static/img/safari_mixer_spinner.gif"
           />
         </Container>
       </div>

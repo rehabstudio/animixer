@@ -17,11 +17,13 @@ import Dictation from './Dictation';
 import Speech from './Speech';
 
 const ENTER_KEY_CODE = 13;
-const Host = 'https://animixer.beta.rehab';
+const Host = 'https://safarimixer.beta.rehab';
 
 const Container = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
+  height: 100vh;
+  position: relative;
 `;
 
 const InputField = styled.div`
@@ -29,7 +31,7 @@ const InputField = styled.div`
   border-radius: 34px;
   background-color: #ffffff;
   display: flex;
-  padding-left: 5px;
+  padding-left: 15px;
   padding-right: 5px;
   padding-top: 2.5px;
   padding-bottom: 2.5px;
@@ -39,7 +41,10 @@ const Input = styled.input`
   font-family: 'Nanum Gothic';
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
+  padding-bottom: 10px;
+  background-color: transparent;
+  outline: none;
+  line-height: 1.33333;
 `;
 
 const ScrollChat = styled.div`
@@ -55,22 +60,19 @@ const ScrollChat = styled.div`
   }
 `;
 
-const Chevron = styled.div`
-  @media (max-width: 992px) {
-    visibility: hidden;
-  }
-`;
-
 const InputContainer = styled.div`
-  position: relative;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 20px;
+  z-index: 2;
 
   @media (max-width: 992px) {
-    bottom: 100px;
+    bottom: 60px;
   }
 
   @media (max-width: 600px) {
-    position: absolute;
-    bottom: 20px;
+    bottom: 0px;
     left: 0.75rem;
     right: 0.75rem;
     margin: 10px;
@@ -78,11 +80,18 @@ const InputContainer = styled.div`
 `;
 
 const ChatBoxContainer = styled.div`
-  height: 70vh;
+  height: 75%;
+  position: relative;
+  top: 70px;
 
   @media (max-width: 992px) {
     margin-bottom: 0px;
-    height: calc(100vh - 130px);
+    height: 85%;
+  }
+
+  @media (max-height: 600px) {
+    margin-bottom: 0px;
+    height: 80%;
   }
 `;
 
@@ -93,12 +102,21 @@ class ChatBox extends React.Component<{}, {}> {
       client: new ApiAiClient({ accessToken: this.props.accessToken }),
       artyom: new Artyom(),
       speak: '',
-      speaking: false,
+      pauseDictation: false,
+      dictationEnabled: true,
       currentQuery: null,
       startChat: false,
-      audioUrl: null
+      audioUrl: null,
+      heightCss: '100vh'
     };
     this.scrollUp = this.props.scrollUp || function() {};
+
+    // Work around 100vh not compatible with mobile devices
+    if (this.state.artyom.Device.isMobile) {
+      this.state.heightCss = window.innerHeight + 'px';
+    }
+
+    this.micTimeout = null;
   }
 
   componentDidMount() {
@@ -106,6 +124,9 @@ class ChatBox extends React.Component<{}, {}> {
       'keydown',
       this.queryInputKeyDown.bind(this)
     );
+    if (this.state.artyom.Device.isMobile) {
+      window.addEventListener('resize', this.updateChatBoxSize.bind(this));
+    }
   }
 
   componentWillUnmount() {
@@ -113,6 +134,10 @@ class ChatBox extends React.Component<{}, {}> {
       'keydown',
       this.queryInputKeyDown.bind(this)
     );
+
+    if (this.state.artyom.Device.isMobile) {
+      window.removeEventListener('resize', this.updateChatBoxSize.bind(this));
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -131,6 +156,12 @@ class ChatBox extends React.Component<{}, {}> {
     }
   }
 
+  updateChatBoxSize() {
+    this.setState({
+      heightCss: window.innerHeight + 'px'
+    });
+  }
+
   queryInputKeyDown(event) {
     if (event.which !== ENTER_KEY_CODE) {
       return;
@@ -138,7 +169,9 @@ class ChatBox extends React.Component<{}, {}> {
 
     let value = this.inputField.value;
     this.inputField.value = '';
-    this.userInput(value);
+    if (value) {
+      this.userInput(value);
+    }
   }
 
   userInput(value) {
@@ -152,7 +185,12 @@ class ChatBox extends React.Component<{}, {}> {
       currentQuery: null
     });
 
-    return this.getResponse(value);
+    // Only send alphabetic response to the bot
+    let userValue = value.replace(/[^A-Za-z]/g, '');
+
+    if (userValue) {
+      return this.getResponse(value);
+    }
   }
 
   sendText(text) {
@@ -163,24 +201,30 @@ class ChatBox extends React.Component<{}, {}> {
     let responseNode = this.createResponseNode();
 
     return this.sendText(value)
-      .then(
-        function(response) {
-          let result;
-          try {
-            if (
-              response.result.fulfillment.data !== undefined &&
-              response.result.fulfillment.data.google.rich_response
-            ) {
-              result = response.result.fulfillment.data.google.rich_response;
-            } else {
-              result = response.result.fulfillment.speech;
-            }
-          } catch (error) {
-            result = '';
+      .then(response => {
+        let result;
+        try {
+          if (
+            response.result.fulfillment.data !== undefined &&
+            response.result.fulfillment.data.google.rich_response
+          ) {
+            result = response.result.fulfillment.data.google.rich_response;
+          } else {
+            result = response.result.fulfillment.speech;
           }
-          this.setResponseOnNode(result, responseNode);
-        }.bind(this)
-      )
+        } catch (error) {
+          result = '';
+        }
+        this.setResponseOnNode(result, responseNode);
+        if (response.result.action === 'exit') {
+          this.setState({
+            dictationEnabled: false
+          });
+          this.micTimeoutFn(false);
+        } else {
+          this.micTimeoutFn(true);
+        }
+      })
       .catch(
         function(err) {
           console.log(err);
@@ -189,12 +233,26 @@ class ChatBox extends React.Component<{}, {}> {
       );
   }
 
+  micTimeoutFn(restart) {
+    if (this.micTimeout) {
+      clearTimeout(this.micTimeout);
+    }
+    if (restart) {
+      this.micTimeout = setTimeout(() => {
+        if (this.state.startChat) {
+          this.getResponse('bye');
+        }
+      }, 30000);
+    }
+  }
+
   createQueryNode(query) {
     let node = document.createElement('div');
     node.className =
       'query clearfix left-align right white-text card-panel bring-front margins';
     node.innerHTML = query;
     this.resultDiv.appendChild(node);
+    this.updateScroll();
     return node;
   }
 
@@ -244,7 +302,7 @@ class ChatBox extends React.Component<{}, {}> {
     }
     let animalNode = document.createElement('div');
     let animalData = {
-      animalName: cardData.basic_card.title,
+      name: cardData.basic_card.title,
       imageUrl: cardData.basic_card.image.url,
       audioUrl: this.state.audioUrl,
       shareUrl: shareUrl,
@@ -270,15 +328,19 @@ class ChatBox extends React.Component<{}, {}> {
     let outputText = /<speak>(.*?)<\/speak>/g.exec(speech)[1];
 
     if (audioContent) {
-      let audioSrc = /src="(.*?)"/g.exec(audioContent[1])[1];
-      outputText = outputText.replace(audioContent[0], '');
-      this.setState({ audioUrl: audioSrc });
+      for (let i = 1; i < audioContent.length; i++) {
+        outputText = outputText.replace(audioContent[i], '');
+      }
+      if (audioContent) {
+        let audioSrc = /src="(.*?)"/g.exec(audioContent[1])[1];
+        this.setState({ audioUrl: audioSrc });
+      }
     }
 
     text.innerHTML = outputText;
     node.appendChild(text);
 
-    this.setState({ speak: text.innerHTML });
+    this.setState({ speak: speech });
   }
 
   setResponseOnNode(response, node) {
@@ -314,37 +376,38 @@ class ChatBox extends React.Component<{}, {}> {
     }
   }
 
-  disableDictation(disable) {
-    this.setState({ speaking: disable });
+  pauseDictation(pause) {
+    this.setState({ pauseDictation: pause });
   }
 
   startChat() {
     this.getResponse('hello');
     this.setState({
-      startChat: true
+      startChat: true,
+      dictationEnabled: true
     });
   }
 
   stopChat() {
     this.setState({
-      startChat: false
+      startChat: false,
+      dictationEnabled: false
     });
     setTimeout(() => {
       this.resultDiv.innerHTML = '';
     }, 500);
+    this.micTimeoutFn(false);
   }
 
   render() {
     return (
       <Container
         innerRef={ele => (this.chatDiv = ele)}
+        style={{ height: this.state.heightCss }}
         className={
           this.state.startChat ? 'container fadein' : 'container fadeout'
         }
       >
-        <div className="row" onClick={this.scrollUp}>
-          <Chevron className="col s4 offset-s4" style={{ height: '50px' }} />
-        </div>
         <ChatBoxContainer className="row">
           <ScrollChat
             className="col s12"
@@ -359,13 +422,16 @@ class ChatBox extends React.Component<{}, {}> {
               <div style={{ width: '100%' }}>
                 <Input
                   innerRef={ele => (this.inputField = ele)}
-                  placeholder="Ask me something..."
+                  placeholder="Type to explore..."
                   id="q"
                   type="text"
                   style={{
                     marginBottom: '0px',
                     borderBottom: 'none',
-                    marginLeft: '5px'
+                    marginLeft: '5px',
+                    outlineStyle: 'none',
+                    boxShadow: 'none',
+                    borderColor: 'transparent'
                   }}
                 />
               </div>
@@ -378,13 +444,14 @@ class ChatBox extends React.Component<{}, {}> {
                     artyom={this.state.artyom}
                     userInput={this.userInput.bind(this)}
                     awaitingInput={this.awaitingInput.bind(this)}
-                    recordPause={this.state.speaking}
+                    recordPause={this.state.pauseDictation}
+                    enabled={this.state.dictationEnabled}
                   />
                 </div>
                 <Speech
                   artyom={this.state.artyom}
                   text={this.state.speak}
-                  speakingCallback={this.disableDictation.bind(this)}
+                  speakingCallback={this.pauseDictation.bind(this)}
                   enabled={true}
                 />
               </div>

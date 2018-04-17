@@ -53,9 +53,15 @@ class Welcome extends React.Component<{}> {
 
   render() {
     return (
-      <WelcomeContainer className="row valign-wrapper">
+      <WelcomeContainer
+        className="row valign-wrapper"
+        style={{ marginBottom: '0px' }}
+      >
         <div className="col s10 offset-s1 m6 offset-m3 l4 offset-l4 center-align">
-          <Logo className="center-align" src="/static/img/logo_low_res.png" />
+          <Logo
+            className="center-align"
+            src="/static/img/safari_mixer_logo.png"
+          />
           <Start
             innerRef={ele => (this.startDiv = ele)}
             onClick={this.scrollDown}

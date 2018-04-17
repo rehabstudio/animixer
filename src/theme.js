@@ -13,13 +13,13 @@ import { cyan } from 'material-ui/colors';
 // https://material-ui-next.com/style/color/
 export default createMuiTheme({
   palette: {
-    primary: cyan,
+    primary: cyan
   },
   overrides: {
     MuiButton: {
       raisedPrimary: {
-        color: 'white',
-      },
-    },
-  },
+        color: 'white'
+      }
+    }
+  }
 });

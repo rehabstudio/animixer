@@ -1,5 +1,10 @@
 const utils = require('./../../common/utils');
 
+/**
+ * Generate animal name using animal syllables in copy .yaml files
+ * @param  {Object} request  nodejs request object
+ * @param  {Object} response nodejs response object
+ */
 function animalName(request, response) {
   const animal1 = request.query.animal1;
   const animal2 = request.query.animal2;

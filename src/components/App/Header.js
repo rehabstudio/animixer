@@ -120,7 +120,7 @@ class Header extends React.Component<{}> {
           onClick={this.goHome.bind(this)}
         >
           <AnimixerImg
-            src="/static/img/logo_low_res.png"
+            src="/static/img/safari_mixer_logo_shadow_low.png"
             className="right valign-wrapper"
           />
         </LHSContainer>
