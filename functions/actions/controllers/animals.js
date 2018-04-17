@@ -50,7 +50,7 @@ function animalHead(app) {
     return unknownAnimal(app, '');
   }
 
-  responses.animalHead(app);
+  responses.animalHead(app, context);
 }
 
 /**
@@ -68,7 +68,7 @@ function animalBody(app) {
   } catch (e) {
     app.setContext('HeadComplete', 10);
     app.setContext('BodyComplete', 0);
-    return unknownAnimal(app);
+    return unknownAnimal(app, '');
   }
 
   responses.animalBody(app, context);
@@ -95,7 +95,7 @@ function generateAnimal(app, skipSwitchScreen, context) {
     } catch (e) {
       app.setContext('BodyComplete', 10);
       app.setContext('AnimalComplete', 0);
-      return unknownAnimal(app);
+      return unknownAnimal(app, '');
     }
   }
   // If we don't have a screen ask to switch device
