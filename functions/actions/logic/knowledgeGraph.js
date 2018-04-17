@@ -22,7 +22,13 @@ const replacementAnimals = animalData.types;
  * @param  {string} animalName string inputted by user to pass to knowledge graph
  * @return {array} array with boolean true if animal and a replacement string value
  */
-function replacementAnimal(animalName) {
+function replacementAnimal(context) {
+  let animalName = context.noun;
+  let animals = [context.animal1, context.animal2, context.animal3].filter(
+    animal => {
+      return animal !== undefined;
+    }
+  );
   let resultArray = [];
   let resultType;
   let found = false;
@@ -48,7 +54,8 @@ function replacementAnimal(animalName) {
         }
         if (
           acceptableTypes.includes(description) &&
-          resultArray.includes(description) === false
+          resultArray.includes(description) === false &&
+          animals.indexOf(description) === -1
         ) {
           resultArray.push(description);
         }
@@ -58,7 +65,13 @@ function replacementAnimal(animalName) {
         resultType = resultArray[0];
         found = true;
       } else {
-        resultType = utils.randomSelection(acceptableTypes);
+        let filteredAcceptableTypes = acceptableTypes.filter(type => {
+          if (animals.indexOf(type) === -1) {
+            return true;
+          }
+          return false;
+        });
+        resultType = utils.randomSelection(filteredAcceptableTypes);
       }
       // randomly suggest animal of type resultType
       let replacement = utils.randomSelection(replacementAnimals[resultType]);

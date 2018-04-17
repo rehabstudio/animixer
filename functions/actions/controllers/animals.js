@@ -29,8 +29,13 @@ function animalFoundPost(context) {
  * @param  {Object} app actions on google app object
  */
 function unknownAnimal(app) {
-  let context = contextFn.generateContext(app, [contextFn.UNKNOWN_ARGUMENT]);
-  responses.unknownAnimalResponse(app, context.noun);
+  let context = contextFn.generateContext(app, [
+    contextFn.UNKNOWN_ARGUMENT,
+    contextFn.ANIMAL1_ARGUMENT,
+    contextFn.ANIMAL2_ARGUMENT,
+    contextFn.ANIMAL3_ARGUMENT
+  ]);
+  responses.unknownAnimalResponse(app, context);
 }
 
 /**

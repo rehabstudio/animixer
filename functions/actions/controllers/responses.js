@@ -325,10 +325,11 @@ function changeAnimal(app, context) {
  * @param  {Object} app     app actions on google app object
  * @param  {string} noun    noun from user input
  */
-function unknownAnimalResponse(app, noun) {
+function unknownAnimalResponse(app, context) {
   let respData = responseData.unknownAnimalResponse;
+  let noun = context.noun;
   return knowledgeGraph
-    .replacementAnimal(noun)
+    .replacementAnimal(context)
     .then(results => {
       let found = results[0];
       let replacement = results[1];
