@@ -12,7 +12,6 @@ import shutil
 
 from google.cloud import storage
 import imageio
-from oauth2client.service_account import ServiceAccountCredentials
 from PIL import Image
 import requests
 from tqdm import tqdm
@@ -20,7 +19,7 @@ from tqdm import tqdm
 if platform == "linux" or platform == "linux2" or platform == "darwin":
     # linux
     # OS X
-    ROOT_DIR = os.path.join(os.environ['HOME'], 'animixer')
+    ROOT_DIR = os.path.join(os.environ['HOME'], 'Animixes')
     SEPARATOR = '/'
     OS = 'unix'
 
@@ -302,7 +301,10 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None):
     client = storage.Client()
     bucket = client.get_bucket(CLOUD_BUCKET)
     #print('Getting list of files from server')
-    blobs = [b.name for b in bucket.list_blobs()]
+    if skip_existing:
+        blobs = [b.name for b in bucket.list_blobs()]
+    else:
+        blobs = []
 
     print('Uploading {} files to cloud'.format(len(file_paths)))
     for file_path in tqdm(file_paths, position=position, desc='Process: {}'.format(position)):
@@ -345,11 +347,10 @@ if __name__ == '__main__':
     generate_tiffs_ae(SKIP_EXISTING)
     thumb_nails = generate_thumbnails(SKIP_EXISTING)
     gif_paths = generate_gifs(SKIP_EXISTING)
-    
+
     if ASYNC:
         async_upload(thumb_nails, skip_existing=False, folder='thumbnails')
-        async_upload(gif_paths, skip_existing=False, folder='gifs')
+        async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
     else:
         upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
         upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
-    
