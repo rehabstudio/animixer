@@ -4,7 +4,7 @@ const APIHost = window.location.href.startsWith('http://localhost')
 
 const Host = window.location.href.startsWith('http://localhost')
   ? 'http://localhost:3000'
-  : 'https://safarimixer.beta.rehab';
+  : 'https://safarimixer.com';
 
 function capitalizeFirstLetter(string) {
   if (!string) {

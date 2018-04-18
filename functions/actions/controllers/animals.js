@@ -29,8 +29,13 @@ function animalFoundPost(context) {
  * @param  {Object} app actions on google app object
  */
 function unknownAnimal(app) {
-  let context = contextFn.generateContext(app, [contextFn.UNKNOWN_ARGUMENT]);
-  responses.unknownAnimalResponse(app, context.noun);
+  let context = contextFn.generateContext(app, [
+    contextFn.UNKNOWN_ARGUMENT,
+    contextFn.ANIMAL1_ARGUMENT,
+    contextFn.ANIMAL2_ARGUMENT,
+    contextFn.ANIMAL3_ARGUMENT
+  ]);
+  responses.unknownAnimalResponse(app, context);
 }
 
 /**
@@ -80,22 +85,23 @@ function animalBody(app) {
  * @param  {Object} app     app actions on google app object
  * @param  {boolean} skipSwitchScreen will skip switch screen check to avoid circular
  */
-function generateAnimal(app, skipSwitchScreen) {
-  let context;
-  try {
-    context = contextFn.generateContext(
-      app,
-      [
-        contextFn.ANIMAL1_ARGUMENT,
-        contextFn.ANIMAL2_ARGUMENT,
-        contextFn.ANIMAL3_ARGUMENT
-      ],
-      true
-    );
-  } catch (e) {
-    app.setContext('BodyComplete', 10);
-    app.setContext('AnimalComplete', 0);
-    return unknownAnimal(app, '');
+function generateAnimal(app, skipSwitchScreen, context) {
+  if (!context) {
+    try {
+      context = contextFn.generateContext(
+        app,
+        [
+          contextFn.ANIMAL1_ARGUMENT,
+          contextFn.ANIMAL2_ARGUMENT,
+          contextFn.ANIMAL3_ARGUMENT
+        ],
+        true
+      );
+    } catch (e) {
+      app.setContext('BodyComplete', 10);
+      app.setContext('AnimalComplete', 0);
+      return unknownAnimal(app, '');
+    }
   }
   // If we don't have a screen ask to switch device
   skipSwitchScreen = skipSwitchScreen || false;
@@ -198,11 +204,64 @@ function shouldSwitchScreen(app, context) {
   return false;
 }
 
+/**
+ * Injects given suggestion into animal context
+ * @type {Object}
+ */
+function suggestion(app) {
+  let animal1 = contextFn.ANIMAL1_ARGUMENT;
+  let animal2 = contextFn.ANIMAL2_ARGUMENT;
+  let animal3 = contextFn.ANIMAL3_ARGUMENT;
+  let suggestion = contextFn.ANIMAL_SUGGESTION;
+  let context = contextFn.generateContext(
+    app,
+    [animal1, animal2, animal3, suggestion],
+    false
+  );
+  let animalContext;
+  let params = {};
+  let bodyPart;
+  params[animal1] = context[animal1];
+  params[animal2] = context[animal2];
+  params[animal3] = context[animal3];
+
+  if (!context[animal1]) {
+    animalContext = animal1;
+    params[animal1] = context[suggestion];
+    bodyPart = 'head';
+  } else if (!context[animal2]) {
+    animalContext = animal2;
+    params[animal2] = context[suggestion];
+    bodyPart = 'body';
+  } else if (!context[animal3]) {
+    animalContext = animal3;
+    params[animal3] = context[suggestion];
+    bodyPart = 'legs';
+  } else {
+    bodyPart = 'legs';
+  }
+
+  app.setContext(animalContext.toLowerCase(), 5, params);
+
+  if (bodyPart === 'head') {
+    app.setContext('HeadComplete', 10, params);
+    app.setContext('BodyComplete', 0);
+    return responses.animalHead(app, params);
+  } else if (bodyPart === 'body') {
+    app.setContext('HeadComplete', 0);
+    app.setContext('BodyComplete', 10, params);
+    return responses.animalBody(app, params);
+  } else if (bodyPart === 'legs') {
+    return generateAnimal(app, false, params);
+  }
+}
+
 module.exports = {
   animalBody,
   animalFoundPost,
   animalHead,
   changeAnimal,
   generateAnimal,
-  unknownAnimal
+  unknownAnimal,
+  suggestion
 };

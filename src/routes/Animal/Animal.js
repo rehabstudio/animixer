@@ -93,7 +93,7 @@ class Animal extends React.Component<{}> {
       parsedArgs.animal2 === parsedArgs.animal3
     ) {
       let animalData = this.state.animalData;
-      animalData.animalName = parsedArgs.animal1;
+      animalData.name = parsedArgs.animal1;
       animalData.shareUrl = shareUrl;
       return this.setState({
         animalDiscoverText: `You have discovered the ${parsedArgs.animal1}!`,
@@ -106,9 +106,9 @@ class Animal extends React.Component<{}> {
     return Promise.all([animalPromise])
       .then(responses => {
         let animalData = JSON.parse(responses[0]);
-        animalData.animalName = animalData.name;
+        animalData.name = animalData.name;
         animalData.animalDiscoverText = `You have discovered the ${
-          animalData.animalName
+          animalData.name
         }!`;
         animalData.animalFactText = animalData.animalFact;
         animalData.shareUrl = shareUrl;

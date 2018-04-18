@@ -4,6 +4,7 @@ const ANIMAL2_ARGUMENT = 'animalBody';
 const ANIMAL3_ARGUMENT = 'animalLegs';
 const ANIMAL_CHANGED_ARGUMENT = 'changed';
 const UNKNOWN_ARGUMENT = 'noun';
+const ANIMAL_SUGGESTION = 'suggestion';
 
 /**
  * Generate a context object for all responses gathering arguments
@@ -86,5 +87,6 @@ module.exports = {
   ANIMAL2_ARGUMENT,
   ANIMAL3_ARGUMENT,
   ANIMAL_CHANGED_ARGUMENT,
+  ANIMAL_SUGGESTION,
   UNKNOWN_ARGUMENT
 };

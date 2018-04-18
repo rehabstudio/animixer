@@ -325,30 +325,36 @@ function changeAnimal(app, context) {
  * @param  {Object} app     app actions on google app object
  * @param  {string} noun    noun from user input
  */
-function unknownAnimalResponse(app, noun) {
+function unknownAnimalResponse(app, context) {
   let respData = responseData.unknownAnimalResponse;
+  let noun = context.noun;
   return knowledgeGraph
-    .replacementAnimal(noun)
+    .replacementAnimal(context)
     .then(results => {
       let found = results[0];
       let replacement = results[1];
       let unknownResponse;
+      let unknown;
       let aOrAn = utils.getAOrAn(replacement);
 
       if (found) {
-        let unknown = utils.randomSelection([
+        unknown = utils.randomSelection([
           respData.unknown_animal_1,
           respData.unknown_animal_2
         ]);
         unknownResponse = unknown.format(aOrAn, replacement);
       } else {
-        let unknown = utils.randomSelection([
+        unknown = utils.randomSelection([
           respData.unknown_1,
           respData.unknown_2,
           respData.unknown_3
         ]);
         unknownResponse = unknown.format(aOrAn, replacement);
       }
+      app.setContext('unknown', 1, {
+        noun: noun,
+        suggestion: replacement
+      });
       ask(app, unknownResponse);
     })
     .catch(err => {
