@@ -12,9 +12,9 @@
 // ------------------------------------------------------------------
 var path = ((File($.fileName)).path);
 var errorStr = '';
-var rootDir = 'D:/';
+var rootDir = 'D:/Animixes/image/';
 // For quick jobs needs to be setup as an argument in the tool
-var hardcodedPermuation;
+var hardcodedPermuations;
 /*var hardcodedPermuations = [
     [18, 5, 1],
     [20, 1, 13],
@@ -232,10 +232,9 @@ function renderComposition(renderComp, folderPath, filepath) {
 
   Folder(folderPath).create();
   output.file = new File(filepath);
-
   output.applyTemplate('PNG Sequence with Alpha');
 
-  return renderItem
+  return renderItem;
 }
 
 /**
@@ -249,7 +248,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   var legs = legsComp.name.replace('_walk', '');
   var compName = head + '_' + body + '_' + legs + '_render';
   var existing = getComps(compName)[0];
-  var foldersPath = outputPath || rootDir + 'Animixes';
+  var foldersPath = outputPath || rootDir;
   var folderPath = foldersPath + '/' + compName;
   var filepath = folderPath + '/' + compName;
   var AEFolderName = 'Animixes';

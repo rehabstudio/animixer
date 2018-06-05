@@ -19,7 +19,7 @@ from tqdm import tqdm
 if platform == "linux" or platform == "linux2" or platform == "darwin":
     # linux
     # OS X
-    ROOT_DIR = os.path.join(os.environ['HOME'], 'Animixes')
+    ROOT_DIR = os.environ.get('ANIMIX_DIR') or os.path.join(os.environ['HOME'], 'Animixes')
     SEPARATOR = '/'
     OS = 'unix'
 
@@ -53,6 +53,7 @@ ANIMAL_LIST = sorted([
     'fox',
     'frog',
     'giraffe',
+    'goldenlion',
     'gorilla',
     'hippo',
     'hyena',
@@ -141,14 +142,20 @@ def run_command(cmd, timeout=1800):
     """
     try:
         output = check_output(cmd, stderr=STDOUT, timeout=timeout)
-        print("Process completed with output: {}".format(output))
+        if eval(output)[0] != 0:
+            raise Exception('Got unexpected return value: ' + output[0])
+        else:
+            print("Process completed with output: {}".format(output))
     except CalledProcessError as e:
         print("Process completed with output: {}".format(str(e.args)))
     except Exception as e:
         try:
             print("Process failed: {} retrying".format(str(e)))
             output = check_output(cmd, stderr=STDOUT, timeout=timeout)
-            print("Process completed with output: {}".format(output))
+            if eval(output)[0] != 0:
+                raise Exception('Got unexpected return value: ' + output[0])
+            else:
+                print("Process completed with output: {}".format(output))
         except Exception as e:
             print("Processing failed 2nd time skipping")
 
@@ -159,9 +166,9 @@ def generate_tiffs_ae(skip_existing=True):
     """
     # Generate permutations file
     permutations_file = None
-    number_animals = 30
+    number_animals = len(ANIMAL_LIST)
     permutations = generate_permuations(number_animals)
-    batch_size = 100
+    batch_size = 50
     jobs = math.ceil(len(permutations) / batch_size)
 
     # Batch render animals and restart AE between batches
@@ -171,12 +178,19 @@ def generate_tiffs_ae(skip_existing=True):
 
         if OS == 'unix':
             # Mac call
-            cmd = (
-                'arch -x86_64 osascript ./ASfile.scpt '
-                '%s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\', \'%s\')"' % (
-                    FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE, IMAGE_FOLDER))
-
-            run_command(cmd, (batch_size * 20))
+            cmd_list = [
+                "arch",
+                "-x86_64",
+                "osascript",
+                "./ASfile.scpt",
+                "%s%sanimixer.jsx" % (
+                    FILE_DIR,
+                    SEPARATOR),
+                "renderAnimals('%s', '%s', '%s')" % (
+                    PROJECT_FILE,
+                    PERMUTATIONS_FILE,
+                    os.path.join(ROOT_DIR, 'images'))]
+            run_command(cmd_list, (batch_size * 20))
         else:
             script = (
                 "var scriptPath = '%s' + '/' + '%s';" +
@@ -349,7 +363,7 @@ if __name__ == '__main__':
     gif_paths = generate_gifs(SKIP_EXISTING)
 
     if ASYNC:
-        async_upload(thumb_nails, skip_existing=False, folder='thumbnails')
+        async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
         async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
     else:
         upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')

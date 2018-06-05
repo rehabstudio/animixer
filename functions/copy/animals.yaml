@@ -12,6 +12,7 @@ animals:
   - fox
   - frog
   - giraffe
+  - goldenlion
   - gorilla
   - hippo
   - hyena
@@ -44,6 +45,7 @@ verbs:
   flamingo: squawk
   frog: ribbit
   giraffe: hum
+  goldenlion: roar
   gorilla: chatter
   hippo: grunt
   hyena: laugh
@@ -71,6 +73,7 @@ types:
     - elephant
     - fox
     - giraffe
+    - goldenlion
     - hippo
     - hyena
     - leopard
@@ -150,6 +153,10 @@ syllables:
     - gir
     - ira
     - raffe
+  goldenlion:
+    - gold
+    - io
+    - ion
   gorilla:
     - gor
     - illa

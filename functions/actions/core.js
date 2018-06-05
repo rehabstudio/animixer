@@ -26,7 +26,7 @@ const actionsFn = function(request, response) {
   console.log('Request body: ' + JSON.stringify(request.body));
   // build an action map, which maps intent names to functions
   let actionMap = new Map();
-  actionMap.set(WELCOME_ACTION, controllers.responses.welcome);
+  actionMap.set(WELCOME_ACTION, controllers.animals.welcomeAnimal);
   actionMap.set(RESTART_ACTION, controllers.responses.restart);
   actionMap.set(HEAD_ACTION, controllers.animals.animalHead);
   actionMap.set(BODY_ACTION, controllers.animals.animalBody);

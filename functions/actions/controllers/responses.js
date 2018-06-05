@@ -6,6 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
 
+const animals = require('./animals');
+const contextFn = require('./../logic/context');
 const utils = require('./../../common/utils');
 const knowledgeGraph = require('./../logic/knowledgeGraph');
 const animalFacts = require('./../../common/animalFacts');
@@ -119,7 +121,6 @@ function animalsIdentical(app, context) {
  * Welcome response
  *
  * @param  {Object} app     app actions on google app object
- * @param  {Object} context parsed values from dialog flow
  */
 function welcome(app, context) {
   let resp;
@@ -153,12 +154,13 @@ function restart(app, context) {
  * @param  {Object} context parsed values from dialog flow
  */
 function animalHead(app, context) {
+  let animalHead = context.animalHead || context.animalWelcome;
   let resp = utils
     .randomSelection([
       responseData.animal_head.text_1,
       responseData.animal_head.text_2
     ])
-    .format(context.animalHead);
+    .format(animalHead);
   return ask(app, resp);
 }
 
