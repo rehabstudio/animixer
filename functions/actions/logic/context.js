@@ -18,7 +18,12 @@ function generateContext(app, args, argsRequired) {
   // Default false
   argsRequired = argsRequired !== undefined ? argsRequired : false;
   let context = {};
-  let animalArgs = [ANIMAL1_ARGUMENT, ANIMAL2_ARGUMENT, ANIMAL3_ARGUMENT];
+  let animalArgs = [
+    ANIMAL1_ARGUMENT,
+    ANIMAL2_ARGUMENT,
+    ANIMAL3_ARGUMENT,
+    WELCOME_ANIMAL
+  ];
   // Refresh context
   for (let i = 0; i < args.length; i++) {
     context[args[i]] = app.getArgument(args[i]);
