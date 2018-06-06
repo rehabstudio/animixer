@@ -35,9 +35,15 @@ const animalData = yaml.safeLoad(
  */
 String.prototype.format = function() {
   var args = arguments;
-  return this.replace(/\$\{(\d)\}/g, function(match, id) {
+  var retString = this.replace(/\$\{(\d)\}/g, function(match, id) {
     return args[id];
   });
+
+  // Substitute animal names for full name if exists
+  var substitutes = Object.keys(animalData.animalFull);
+  return substitutes.reduce(function(inString, animalFull) {
+    return inString.replace(animalFull, animalData.animalFull[animalFull]);
+  }, retString);
 };
 
 /**
@@ -192,11 +198,13 @@ function animalResponse(app, context) {
   let resp;
   // Generate new animal name and search for its assets
   let animalName = utils.capitalizeFirstLetter(
-    utils.makeAnimalName(
-      context.animalHead,
-      context.animalBody,
-      context.animalLegs
-    )
+    utils
+      .makeAnimalName(
+        context.animalHead,
+        context.animalBody,
+        context.animalLegs
+      )
+      .format()
   );
   let animalVerb;
   let respData = responseData.animal_response;
@@ -216,7 +224,9 @@ function animalResponse(app, context) {
     respData.rediscover_3
   ]);
   let funFact;
-  if (!context.animalData.animalFact) {
+  if (context.animalHead === 'goldenlion') {
+    funFact = animalFacts.generateFact('goldenlion');
+  } else if (!context.animalData.animalFact) {
     funFact = animalFacts.generateFact();
   } else {
     funFact = context.animalData.animalFact;

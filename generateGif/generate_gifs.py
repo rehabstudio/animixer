@@ -35,7 +35,7 @@ PERMUTATIONS_FILE = os.path.join(FILE_DIR, 'ae_project', 'permutations.json')
 IMAGE_FOLDER = os.path.join(ROOT_DIR, 'images')
 GIF_FOLDER = os.path.join(ROOT_DIR, 'gifs')
 THUMBNAILS_FOLDER = os.path.join(ROOT_DIR, 'thumbnails')
-ASYNC = True
+ASYNC = False
 CLOUD_BUCKET = 'animixer-1d266.appspot.com'
 MAX_PROCESS = 5
 SKIP_EXISTING = True
@@ -142,20 +142,12 @@ def run_command(cmd, timeout=1800):
     """
     try:
         output = check_output(cmd, stderr=STDOUT, timeout=timeout)
-        if eval(output)[0] != 0:
-            raise Exception('Got unexpected return value: ' + output[0])
-        else:
-            print("Process completed with output: {}".format(output))
-    except CalledProcessError as e:
-        print("Process completed with output: {}".format(str(e.args)))
+        print("Process completed with output: {}".format(output))
     except Exception as e:
         try:
             print("Process failed: {} retrying".format(str(e)))
             output = check_output(cmd, stderr=STDOUT, timeout=timeout)
-            if eval(output)[0] != 0:
-                raise Exception('Got unexpected return value: ' + output[0])
-            else:
-                print("Process completed with output: {}".format(output))
+            print("Process completed with output: {}".format(output))
         except Exception as e:
             print("Processing failed 2nd time skipping")
 
@@ -226,7 +218,7 @@ def generate_gifs(skip_existing=True):
         gif_path = os.path.join(ROOT_DIR, 'gifs', (subdir_name + '.gif'))
 
         if(os.path.exists(gif_path) and skip_existing):
-            #gif_paths.append(gif_path)
+            gif_paths.append(gif_path)
             continue
 
         filenames = [
@@ -268,7 +260,7 @@ def generate_thumbnails(skip_existing=True):
         thumbnail_path = os.path.join(ROOT_DIR, 'thumbnails', (subdir_name + '.png'))
 
         if(os.path.exists(thumbnail_path) and skip_existing):
-            #thumbnail_paths.append(thumbnail_path)
+            thumbnail_paths.append(thumbnail_path)
             continue
 
         filenames = [
@@ -314,7 +306,7 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None):
     """
     client = storage.Client()
     bucket = client.get_bucket(CLOUD_BUCKET)
-    #print('Getting list of files from server')
+    print('Preparing for upload getting list of files from server')
     if skip_existing:
         blobs = [b.name for b in bucket.list_blobs()]
     else:

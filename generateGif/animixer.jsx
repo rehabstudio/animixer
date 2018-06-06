@@ -237,6 +237,26 @@ function renderComposition(renderComp, folderPath, filepath) {
   return renderItem;
 }
 
+function renderCompThumbnail(renderComp, folderPath, filepath) {
+  var renderItem = app.project.renderQueue.items.add(renderComp);
+  var output = renderItem.outputModule(1);
+
+  // TODO: Hide the background layer to reveal the shape
+  var bgLayer = getLayers(renderComp, 'bg', 'startsWith')[0];
+  bgLayer.enabled = false;
+  renderComp.duration = 1 * renderComp.frameDuration;
+
+  Folder(folderPath).create();
+
+  // Render thumb_nails
+  output.timeSpanStart = 0;
+  output.timeSpanDuration = 1 * renderComp.frameDuration;
+  output.file = new File(filepath + '_thumbnail');
+  output.applyTemplate('PNG Sequence with Alpha');
+
+  return renderItem;
+}
+
 /**
  * Move currently displayed Render layers to correct places then render this comp
  */
@@ -266,6 +286,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
 
   // Get BG layer
   var bgLayer = getLayers(bodyComp, 'bg', 'startsWith')[0];
+  var bgShapeLayer = getLayers(bodyComp, 'shape', 'endsWith')[0];
 
   // Get All layers we need to generate new comp
   var headLayer = getLayers(headComp, head + '_head', 'startsWith')[0];
@@ -281,6 +302,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   var headOnTop = headLayer.name.endsWith('_ontop');
 
   // Copy layers to render comp
+  bgShapeLayer.copyToComp(renderComp)
   bgLayer.copyToComp(renderComp);
   if (!headOnTop) {
     headLayer.copyToComp(renderComp);
@@ -336,9 +358,12 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   //scaleComp(renderComp, 0.25);
 
   // render
-  var renderItem = renderComposition(renderComp, folderPath, filepath);
+  var renderItem1 = renderComposition(renderComp, folderPath, filepath);
+  var thumbRenderComp = renderComp.duplicate();
+  thumbRenderComp.name = renderComp.name + '_thumb';
+  var renderItem2 = renderCompThumbnail(thumbRenderComp, folderPath, filepath + '_thumb');
 
-  return [renderComp, renderItem];
+  return [renderComp, thumbRenderComp];
 }
 
 function scaleComp(comp, scaleFactor) {
@@ -443,10 +468,11 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
       var walk_cmp_1 = walkComps[permutations[0][0]];
       var walk_cmp_2 = walkComps[permutations[0][1]];
       var walk_cmp_3 = walkComps[permutations[0][2]];
-      var renderCompItem = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, outputPath);
-      if (renderCompItem) {
+      var renderCompItems = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, outputPath);
+      if (renderCompItems.length > 0) {
         $.writeln('Composed animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
-        comps.push(renderCompItem[0]);
+        comps.push(renderCompItems[0]);
+        comps.push(renderCompItems[1]);
         batch++;
       } else {
         $.writeln('Skipping animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
@@ -492,4 +518,4 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
 // ------------------------------------------------------------------
 
 //renderAnimals(undefined, 'C:\\Users\\rehabstudio\\Projects\\animixer\\generateGif\\ae_project\\permutations.json', undefined);
-//renderAnimals(undefined, '~/Projects/animixer/generateGif/ae_project/permutations.json', undefined);
+//renderAnimals(undefined, '~/Projects/animixer/generateGif/ae_project/permutations.json', '~/Animixes/images');

@@ -141,7 +141,6 @@ def upload_to_cloud(skip_existing=True):
 
 
 if __name__ == '__main__':
-    #skip_existing = SKIP_EXISTING
-    #generate_sounds(skip_existing)
-    #add_original(skip_existing)
-    upload_to_cloud(Fals)
+    generate_sounds(SKIP_EXISTING)
+    add_original(SKIP_EXISTING)
+    upload_to_cloud()

@@ -31,6 +31,9 @@ animals:
   - wildebeest
   - zebra
 
+animalFull:
+  goldenlion: golden lion
+
 verbs:
   antelope: bleat
   buffalo: moo
