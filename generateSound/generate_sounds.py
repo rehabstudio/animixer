@@ -94,7 +94,7 @@ def generate_sounds(skip_existing=True):
             with tqdm(total=len(combinations)) as pbar:
                 for i, value in tqdm(
                         enumerate(
-                            p.imap_unordered(merge_sounds, combinations))):
+                            p.imap_unordered(merge_sounds, combinations, skip_existing))):
                     pbar.update()
                     output_files.append(value)
     else:

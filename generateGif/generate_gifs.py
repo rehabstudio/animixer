@@ -144,14 +144,19 @@ def run_command(cmd, timeout=1800):
     try:
         output = check_output(cmd, stderr=STDOUT, timeout=timeout)
         print("Process completed with output: {}".format(output))
+    # Successfull process will terminate with value 1 which sucks
+    except CalledProcessError as e:
+        print("Process completed with output: {}".format(str(e)))
     except Exception as e:
         try:
+            time.sleep(5)
             print("Process failed: {} retrying".format(str(e)))
-            time.sleep(2)
             output = check_output(cmd, stderr=STDOUT, timeout=timeout)
             print("Process completed with output: {}".format(output))
+        except CalledProcessError:
+            print("Process completed with output: {}".format(str(e)))
         except Exception as e:
-            print("Processing failed 2nd time skipping")
+            print("Processing failed 2nd time: {} skipping".format(str(e)))
 
 
 def generate_tiffs_ae(skip_existing=True):
@@ -323,7 +328,7 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None):
             else:
                 blob_name = file_name
 
-            if blob_name in blobs and skip_existing:
+            if 'goldenlion' not in blob_name and blob_name in blobs and skip_existing:
                 continue
 
             blob = bucket.blob(blob_name)
