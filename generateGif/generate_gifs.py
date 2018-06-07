@@ -9,6 +9,7 @@ import subprocess
 from subprocess import CalledProcessError, STDOUT, check_output
 from sys import platform
 import shutil
+import time
 
 from google.cloud import storage
 import imageio
@@ -146,6 +147,7 @@ def run_command(cmd, timeout=1800):
     except Exception as e:
         try:
             print("Process failed: {} retrying".format(str(e)))
+            time.sleep(2)
             output = check_output(cmd, stderr=STDOUT, timeout=timeout)
             print("Process completed with output: {}".format(output))
         except Exception as e:
@@ -265,7 +267,7 @@ def generate_thumbnails(skip_existing=True):
 
         filenames = [
             os.path.join(subdir, f) for f in os.listdir(subdir)
-            if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.png')]
+            if os.path.isfile(os.path.join(subdir, f)) and f.endswith('thumbnail_00000.png')]
 
         if not filenames:
             print('Skipping folder: {}'.format(subdir))
@@ -275,10 +277,10 @@ def generate_thumbnails(skip_existing=True):
             img = Image.open(filenames[0])
             wpercent = (basewidth/float(img.size[0]))
             hsize = int((float(img.size[1])*float(wpercent)))
-            img = img.resize((basewidth,hsize), Image.ANTIALIAS).convert('RGB')
+            img = img.resize((basewidth,hsize), Image.ANTIALIAS)
             img.save(thumbnail_path, format='PNG')
         except Exception as e:
-            print('Error: filename {} failed, skipping'.format(filename))
+            print('Error: filename {} failed, skipping'.format(filenames[0]))
             print(str(e))
             continue
 
