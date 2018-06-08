@@ -50,7 +50,7 @@ function mixipediaPost(request, response) {
   }
 
   return animals
-    .createNewAnimalRecord(animal1, animal2, animal3)
+    .createUpdateAnimal(animal1, animal2, animal3)
     .then(successJson => {
       let status = successJson.success ? 200 : 500;
       response.set('Content-Type', 'application/json');

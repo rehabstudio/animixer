@@ -227,10 +227,8 @@ function animalResponse(app, context) {
     respData.rediscover_3
   ]);
   let funFact;
-  if (context.animalHead === 'goldenlion') {
-    funFact = animalFacts.generateFact('goldenlion');
-  } else if (!context.animalData.animalFact) {
-    funFact = animalFacts.generateFact();
+  if (!context.animalData.animalFact) {
+    funFact = animalFacts.generateFact(context.animalHead);
   } else {
     funFact = context.animalData.animalFact;
   }

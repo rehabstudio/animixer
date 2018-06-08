@@ -16,7 +16,7 @@ const animalFacts = yaml.safeLoad(
  */
 function generateFact(animal) {
   let randomFact;
-  if (animal) {
+  if (animal && animalFacts[animal] !== undefined) {
     randomFact = utils.randomSelection(animalFacts[animal]);
   } else {
     randomFact = utils.randomSelection(animalFacts.facts);
