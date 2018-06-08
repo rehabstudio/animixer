@@ -171,12 +171,12 @@ def run_command(cmd, timeout=1800):
         print("Process completed after waiting for After Effects to close")
     except Exception as e:
         try:
-            import pdb;pdb.set_trace()
             print("Process failed: {} retrying".format(str(e)))
             output = check_output(cmd, stderr=STDOUT, timeout=timeout)
             print("Process completed with output: {}".format(output))
         except CalledProcessError:
-            print("Process completed with output: {}".format(str(e)))
+            wait_after_effects_exit()
+            print("Process completed after waiting for After Effects to close")
         except Exception as e:
             print("Processing failed 2nd time: {} skipping".format(str(e)))
 
@@ -246,7 +246,7 @@ def generate_gifs(skip_existing=True):
         subdir_name = subdir.split(SEPARATOR)[-1]
         gif_path = os.path.join(ROOT_DIR, 'gifs', (subdir_name + '.gif'))
 
-        if(os.path.exists(gif_path) and skip_existing):
+        if('dinosaur' not in gif_path and os.path.exists(gif_path) and skip_existing):
             gif_paths.append(gif_path)
             continue
 
@@ -290,7 +290,7 @@ def generate_thumbnails(skip_existing=True):
         subdir_name = subdir.split(SEPARATOR)[-1].replace('_render', '_thumbnail')
         thumbnail_path = os.path.join(ROOT_DIR, 'thumbnails', (subdir_name + '.png'))
 
-        if(os.path.exists(thumbnail_path) and skip_existing):
+        if('dinosaur' not in thumbnail_path and os.path.exists(thumbnail_path) and skip_existing):
             thumbnail_paths.append(thumbnail_path)
             continue
 
@@ -352,7 +352,7 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None, blo
             else:
                 blob_name = file_name
 
-            if 'goldenlion' not in blob_name and blob_name in blobs and skip_existing:
+            if blob_name in blobs and skip_existing:
                 continue
 
             blob = bucket.blob(blob_name)
