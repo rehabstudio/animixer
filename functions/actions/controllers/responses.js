@@ -42,7 +42,10 @@ String.prototype.format = function() {
   // Substitute animal names for full name if exists
   var substitutes = Object.keys(animalData.animalFull);
   return substitutes.reduce(function(inString, animalFull) {
-    return inString.replace(animalFull, animalData.animalFull[animalFull]);
+    return inString.replace(
+      animalFull,
+      utils.titleCase(animalData.animalFull[animalFull])
+    );
   }, retString);
 };
 
@@ -90,7 +93,7 @@ function animalsNotValid(app, context) {
  * @param  {Object} context parsed values from dialog flow
  */
 function animalsIdentical(app, context) {
-  let animalName = utils.capitalizeFirstLetter(context.animalHead);
+  let animalName = context.animalHead;
   let imageUrl = utils.getImageUrl(context);
   let audioUrl = utils.getAudioUrl(context);
   let simpleResp = {};
@@ -109,7 +112,7 @@ function animalsIdentical(app, context) {
     '</speak>';
 
   let card = new BasicCard()
-    .setTitle(animalName)
+    .setTitle(animalName.format())
     .setImage(imageUrl, animalName)
     .setBodyText(`The ${context.animalHead}!`)
     .addButton(

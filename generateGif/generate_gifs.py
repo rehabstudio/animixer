@@ -141,22 +141,37 @@ def batch_args(iterable, n=1, skip_existing=True, folder=None, blobs=None):
         yield [iterable[ndx:min(ndx + n, l)], skip_existing, position, folder, blobs]
         position += 1
 
+
+def wait_after_effects_exit():
+    def get_after_effects_pid():
+        process = subprocess.Popen(
+            'pgrep "After Effects"',
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        my_pid, err = process.communicate()
+        return my_pid
+    my_pid = get_after_effects_pid()
+    while my_pid:
+        time.sleep(5)
+        my_pid = get_after_effects_pid()
+
+
 def run_command(cmd, timeout=1800):
     """
     Run command with timeout to kill it if it runs too long
     """
     try:
         output = check_output(cmd, stderr=STDOUT, timeout=timeout)
-        import pdb;pdb.set_trace()
         print("Process completed with output: {}".format(output))
-    # Successfull process will terminate with value 1 which sucks
+    # On Mac OS this exception will randomly get called while the script is
+    # still running
     except CalledProcessError as e:
-        import pdb;pdb.set_trace()
-        print("Process completed with output: {}".format(str(e)))
+        wait_after_effects_exit()
+        print("Process completed after waiting for After Effects to close")
     except Exception as e:
         try:
             import pdb;pdb.set_trace()
-            time.sleep(5)
             print("Process failed: {} retrying".format(str(e)))
             output = check_output(cmd, stderr=STDOUT, timeout=timeout)
             print("Process completed with output: {}".format(output))
@@ -325,7 +340,7 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None, blo
     print('Preparing for upload getting list of files from server')
     if skip_existing and not blobs:
         blobs = [b.name for b in bucket.list_blobs()]
-    else:
+    elif not skip_existing and blobs:
         blobs = []
 
     print('Uploading {} files to cloud'.format(len(file_paths)))
@@ -349,7 +364,7 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None, blo
             continue
 
 
-def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None):
+def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None, blobs=None):
     """
     Launch multiple processes to speed up upload of gifs to GCS
     """
@@ -360,7 +375,7 @@ def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None):
                 enumerate(
                     p.starmap(
                         upload_to_cloud,
-                        batch_args(file_paths, batch_size, skip_existing, folder, BLOBS)))):
+                        batch_args(file_paths, batch_size, skip_existing, folder, blobs)))):
                 pbar.update()
     print("Async upload of files complete")
 
@@ -372,11 +387,12 @@ if __name__ == '__main__':
 
     client = storage.Client()
     bucket = client.get_bucket(CLOUD_BUCKET)
+
     BLOBS = [b.name for b in bucket.list_blobs()]
 
     if ASYNC:
-        async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
-        async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
+        async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails', blobs=BLOBS)
+        async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs', blobs=BLOBS)
     else:
         upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails', blobs=BLOBS)
         upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs', blobs=BLOBS)

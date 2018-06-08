@@ -13,7 +13,12 @@ function animalName(request, response) {
 
   response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
   response.set('Content-Type', 'application/json');
-  response.status(200).send(JSON.stringify({ animalName }));
+  response.status(200).send(
+    JSON.stringify({
+      animalName: animalName,
+      prettyName: animalName.format()
+    })
+  );
 }
 
 module.exports = {

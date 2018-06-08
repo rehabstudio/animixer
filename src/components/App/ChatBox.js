@@ -251,8 +251,10 @@ class ChatBox extends React.Component<{}, {}> {
     node.className =
       'query clearfix left-align right white-text card-panel bring-front margins';
     node.innerHTML = query;
-    this.resultDiv.appendChild(node);
-    this.updateScroll();
+    if (this.resultDiv) {
+      this.resultDiv.appendChild(node);
+      this.updateScroll();
+    }
     return node;
   }
 
@@ -261,8 +263,10 @@ class ChatBox extends React.Component<{}, {}> {
     node.className =
       'response clearfix left-align left card-panel text-darken-2 hoverable bring-front margins';
     node.innerHTML = '...';
-    this.resultDiv.appendChild(node);
-    this.updateScroll();
+    if (this.resultDiv) {
+      this.resultDiv.appendChild(node);
+      this.updateScroll();
+    }
     return node;
   }
 
@@ -303,6 +307,7 @@ class ChatBox extends React.Component<{}, {}> {
     let animalNode = document.createElement('div');
     let animalData = {
       name: cardData.basic_card.title,
+      prettyName: cardData.basic_card.title,
       imageUrl: cardData.basic_card.image.url,
       audioUrl: this.state.audioUrl,
       shareUrl: shareUrl,

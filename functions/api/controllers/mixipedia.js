@@ -25,9 +25,13 @@ function mixipediaList(request, response) {
     .limitToFirst(limit)
     .once('value')
     .then(function(snapshot) {
+      let data = snapshot.val();
+      Object.keys(data).forEach(function(key) {
+        data[key].prettyName = data[key].name.format();
+      });
       response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
       response.set('Content-Type', 'application/json');
-      response.status(200).send(JSON.stringify(snapshot));
+      response.status(200).send(JSON.stringify(data));
     })
     .catch(function(err) {
       console.error(err);
@@ -60,6 +64,7 @@ function mixipediaGet(request, response) {
   const animal3 = request.params.animal3;
 
   return animals.getAnimal(animal1, animal2, animal3).then(animalData => {
+    animalData.prettyName = animalData.name.format();
     response.set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
     response.set('Content-Type', 'application/json');
     response.status(200).send(JSON.stringify(animalData));

@@ -522,14 +522,14 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
   if (errorStr) {
     errorStr = 'Error Report:\n' + errorStr;
     $.writeln(errorStr);
-    alert(errorStr);
+    //alert(errorStr);
   }
 
   $.writeln('Render animals complete');
 
   //app.endUndoGroup();
   app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);
-  //app.quit();
+  app.quit();
 }
 
 // ------------------------------------------------------------------
