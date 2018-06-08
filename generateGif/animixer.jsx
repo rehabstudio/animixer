@@ -292,12 +292,20 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   // Get All layers we need to generate new comp
   var headLayer = getLayers(headComp, head + '_head', 'startsWith')[0];
   var bodyLayer = getLayers(bodyComp, body + '_body', 'startsWith')[0];
-  var tailLayer = getLayers(bodyComp, body + '_tail', 'startsWith')[0];
+  try {
+    var tailLayer = getLayers(bodyComp, body + '_tail', 'startsWith')[0];
+  } catch (e) {
+    var tailLayer = null;
+  }
+
   var legsLayer = getLayers(legsComp, legs + '_legs', 'startsWith')[0];
   var bodyLegsMarkers = getLayers(bodyComp, 'x_' + body + '_legs', 'startsWith');
   var legsMarkers = getLayers(legsComp, 'x_' + legs + '_legs', 'startsWith');
   var headMarker = getLayers(bodyComp, 'x_' + body + '_head', 'startsWith')[0];
-  var tailMarker = getLayers(bodyComp, 'x_' + body + '_tail', 'startsWith')[0];
+  if (tailLayer) {
+    var tailMarker = getLayers(bodyComp, 'x_' + body + '_tail', 'startsWith')[0];
+  }
+
   var markerPos;
 
   var headOnTop = headLayer.name.endsWith('_ontop');
@@ -309,7 +317,9 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
     headLayer.copyToComp(renderComp);
   }
   legsLayer.copyToComp(renderComp);
-  tailLayer.copyToComp(renderComp);
+  if (tailLayer) {
+    tailLayer.copyToComp(renderComp);
+  }
   bodyLayer.copyToComp(renderComp);
   if (headOnTop) {
     headLayer.copyToComp(renderComp);
@@ -320,17 +330,21 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   var renderHeadLayer = getLayers(renderComp, head + '_head', 'startsWith')[0];
   var renderBodyLayer = getLayers(renderComp, body + '_body', 'startsWith')[0];
   var renderLegsLayer = getLayers(renderComp, legs + '_legs', 'startsWith')[0];
-  var renderTailLayer = getLayers(renderComp, body + '_tail', 'startsWith')[0];
+
   renderHeadLayer.locked = false;
   renderHeadLayer.visibile = true;
   renderBodyLayer.locked = false;
   renderBodyLayer.visibile = true;
   renderLegsLayer.locked = false;
   renderLegsLayer.visibile = true;
-  renderTailLayer.locked = false;
-  renderTailLayer.visibile = true;
   renderBGLayer.locked = false;
   renderBGLayer.visibile = true;
+
+  if (tailLayer) {
+    var renderTailLayer = getLayers(renderComp, body + '_tail', 'startsWith')[0];
+    renderTailLayer.locked = false;
+    renderTailLayer.visibile = true;
+  }
 
   // Move head to body
   markerPos = headMarker.transform.position.value;
@@ -339,17 +353,21 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   ]);
 
   // Move tail to body
-  markerPos = tailMarker.transform.position.value;
-  renderTailLayer.transform.position.setValueAtTime(0, [
-    markerPos[0], markerPos[1]
-  ]);
+  if (tailLayer) {
+    markerPos = tailMarker.transform.position.value;
+    renderTailLayer.transform.position.setValueAtTime(0, [
+      markerPos[0], markerPos[1]
+    ]);
+  }
 
   // Move legs to body
   placeLegs(bodyLegsMarkers, legsMarkers, renderLegsLayer);
 
   // Parent head and tail to body
   renderHeadLayer.parent = renderBodyLayer;
-  renderTailLayer.parent = renderBodyLayer;
+  if (tailLayer) {
+    renderTailLayer.parent = renderBodyLayer;
+  }
   renderLegsLayer.parent = renderBodyLayer;
 
   // Move tall heads

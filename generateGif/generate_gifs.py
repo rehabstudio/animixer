@@ -36,7 +36,7 @@ PERMUTATIONS_FILE = os.path.join(FILE_DIR, 'ae_project', 'permutations.json')
 IMAGE_FOLDER = os.path.join(ROOT_DIR, 'images')
 GIF_FOLDER = os.path.join(ROOT_DIR, 'gifs')
 THUMBNAILS_FOLDER = os.path.join(ROOT_DIR, 'thumbnails')
-ASYNC = False
+ASYNC = True
 CLOUD_BUCKET = 'animixer-1d266.appspot.com'
 MAX_PROCESS = 5
 SKIP_EXISTING = True
@@ -48,6 +48,7 @@ ANIMAL_LIST = sorted([
     'chicken',
     'crocodile',
     'dog',
+    'dinosaur',
     'duck',
     'elephant',
     'flamingo',
@@ -61,6 +62,7 @@ ANIMAL_LIST = sorted([
     'leopard',
     'lion',
     'lizard',
+    'monkey',
     'ostrich',
     'pig',
     'pony',
@@ -69,10 +71,12 @@ ANIMAL_LIST = sorted([
     'sheep',
     'tiger',
     'tortoise',
+    'unicorn',
     'warthog',
     'wildebeest',
     'zebra',
 ])
+BLOBS = []
 
 
 def remove_existing(permutations):
@@ -130,11 +134,11 @@ def batch(iterable, n=1):
         yield iterable[ndx:min(ndx + n, l)]
 
 
-def batch_args(iterable, n=1, skip_existing=True, folder=None):
+def batch_args(iterable, n=1, skip_existing=True, folder=None, blobs=None):
     position = 1
     l = len(iterable)
     for ndx in range(0, l, n):
-        yield [iterable[ndx:min(ndx + n, l)], skip_existing, position, folder]
+        yield [iterable[ndx:min(ndx + n, l)], skip_existing, position, folder, blobs]
         position += 1
 
 def run_command(cmd, timeout=1800):
@@ -143,12 +147,15 @@ def run_command(cmd, timeout=1800):
     """
     try:
         output = check_output(cmd, stderr=STDOUT, timeout=timeout)
+        import pdb;pdb.set_trace()
         print("Process completed with output: {}".format(output))
     # Successfull process will terminate with value 1 which sucks
     except CalledProcessError as e:
+        import pdb;pdb.set_trace()
         print("Process completed with output: {}".format(str(e)))
     except Exception as e:
         try:
+            import pdb;pdb.set_trace()
             time.sleep(5)
             print("Process failed: {} retrying".format(str(e)))
             output = check_output(cmd, stderr=STDOUT, timeout=timeout)
@@ -230,7 +237,9 @@ def generate_gifs(skip_existing=True):
 
         filenames = [
             os.path.join(subdir, f) for f in os.listdir(subdir)
-            if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.png')]
+            if os.path.isfile(os.path.join(subdir, f)) and
+            f.endswith('.png') and
+            'thumbnail' not in f]
         images = []
         for filename in sorted(filenames):
             try:
@@ -307,14 +316,14 @@ def storage_file_exists(gcs_file):
     return status
 
 
-def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None):
+def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None, blobs=None):
     """
     Upload file paths to cloud bucket defined in globals
     """
     client = storage.Client()
     bucket = client.get_bucket(CLOUD_BUCKET)
     print('Preparing for upload getting list of files from server')
-    if skip_existing:
+    if skip_existing and not blobs:
         blobs = [b.name for b in bucket.list_blobs()]
     else:
         blobs = []
@@ -351,7 +360,7 @@ def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None):
                 enumerate(
                     p.starmap(
                         upload_to_cloud,
-                        batch_args(file_paths, batch_size, skip_existing, folder)))):
+                        batch_args(file_paths, batch_size, skip_existing, folder, BLOBS)))):
                 pbar.update()
     print("Async upload of files complete")
 
@@ -361,9 +370,13 @@ if __name__ == '__main__':
     thumb_nails = generate_thumbnails(SKIP_EXISTING)
     gif_paths = generate_gifs(SKIP_EXISTING)
 
+    client = storage.Client()
+    bucket = client.get_bucket(CLOUD_BUCKET)
+    BLOBS = [b.name for b in bucket.list_blobs()]
+
     if ASYNC:
         async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
         async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
     else:
-        upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
-        upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
+        upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails', blobs=BLOBS)
+        upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs', blobs=BLOBS)
