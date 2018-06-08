@@ -287,6 +287,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   // Get BG layer
   var bgLayer = getLayers(bodyComp, 'bg', 'startsWith')[0];
   var bgShapeLayer = getLayers(bodyComp, 'shape', 'endsWith')[0];
+  bgLayer.enabled = true;
 
   // Get All layers we need to generate new comp
   var headLayer = getLayers(headComp, head + '_head', 'startsWith')[0];
@@ -510,7 +511,7 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
 
   //app.endUndoGroup();
   app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);
-  app.quit();
+  //app.quit();
 }
 
 // ------------------------------------------------------------------
