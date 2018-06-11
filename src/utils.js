@@ -1,4 +1,4 @@
-var APIHost, Host, ImageHost;
+var APIHost, Host;
 
 if (window.location.href.startsWith('http://localhost')) {
   Host = 'http://localhost:3000';
@@ -6,11 +6,9 @@ if (window.location.href.startsWith('http://localhost')) {
 } else if (window.location.href.startsWith('https://safarimixer.beta.rehab')) {
   Host = 'https://safarimixer.com';
   APIHost = 'https://us-central1-animixer-1d266.cloudfunctions.net';
-  ImageHost = 'https://us-central1-animixer-1d266.cloudfunctions.net';
 } else {
   Host = 'https://animixer-dev.firebaseapp.com/';
   APIHost = 'https://us-central1-animixer-dev.cloudfunctions.net';
-  ImageHost = 'https://us-central1-animixer-1d266.cloudfunctions.net';
 }
 
 function capitalizeFirstLetter(string) {
