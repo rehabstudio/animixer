@@ -42,7 +42,7 @@ const firebaseConfig = {
   authDomain: `${process.env.GCLOUD_PROJECT}.firebaseapp.com`,
   databaseURL: `https://${process.env.GCLOUD_PROJECT}.firebaseio.com`,
   projectId: `${process.env.GCLOUD_PROJECT}`,
-  storageBucket: 'animixer-1d266.appspot.com.appspot.com',
+  storageBucket: 'animixer-1d266.appspot.com',
   messagingSenderId: '74799871575'
 };
 const twitterConfig = {
