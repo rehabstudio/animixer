@@ -15,9 +15,9 @@ import { ApiAiClient } from '.lib/api-ai-javascript';
 import Animal from './Animal';
 import Dictation from './Dictation';
 import Speech from './Speech';
+import utils from './../../utils';
 
 const ENTER_KEY_CODE = 13;
-const Host = 'https://safarimixer.com';
 
 const Container = styled.div`
   overflow-y: auto;
@@ -302,7 +302,7 @@ class ChatBox extends React.Component<{}, {}> {
     let animalUrl;
     if (cardData.basic_card.buttons.length > 0) {
       shareUrl = cardData.basic_card.buttons[0].open_url_action.url;
-      animalUrl = shareUrl.replace(Host, '');
+      animalUrl = shareUrl.replace(utils.Host, '');
     }
     let animalNode = document.createElement('div');
     let animalData = {
