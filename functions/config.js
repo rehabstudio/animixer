@@ -55,7 +55,7 @@ const twitterConfig = {
 const APIHost =
   ENV === 'DEV'
     ? 'http://localhost:5000/animixer-1d266/us-central1'
-    : 'https://us-central1-animixer-1d266.cloudfunctions.net';
+    : `https://us-central1-${process.env.GCLOUD_PROJECT}.cloudfunctions.net`;
 
 module.exports = {
   APIHost,

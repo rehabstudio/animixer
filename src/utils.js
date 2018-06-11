@@ -1,10 +1,15 @@
 const APIHost = window.location.href.startsWith('http://localhost')
   ? 'http://localhost:5000/animixer-1d266/us-central1'
-  : 'https://us-central1-animixer-1d266.cloudfunctions.net';
+  : `https://us-central1-${process.env.GCLOUD_PROJECT}.cloudfunctions.net`;
 
-const Host = window.location.href.startsWith('http://localhost')
-  ? 'http://localhost:3000'
-  : 'https://safarimixer.com';
+var Host;
+if (window.location.href.startsWith('http://localhost')) {
+  Host = 'http://localhost:3000';
+} else if (process.env.GCLOUD_PROJECT === 'animixer-1d266') {
+  Host = 'https://safarimixer.com';
+} else {
+  Host = 'https://animixer-dev.firebaseapp.com/';
+}
 
 function capitalizeFirstLetter(string) {
   if (!string) {
@@ -42,6 +47,8 @@ function getShareUrl(animal1, animal2, animal3) {
 }
 
 export default {
+  APIHost,
+  Host,
   capitalizeFirstLetter,
   getAnimalUrl,
   getShareUrl,
