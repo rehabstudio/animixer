@@ -6,9 +6,7 @@ animal_head:
   text_1: We’re looking for something with the head of a wild ${0}! What body does it have?
   text_2: We’re looking for something with the head of a wild ${0} - how unusual. What body does it have?
   goldenlion:
-    - Legend says only the most creative explorers can find the elusive golden lion. But I think I’ve seen an animal with that head around here… What body does it have?
-    - The mysterious golden lion only appears once a year, on the beach. You’re in luck - there’s an animal with the head of golden lion right here.... What body does it have?
-    - You must be a very experienced explorer - that’s a very rare animal. There’s something hiding here with the head of a golden lion... What body does it have?
+    - Once a year, the mysterious golden lion appears on the beach. You’re in luck - there’s an animal with the head of golden lion right here... What body does it have?
 
 animal_body:
   text_1: Ah the ${0} - I’ve seen an animal with that body. And what legs does it have?
