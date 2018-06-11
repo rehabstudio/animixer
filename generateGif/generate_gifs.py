@@ -246,7 +246,7 @@ def generate_gifs(skip_existing=True):
         subdir_name = subdir.split(SEPARATOR)[-1]
         gif_path = os.path.join(ROOT_DIR, 'gifs', (subdir_name + '.gif'))
 
-        if('dinosaur' not in gif_path and os.path.exists(gif_path) and skip_existing):
+        if(os.path.exists(gif_path) and skip_existing):
             gif_paths.append(gif_path)
             continue
 
@@ -290,7 +290,7 @@ def generate_thumbnails(skip_existing=True):
         subdir_name = subdir.split(SEPARATOR)[-1].replace('_render', '_thumbnail')
         thumbnail_path = os.path.join(ROOT_DIR, 'thumbnails', (subdir_name + '.png'))
 
-        if('dinosaur' not in thumbnail_path and os.path.exists(thumbnail_path) and skip_existing):
+        if(os.path.exists(thumbnail_path) and skip_existing):
             thumbnail_paths.append(thumbnail_path)
             continue
 

@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
 
+const config = require('./../../config');
 const animals = require('./animals');
 const contextFn = require('./../logic/context');
 const utils = require('./../../common/utils');
@@ -117,7 +118,7 @@ function animalsIdentical(app, context) {
     .setBodyText(`The ${context.animalHead}!`)
     .addButton(
       'Share me',
-      `https://safarimixer.beta.rehab/animal/?animal1=${context.animalHead}` +
+      `${config.Host}/animal/?animal1=${context.animalHead}` +
         `&animal2=${context.animalBody}&animal3=${context.animalLegs}`
     );
   let resp = new RichResponse()

@@ -57,8 +57,15 @@ const APIHost =
     ? 'http://localhost:5000/animixer-1d266/us-central1'
     : `https://us-central1-${process.env.GCLOUD_PROJECT}.cloudfunctions.net`;
 
+const Host =
+  process.env.GCLOUD_PROJECT ==
+  'https://us-central1-animixer-1d266.cloudfunctions.net'
+    ? 'https://safarimixer.beta.rehab'
+    : 'https://animixer-dev.firebaseapp.com';
+
 module.exports = {
   APIHost,
+  Host,
   ENV,
   firebaseConfig,
   twitterConfig
