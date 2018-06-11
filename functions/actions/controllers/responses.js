@@ -165,12 +165,19 @@ function restart(app, context) {
  */
 function animalHead(app, context) {
   let animalHead = context.animalHead || context.animalWelcome;
-  let resp = utils
-    .randomSelection([
-      responseData.animal_head.text_1,
-      responseData.animal_head.text_2
-    ])
-    .format(animalHead);
+  let resp;
+
+  if (responseData.animal_head[animalHead]) {
+    resp = utils.randomSelection(responseData.animal_head[animalHead]).format();
+  } else {
+    resp = utils
+      .randomSelection([
+        responseData.animal_head.text_1,
+        responseData.animal_head.text_2
+      ])
+      .format(animalHead);
+  }
+
   return ask(app, resp);
 }
 
@@ -181,12 +188,21 @@ function animalHead(app, context) {
  * @param  {Object} context parsed values from dialog flow
  */
 function animalBody(app, context) {
-  let resp = utils
-    .randomSelection([
-      responseData.animal_body.text_1,
-      responseData.animal_body.text_2
-    ])
-    .format(context.animalBody);
+  let resp;
+
+  if (responseData.animal_body[context.animalBody]) {
+    resp = utils
+      .randomSelection(responseData.animal_body[context.animalBody])
+      .format();
+  } else {
+    resp = utils
+      .randomSelection([
+        responseData.animal_body.text_1,
+        responseData.animal_body.text_2
+      ])
+      .format(context.animalBody);
+  }
+
   return ask(app, resp);
 }
 

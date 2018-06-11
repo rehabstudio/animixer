@@ -40,7 +40,7 @@ function isChrome() {
 
 function getAnimalUrl(animal1, animal2, animal3) {
   let animalPath = `/${animal1}/${animal2}/${animal3}`;
-  return ImageHost + '/api/mixipedia' + animalPath;
+  return APIHost + '/api/mixipedia' + animalPath;
 }
 
 function getShareUrl(animal1, animal2, animal3) {
