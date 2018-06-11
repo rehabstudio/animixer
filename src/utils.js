@@ -1,4 +1,4 @@
-var APIHost, Host;
+var APIHost, Host, ImageHost;
 
 if (window.location.href.startsWith('http://localhost')) {
   Host = 'http://localhost:3000';
@@ -6,9 +6,11 @@ if (window.location.href.startsWith('http://localhost')) {
 } else if (window.location.href.startsWith('https://safarimixer.beta.rehab')) {
   Host = 'https://safarimixer.com';
   APIHost = 'https://us-central1-animixer-1d266.cloudfunctions.net';
+  ImageHost = 'https://us-central1-animixer-1d266.cloudfunctions.net';
 } else {
   Host = 'https://animixer-dev.firebaseapp.com/';
   APIHost = 'https://us-central1-animixer-dev.cloudfunctions.net';
+  ImageHost = 'https://us-central1-animixer-1d266.cloudfunctions.net';
 }
 
 function capitalizeFirstLetter(string) {
@@ -38,7 +40,7 @@ function isChrome() {
 
 function getAnimalUrl(animal1, animal2, animal3) {
   let animalPath = `/${animal1}/${animal2}/${animal3}`;
-  return APIHost + '/api/mixipedia' + animalPath;
+  return ImageHost + '/api/mixipedia' + animalPath;
 }
 
 function getShareUrl(animal1, animal2, animal3) {
