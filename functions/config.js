@@ -39,10 +39,10 @@ if (!animixerConfig) {
 
 const firebaseConfig = {
   apiKey: animixerConfig.firebase_api_key,
-  authDomain: 'animixer-1d266.firebaseapp.com',
-  databaseURL: 'https://animixer-1d266.firebaseio.com',
-  projectId: 'animixer-1d266',
-  storageBucket: 'animixer-1d266.appspot.com',
+  authDomain: `${process.env.GCLOUD_PROJECT}.firebaseapp.com`,
+  databaseURL: `https://${process.env.GCLOUD_PROJECT}.firebaseio.com`,
+  projectId: `${process.env.GCLOUD_PROJECT}`,
+  storageBucket: `${process.env.GCLOUD_PROJECT}.appspot.com`,
   messagingSenderId: '74799871575'
 };
 const twitterConfig = {
