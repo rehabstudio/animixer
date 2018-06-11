@@ -9,6 +9,7 @@ const envKeys = [
   'TWITTER_ACCESS_TOKEN_KEY',
   'TWITTER_ACCESS_TOKEN_SECRET'
 ];
+const projectId = process.env.GCLOUD_PROJECT || 'animixer-1d266';
 let animixerConfig;
 
 try {
@@ -39,9 +40,9 @@ if (!animixerConfig) {
 
 const firebaseConfig = {
   apiKey: animixerConfig.firebase_api_key,
-  authDomain: `${process.env.GCLOUD_PROJECT}.firebaseapp.com`,
-  databaseURL: `https://${process.env.GCLOUD_PROJECT}.firebaseio.com`,
-  projectId: `${process.env.GCLOUD_PROJECT}`,
+  authDomain: `${projectId}.firebaseapp.com`,
+  databaseURL: `https://${projectId}.firebaseio.com`,
+  projectId: `${projectId}`,
   storageBucket: 'animixer-1d266.appspot.com',
   messagingSenderId: '74799871575'
 };
@@ -55,11 +56,10 @@ const twitterConfig = {
 const APIHost =
   ENV === 'DEV'
     ? 'http://localhost:5000/animixer-1d266/us-central1'
-    : `https://us-central1-${process.env.GCLOUD_PROJECT}.cloudfunctions.net`;
+    : `https://us-central1-${projectId}.cloudfunctions.net`;
 
 const Host =
-  process.env.GCLOUD_PROJECT ==
-  'https://us-central1-animixer-1d266.cloudfunctions.net'
+  projectId == 'animixer-1d266'
     ? 'https://safarimixer.beta.rehab'
     : 'https://animixer-dev.firebaseapp.com';
 
