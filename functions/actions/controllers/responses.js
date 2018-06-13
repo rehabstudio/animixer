@@ -100,10 +100,24 @@ function animalsIdentical(app, context) {
   let simpleResp = {};
   let aOrAn = utils.getAOrAn(animalName);
   let respData = responseData.animals_idential;
-  let success = utils
-    .randomSelection([respData.success_1, respData.success_2])
-    .format(aOrAn, animalName);
+  let success;
   let restart = respData.restart;
+
+  if (responseData.animals_idential[animalName]) {
+    success = utils
+      .randomSelection(responseData.animals_idential[animalName])
+      .format();
+    if (context.animalData.animalFact) {
+      success += responseData.animal_response.fun_fact.format(
+        animalName,
+        context.animalData.animalFact
+      );
+    }
+  } else {
+    success = utils
+      .randomSelection([respData.success_1, respData.success_2])
+      .format(aOrAn, animalName);
+  }
 
   simpleResp.speech =
     '<speak>' +

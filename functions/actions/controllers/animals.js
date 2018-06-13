@@ -114,6 +114,7 @@ function generateAnimal(app, skipSwitchScreen, context) {
       context.animalLegs
     );
     return Promise.resolve(animalFoundPromise).then(resp => {
+      context.animalData = resp;
       return responses.animalsIdentical(app, context);
     });
   }

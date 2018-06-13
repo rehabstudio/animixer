@@ -10,6 +10,7 @@ from subprocess import CalledProcessError, STDOUT, check_output
 from sys import platform
 import shutil
 import time
+import signal
 
 from google.cloud import storage
 import imageio
@@ -77,6 +78,8 @@ ANIMAL_LIST = sorted([
     'zebra',
 ])
 BLOBS = []
+# Kill process after 30 minutes
+KILL_TIMER = 60 * 30
 
 
 def remove_existing(permutations):
@@ -151,10 +154,17 @@ def wait_after_effects_exit():
             stderr=subprocess.PIPE)
         my_pid, err = process.communicate()
         return my_pid
+
+    counter = 0
     my_pid = get_after_effects_pid()
     while my_pid:
         time.sleep(5)
         my_pid = get_after_effects_pid()
+        counter += 5
+        if counter > KILL_TIMER:
+            os.kill(int(my_pid), signal.SIGKILL)
+            raise RuntimeError('AfterEffects froze')
+
 
 
 def run_command(cmd, timeout=1800):
