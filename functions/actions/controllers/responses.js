@@ -29,6 +29,12 @@ const animalData = yaml.safeLoad(
     'utf-8'
   )
 );
+const animalFactsData = yaml.safeLoad(
+  fs.readFileSync(
+    path.join(__dirname, '..', '..', 'copy/animalFacts.yaml'),
+    'utf-8'
+  )
+);
 
 /**
  * Used for formating response strings
@@ -107,12 +113,11 @@ function animalsIdentical(app, context) {
     success = utils
       .randomSelection(responseData.animals_idential[animalName])
       .format();
-    if (context.animalData.animalFact) {
-      success += responseData.animal_response.fun_fact.format(
-        animalName,
-        context.animalData.animalFact
-      );
-    }
+    success += responseData.animal_response.fun_fact.format(
+      animalName,
+      animalFacts.generateFact(animalName)
+    );
+    restart = responseData.animal_response.rediscover_2;
   } else {
     success = utils
       .randomSelection([respData.success_1, respData.success_2])

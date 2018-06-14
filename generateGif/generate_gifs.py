@@ -163,33 +163,33 @@ def wait_after_effects_exit():
         counter += 5
         if counter > KILL_TIMER:
             os.kill(int(my_pid), signal.SIGKILL)
-            raise RuntimeError('AfterEffects froze')
+            return False
+    return True
 
 
-
-def run_command(cmd, timeout=1800):
+def run_command(cmd, timeout=1800, retry=True):
     """
     Run command with timeout to kill it if it runs too long
     """
+    def retry_command():
+        if retry:
+            run_command(cmd, timeout, False)
+        else:
+            print("Processing failed 2nd time: {} skipping".format(str(e)))
+            return
+
     try:
         output = check_output(cmd, stderr=STDOUT, timeout=timeout)
         print("Process completed with output: {}".format(output))
     # On Mac OS this exception will randomly get called while the script is
     # still running
     except CalledProcessError as e:
-        wait_after_effects_exit()
+        if not wait_after_effects_exit():
+            retry_command()
         print("Process completed after waiting for After Effects to close")
     except Exception as e:
-        try:
-            print("Process failed: {} retrying".format(str(e)))
-            output = check_output(cmd, stderr=STDOUT, timeout=timeout)
-            print("Process completed with output: {}".format(output))
-        except CalledProcessError:
-            wait_after_effects_exit()
-            print("Process completed after waiting for After Effects to close")
-        except Exception as e:
-            print("Processing failed 2nd time: {} skipping".format(str(e)))
-
+        print("Process failed: {} retrying".format(str(e)))
+        retry_command()
 
 def generate_tiffs_ae(skip_existing=True):
     """
