@@ -124,8 +124,15 @@ def generate_permuations(number_animals, skip_existing=True):
     """
     # generate originals
     print("Generating list of animals to create")
+    permutations = None
     originals = [[x, x, x] for x in range(number_animals)]
-    permutations = originals + list(itertools.permutations(range(number_animals), 3))
+    if GENERATED_PERMUTATIONS_FILE:
+        with open(GENERATED_PERMUTATIONS_FILE, 'r') as fp:
+            permutations = json.loads(fp.read())
+        if platform == "win32":
+            permutations = permutations[::-1]
+    else:
+        permutations = originals + list(itertools.permutations(range(number_animals), 3))
     if skip_existing:
         permutations = remove_existing(permutations)
     print("Returning {} animals to generate".format(len(permutations)))
@@ -199,17 +206,9 @@ def generate_tiffs_ae(skip_existing=True):
     # Generate permutations file
     permutations_file = None
     number_animals = len(ANIMAL_LIST)
-    permutations = None
-    if GENERATED_PERMUTATIONS_FILE:
-        with open(GENERATED_PERMUTATIONS_FILE, 'r') as fp:
-            permutations = json.loads(fp.read())
-        if platform == "win32":
-            permutations = permutations[::-1]
-    else :
-        permutations = generate_permuations(number_animals)
-        #with open('remaining_permuations.json', 'w') as fp:
-        #    fp.write(json.dumps(permutations))
-
+    permutations = generate_permuations(number_animals)
+    #with open('remaining_permuations.json', 'w') as fp:
+    #    fp.write(json.dumps(permutations))
 
     batch_size = 50
     jobs = math.ceil(len(permutations) / batch_size)
