@@ -5,6 +5,7 @@ animals:
   - cat
   - chicken
   - crocodile
+  - dinosaur
   - dog
   - duck
   - elephant
@@ -19,6 +20,7 @@ animals:
   - leopard
   - lion
   - lizard
+  - monkey
   - ostrich
   - pig
   - pony
@@ -27,6 +29,7 @@ animals:
   - sheep
   - tiger
   - tortoise
+  - unicorn
   - warthog
   - wildebeest
   - zebra
@@ -41,6 +44,7 @@ verbs:
   cat: meow
   chicken: cock-a-doodle-doo
   crocodile: snap
+  dinosaur: growl
   dog: bark
   duck: quack
   elephant: trumpet
@@ -55,6 +59,7 @@ verbs:
   leopard: growl
   lion: roar
   lizard: hiss
+  monkey: chatter
   ostrich: squawk
   pig: oink
   pony: neigh
@@ -63,6 +68,7 @@ verbs:
   sheep: baa
   tiger: growl
   tortoise: mutter
+  unicorn: neigh
   warthog: oink
   wildebeest: bellow
   zebra: neigh
@@ -87,6 +93,7 @@ types:
     - rhino
     - sheep
     - tiger
+    - unicorn
     - warthog
     - wildebeest
     - zebra
@@ -97,8 +104,10 @@ types:
     - ostrich
   primate:
     - gorilla
+    - monkey
   reptile:
     - crocodile
+    - dinosaur
     - frog
     - tortoise
     - lizard
@@ -128,6 +137,10 @@ syllables:
     - croc
     - oco
     - dile
+  dinosaur:
+    - d
+    - ino
+    - saur
   dog:
     - pupp
     - uppy
@@ -184,6 +197,10 @@ syllables:
     - liz
     - iza
     - zard
+  monkey:
+    - mon
+    - onke
+    - key
   ostrich:
     - ostr
     - emu
@@ -216,6 +233,10 @@ syllables:
     - tort
     - ortoi
     - toise
+  unicorn:
+    - un
+    - uni
+    - corn
   warthog:
     - wart
     - artho

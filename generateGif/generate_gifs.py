@@ -27,7 +27,7 @@ if platform == "linux" or platform == "linux2" or platform == "darwin":
 
 elif platform == "win32":
     # Windows...
-    ROOT_DIR = 'D:/Animixes'
+    ROOT_DIR = os.environ.get('ANIMIX_DIR') or 'D:/Animixes'
     SEPARATOR = '\\'
     OS = 'win'
 
