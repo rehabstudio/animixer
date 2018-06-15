@@ -80,6 +80,7 @@ ANIMAL_LIST = sorted([
 BLOBS = []
 # Kill process after 30 minutes
 KILL_TIMER = 60 * 30
+GENERATED_PERMUTATIONS_FILE = os.environ.get('GENERATED_PERMUTATIONS_FILE')
 
 
 def remove_existing(permutations):
@@ -198,7 +199,15 @@ def generate_tiffs_ae(skip_existing=True):
     # Generate permutations file
     permutations_file = None
     number_animals = len(ANIMAL_LIST)
-    permutations = generate_permuations(number_animals)
+    permutations = None
+    if GENERATED_PERMUTATIONS_FILE:
+        with open(GENERATED_PERMUTATIONS_FILE, 'r') as fp:
+            permutations = json.loads(fp.read())
+    else :
+        permutations = generate_permuations(number_animals)
+        #with open('remaining_permuations.json', 'w') as fp:
+        #    fp.write(json.dumps(permutations))
+
     batch_size = 50
     jobs = math.ceil(len(permutations) / batch_size)
 
