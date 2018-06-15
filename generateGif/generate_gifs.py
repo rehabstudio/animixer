@@ -203,10 +203,13 @@ def generate_tiffs_ae(skip_existing=True):
     if GENERATED_PERMUTATIONS_FILE:
         with open(GENERATED_PERMUTATIONS_FILE, 'r') as fp:
             permutations = json.loads(fp.read())
+        if platform == "win32":
+            permutations = permutations[::-1]
     else :
         permutations = generate_permuations(number_animals)
         #with open('remaining_permuations.json', 'w') as fp:
         #    fp.write(json.dumps(permutations))
+
 
     batch_size = 50
     jobs = math.ceil(len(permutations) / batch_size)
