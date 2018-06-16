@@ -9,7 +9,7 @@ const envKeys = [
   'TWITTER_ACCESS_TOKEN_KEY',
   'TWITTER_ACCESS_TOKEN_SECRET'
 ];
-const projectId = process.env.GCLOUD_PROJECT || 'animixer-1d266';
+const projectId = process.env.GCLOUD_PROJECT;
 let animixerConfig;
 
 try {
