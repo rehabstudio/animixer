@@ -16,7 +16,7 @@ function updateAnimals(request, response) {
       let animals = snapshot.val();
       Object.keys(animals).forEach(animalKey => {
         let animal = animals[animalKey];
-        animalsFn.createNewAnimalRecord(
+        animalsFn.createUpdateAnimal(
           animal.animal1,
           animal.animal2,
           animal.animal3,

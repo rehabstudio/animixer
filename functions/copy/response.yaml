@@ -5,10 +5,14 @@ welcome:
 animal_head:
   text_1: We’re looking for something with the head of a wild ${0}! What body does it have?
   text_2: We’re looking for something with the head of a wild ${0} - how unusual. What body does it have?
+  goldenlion:
+    - Once a year, the mysterious golden lion appears on the beach. You’re in luck - there’s an animal with the head of a golden lion right here... What body does it have?
 
 animal_body:
   text_1: Ah the ${0} - I’ve seen an animal with that body. And what legs does it have?
   text_2: With the body of a magnificent ${0}!  And what legs does it have?
+  goldenlion:
+    - Ah, a golden lion - the rarest animal in the South of France. What legs does it have?
 
 animal_response:
   success_1: Congratulations, you’ve found the wild ${0}! This is what it sounds like...
@@ -27,6 +31,8 @@ animals_idential:
   success_1: You’ve found ${0} ${1}! Let’s look again - I think we can find a more unusual animal on this safari.
   success_2: You’ve found ${0} ${1}! That’s a great animal, but I’ve seen some really surprising ones on this safari. Let’s find one.
   restart: To start, what head does your animal have?
+  goldenlion:
+    - You’ve found a Golden Lion! Hear it roar...
 
 restart:
   text_1: To start, what head does your animal have? Or, you can tell me all three animals.

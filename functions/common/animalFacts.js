@@ -14,8 +14,13 @@ const animalFacts = yaml.safeLoad(
  *
  * @return {string} random fact string
  */
-function generateFact() {
-  let randomFact = utils.randomSelection(animalFacts.facts);
+function generateFact(animal) {
+  let randomFact;
+  if (animal && animalFacts[animal] !== undefined) {
+    randomFact = utils.randomSelection(animalFacts[animal]);
+  } else {
+    randomFact = utils.randomSelection(animalFacts.facts);
+  }
   let factVariableName = /\${([^}]+)}/g.exec(randomFact);
   let factVariable;
   if (factVariableName) {

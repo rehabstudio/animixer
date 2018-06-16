@@ -214,6 +214,8 @@ class Animal extends React.Component<{}> {
   }
 
   render() {
+    let animalName =
+      this.props.animalData.prettyName || this.props.animalData.name;
     return (
       <Container>
         <TitleContainer
@@ -226,7 +228,7 @@ class Animal extends React.Component<{}> {
           </div>
           <div style={{ textAlign: 'center' }}>
             <AnimalText className="card-panel text-darken-2 hoverable bring-front margins">
-              {utils.capitalizeFirstLetter(this.props.animalData.name)}
+              {utils.capitalizeFirstLetter(animalName)}
             </AnimalText>
           </div>
         </TitleContainer>

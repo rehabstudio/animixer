@@ -5,6 +5,7 @@ const ANIMAL3_ARGUMENT = 'animalLegs';
 const ANIMAL_CHANGED_ARGUMENT = 'changed';
 const UNKNOWN_ARGUMENT = 'noun';
 const ANIMAL_SUGGESTION = 'suggestion';
+const WELCOME_ANIMAL = 'animalWelcome';
 
 /**
  * Generate a context object for all responses gathering arguments
@@ -17,7 +18,12 @@ function generateContext(app, args, argsRequired) {
   // Default false
   argsRequired = argsRequired !== undefined ? argsRequired : false;
   let context = {};
-  let animalArgs = [ANIMAL1_ARGUMENT, ANIMAL2_ARGUMENT, ANIMAL3_ARGUMENT];
+  let animalArgs = [
+    ANIMAL1_ARGUMENT,
+    ANIMAL2_ARGUMENT,
+    ANIMAL3_ARGUMENT,
+    WELCOME_ANIMAL
+  ];
   // Refresh context
   for (let i = 0; i < args.length; i++) {
     context[args[i]] = app.getArgument(args[i]);
@@ -88,5 +94,6 @@ module.exports = {
   ANIMAL3_ARGUMENT,
   ANIMAL_CHANGED_ARGUMENT,
   ANIMAL_SUGGESTION,
-  UNKNOWN_ARGUMENT
+  UNKNOWN_ARGUMENT,
+  WELCOME_ANIMAL
 };

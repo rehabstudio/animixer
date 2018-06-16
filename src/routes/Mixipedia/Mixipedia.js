@@ -44,10 +44,6 @@ const LoadingSpinner = styled.img`
   display: block;
 `;
 
-const APIHost = window.location.href.startsWith('http://localhost')
-  ? 'http://localhost:5000/animixer-1d266/us-central1'
-  : 'https://us-central1-animixer-1d266.cloudfunctions.net';
-
 class Mixipedia extends React.Component<{}> {
   constructor(props) {
     super(props);
@@ -95,7 +91,7 @@ class Mixipedia extends React.Component<{}> {
   getImageUrl(appendImages) {
     let screenHeight = window.innerHeight;
     let limit = screenHeight > 900 ? 20 : 12;
-    let url = APIHost + '/api/mixipedia';
+    let url = utils.APIHost + '/api/mixipedia';
     if (appendImages && this.state.images.length > 0) {
       let lastImage = this.state.images[this.state.images.length - 1];
       url +=

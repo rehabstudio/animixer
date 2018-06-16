@@ -31,6 +31,9 @@ def load_encoding(fname, sample_length=None, sr=16000, ckpt=MODEL):
 
 
 def merge_sounds(audio_list, skip_existing=True):
+    # Output length = sample_length / sample_rate about 3 seconds
+    sample_length = 40000
+    sample_rate = 13300
     audio_1 = audio_list[0]
     audio_2 = audio_list[1]
     audio_name_1 = audio_1.split(SEPARATOR)[-1].split('.')[0]
@@ -47,9 +50,9 @@ def merge_sounds(audio_list, skip_existing=True):
     sample_length = 35000
     try:
         print("Loading Audio_1")
-        aud1, enc1 = load_encoding(audio_1, sample_length)
+        aud1, enc1 = load_encoding(audio_1, sample_length=sample_length, sr=sample_rate)
         print("Loading Audio_2")
-        aud2, enc2 = load_encoding(audio_2, sample_length)
+        aud2, enc2 = load_encoding(audio_2, sample_length=sample_length, sr=sample_rate)
 
         enc_mix = (enc1 + enc2) / 2.0
 
@@ -94,7 +97,7 @@ def generate_sounds(skip_existing=True):
             with tqdm(total=len(combinations)) as pbar:
                 for i, value in tqdm(
                         enumerate(
-                            p.imap_unordered(merge_sounds, combinations))):
+                            p.imap_unordered(merge_sounds, combinations, skip_existing))):
                     pbar.update()
                     output_files.append(value)
     else:
@@ -141,7 +144,6 @@ def upload_to_cloud(skip_existing=True):
 
 
 if __name__ == '__main__':
-    #skip_existing = SKIP_EXISTING
-    #generate_sounds(skip_existing)
-    #add_original(skip_existing)
-    upload_to_cloud(Fals)
+    generate_sounds(SKIP_EXISTING)
+    add_original(SKIP_EXISTING)
+    upload_to_cloud()

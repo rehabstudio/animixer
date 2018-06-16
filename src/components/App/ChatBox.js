@@ -15,9 +15,9 @@ import { ApiAiClient } from '.lib/api-ai-javascript';
 import Animal from './Animal';
 import Dictation from './Dictation';
 import Speech from './Speech';
+import utils from './../../utils';
 
 const ENTER_KEY_CODE = 13;
-const Host = 'https://safarimixer.com';
 
 const Container = styled.div`
   overflow-y: auto;
@@ -251,8 +251,10 @@ class ChatBox extends React.Component<{}, {}> {
     node.className =
       'query clearfix left-align right white-text card-panel bring-front margins';
     node.innerHTML = query;
-    this.resultDiv.appendChild(node);
-    this.updateScroll();
+    if (this.resultDiv) {
+      this.resultDiv.appendChild(node);
+      this.updateScroll();
+    }
     return node;
   }
 
@@ -261,8 +263,10 @@ class ChatBox extends React.Component<{}, {}> {
     node.className =
       'response clearfix left-align left card-panel text-darken-2 hoverable bring-front margins';
     node.innerHTML = '...';
-    this.resultDiv.appendChild(node);
-    this.updateScroll();
+    if (this.resultDiv) {
+      this.resultDiv.appendChild(node);
+      this.updateScroll();
+    }
     return node;
   }
 
@@ -298,11 +302,12 @@ class ChatBox extends React.Component<{}, {}> {
     let animalUrl;
     if (cardData.basic_card.buttons.length > 0) {
       shareUrl = cardData.basic_card.buttons[0].open_url_action.url;
-      animalUrl = shareUrl.replace(Host, '');
+      animalUrl = shareUrl.replace(utils.Host, '');
     }
     let animalNode = document.createElement('div');
     let animalData = {
       name: cardData.basic_card.title,
+      prettyName: cardData.basic_card.title,
       imageUrl: cardData.basic_card.image.url,
       audioUrl: this.state.audioUrl,
       shareUrl: shareUrl,

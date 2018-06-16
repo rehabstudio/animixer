@@ -9,6 +9,8 @@ import subprocess
 from subprocess import CalledProcessError, STDOUT, check_output
 from sys import platform
 import shutil
+import time
+import signal
 
 from google.cloud import storage
 import imageio
@@ -19,13 +21,13 @@ from tqdm import tqdm
 if platform == "linux" or platform == "linux2" or platform == "darwin":
     # linux
     # OS X
-    ROOT_DIR = os.path.join(os.environ['HOME'], 'Animixes')
+    ROOT_DIR = os.environ.get('ANIMIX_DIR') or os.path.join(os.environ['HOME'], 'Animixes')
     SEPARATOR = '/'
     OS = 'unix'
 
 elif platform == "win32":
     # Windows...
-    ROOT_DIR = 'D:/Animixes'
+    ROOT_DIR = os.environ.get('ANIMIX_DIR') or 'D:/Animixes'
     SEPARATOR = '\\'
     OS = 'win'
 
@@ -47,18 +49,21 @@ ANIMAL_LIST = sorted([
     'chicken',
     'crocodile',
     'dog',
+    'dinosaur',
     'duck',
     'elephant',
     'flamingo',
     'fox',
     'frog',
     'giraffe',
+    'goldenlion',
     'gorilla',
     'hippo',
     'hyena',
     'leopard',
     'lion',
     'lizard',
+    'monkey',
     'ostrich',
     'pig',
     'pony',
@@ -67,10 +72,15 @@ ANIMAL_LIST = sorted([
     'sheep',
     'tiger',
     'tortoise',
+    'unicorn',
     'warthog',
     'wildebeest',
     'zebra',
 ])
+BLOBS = []
+# Kill process after 30 minutes
+KILL_TIMER = 60 * 30
+GENERATED_PERMUTATIONS_FILE = os.environ.get('GENERATED_PERMUTATIONS_FILE')
 
 
 def remove_existing(permutations):
@@ -114,8 +124,15 @@ def generate_permuations(number_animals, skip_existing=True):
     """
     # generate originals
     print("Generating list of animals to create")
+    permutations = None
     originals = [[x, x, x] for x in range(number_animals)]
-    permutations = originals + list(itertools.permutations(range(number_animals), 3))
+    if GENERATED_PERMUTATIONS_FILE:
+        with open(GENERATED_PERMUTATIONS_FILE, 'r') as fp:
+            permutations = json.loads(fp.read())
+        if platform == "win32":
+            permutations = permutations[::-1]
+    else:
+        permutations = originals + list(itertools.permutations(range(number_animals), 3))
     if skip_existing:
         permutations = remove_existing(permutations)
     print("Returning {} animals to generate".format(len(permutations)))
@@ -128,30 +145,59 @@ def batch(iterable, n=1):
         yield iterable[ndx:min(ndx + n, l)]
 
 
-def batch_args(iterable, n=1, skip_existing=True, folder=None):
+def batch_args(iterable, n=1, skip_existing=True, folder=None, blobs=None):
     position = 1
     l = len(iterable)
     for ndx in range(0, l, n):
-        yield [iterable[ndx:min(ndx + n, l)], skip_existing, position, folder]
+        yield [iterable[ndx:min(ndx + n, l)], skip_existing, position, folder, blobs]
         position += 1
 
-def run_command(cmd, timeout=1800):
+
+def wait_after_effects_exit():
+    def get_after_effects_pid():
+        process = subprocess.Popen(
+            'pgrep "After Effects"',
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        my_pid, err = process.communicate()
+        return my_pid
+
+    counter = 0
+    my_pid = get_after_effects_pid()
+    while my_pid:
+        time.sleep(5)
+        my_pid = get_after_effects_pid()
+        counter += 5
+        if counter > KILL_TIMER:
+            os.kill(int(my_pid), signal.SIGKILL)
+            return False
+    return True
+
+
+def run_command(cmd, timeout=1800, retry=True):
     """
     Run command with timeout to kill it if it runs too long
     """
+    def retry_command():
+        if retry:
+            run_command(cmd, timeout, False)
+        else:
+            print("Processing failed 2nd time: {} skipping".format(str(e)))
+            return
+
     try:
         output = check_output(cmd, stderr=STDOUT, timeout=timeout)
         print("Process completed with output: {}".format(output))
+    # On Mac OS this exception will randomly get called while the script is
+    # still running
     except CalledProcessError as e:
-        print("Process completed with output: {}".format(str(e.args)))
+        if not wait_after_effects_exit():
+            retry_command()
+        print("Process completed after waiting for After Effects to close")
     except Exception as e:
-        try:
-            print("Process failed: {} retrying".format(str(e)))
-            output = check_output(cmd, stderr=STDOUT, timeout=timeout)
-            print("Process completed with output: {}".format(output))
-        except Exception as e:
-            print("Processing failed 2nd time skipping")
-
+        print("Process failed: {} retrying".format(str(e)))
+        retry_command()
 
 def generate_tiffs_ae(skip_existing=True):
     """
@@ -159,9 +205,12 @@ def generate_tiffs_ae(skip_existing=True):
     """
     # Generate permutations file
     permutations_file = None
-    number_animals = 30
+    number_animals = len(ANIMAL_LIST)
     permutations = generate_permuations(number_animals)
-    batch_size = 100
+    #with open('remaining_permuations.json', 'w') as fp:
+    #    fp.write(json.dumps(permutations))
+
+    batch_size = 50
     jobs = math.ceil(len(permutations) / batch_size)
 
     # Batch render animals and restart AE between batches
@@ -171,12 +220,19 @@ def generate_tiffs_ae(skip_existing=True):
 
         if OS == 'unix':
             # Mac call
-            cmd = (
-                'arch -x86_64 osascript ./ASfile.scpt '
-                '%s%sanimixer.jsx "renderAnimals(\'%s\', \'%s\', \'%s\')"' % (
-                    FILE_DIR, SEPARATOR, PROJECT_FILE, PERMUTATIONS_FILE, IMAGE_FOLDER))
-
-            run_command(cmd, (batch_size * 20))
+            cmd_list = [
+                "arch",
+                "-x86_64",
+                "osascript",
+                "./ASfile.scpt",
+                "%s%sanimixer.jsx" % (
+                    FILE_DIR,
+                    SEPARATOR),
+                "renderAnimals('%s', '%s', '%s')" % (
+                    PROJECT_FILE,
+                    PERMUTATIONS_FILE,
+                    os.path.join(ROOT_DIR, 'images'))]
+            run_command(cmd_list, (batch_size * 20))
         else:
             script = (
                 "var scriptPath = '%s' + '/' + '%s';" +
@@ -212,12 +268,14 @@ def generate_gifs(skip_existing=True):
         gif_path = os.path.join(ROOT_DIR, 'gifs', (subdir_name + '.gif'))
 
         if(os.path.exists(gif_path) and skip_existing):
-            #gif_paths.append(gif_path)
+            gif_paths.append(gif_path)
             continue
 
         filenames = [
             os.path.join(subdir, f) for f in os.listdir(subdir)
-            if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.png')]
+            if os.path.isfile(os.path.join(subdir, f)) and
+            f.endswith('.png') and
+            'thumbnail' not in f]
         images = []
         for filename in sorted(filenames):
             try:
@@ -254,12 +312,12 @@ def generate_thumbnails(skip_existing=True):
         thumbnail_path = os.path.join(ROOT_DIR, 'thumbnails', (subdir_name + '.png'))
 
         if(os.path.exists(thumbnail_path) and skip_existing):
-            #thumbnail_paths.append(thumbnail_path)
+            thumbnail_paths.append(thumbnail_path)
             continue
 
         filenames = [
             os.path.join(subdir, f) for f in os.listdir(subdir)
-            if os.path.isfile(os.path.join(subdir, f)) and f.endswith('.png')]
+            if os.path.isfile(os.path.join(subdir, f)) and f.endswith('thumbnail_00000.png')]
 
         if not filenames:
             print('Skipping folder: {}'.format(subdir))
@@ -269,10 +327,10 @@ def generate_thumbnails(skip_existing=True):
             img = Image.open(filenames[0])
             wpercent = (basewidth/float(img.size[0]))
             hsize = int((float(img.size[1])*float(wpercent)))
-            img = img.resize((basewidth,hsize), Image.ANTIALIAS).convert('RGB')
+            img = img.resize((basewidth,hsize), Image.ANTIALIAS)
             img.save(thumbnail_path, format='PNG')
         except Exception as e:
-            print('Error: filename {} failed, skipping'.format(filename))
+            print('Error: filename {} failed, skipping'.format(filenames[0]))
             print(str(e))
             continue
 
@@ -294,16 +352,16 @@ def storage_file_exists(gcs_file):
     return status
 
 
-def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None):
+def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None, blobs=None):
     """
     Upload file paths to cloud bucket defined in globals
     """
     client = storage.Client()
     bucket = client.get_bucket(CLOUD_BUCKET)
-    #print('Getting list of files from server')
-    if skip_existing:
+    print('Preparing for upload getting list of files from server')
+    if skip_existing and not blobs:
         blobs = [b.name for b in bucket.list_blobs()]
-    else:
+    elif not skip_existing and blobs:
         blobs = []
 
     print('Uploading {} files to cloud'.format(len(file_paths)))
@@ -327,7 +385,7 @@ def upload_to_cloud(file_paths, skip_existing=True, position=0, folder=None):
             continue
 
 
-def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None):
+def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None, blobs=None):
     """
     Launch multiple processes to speed up upload of gifs to GCS
     """
@@ -338,7 +396,7 @@ def async_upload(file_paths, batch_size=1000, skip_existing=True, folder=None):
                 enumerate(
                     p.starmap(
                         upload_to_cloud,
-                        batch_args(file_paths, batch_size, skip_existing, folder)))):
+                        batch_args(file_paths, batch_size, skip_existing, folder, blobs)))):
                 pbar.update()
     print("Async upload of files complete")
 
@@ -348,9 +406,14 @@ if __name__ == '__main__':
     thumb_nails = generate_thumbnails(SKIP_EXISTING)
     gif_paths = generate_gifs(SKIP_EXISTING)
 
+    client = storage.Client()
+    bucket = client.get_bucket(CLOUD_BUCKET)
+
+    BLOBS = [b.name for b in bucket.list_blobs()]
+
     if ASYNC:
-        async_upload(thumb_nails, skip_existing=False, folder='thumbnails')
-        async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
+        async_upload(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails', blobs=BLOBS)
+        async_upload(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs', blobs=BLOBS)
     else:
-        upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails')
-        upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs')
+        upload_to_cloud(thumb_nails, skip_existing=SKIP_EXISTING, folder='thumbnails', blobs=BLOBS)
+        upload_to_cloud(gif_paths, skip_existing=SKIP_EXISTING, folder='gifs', blobs=BLOBS)

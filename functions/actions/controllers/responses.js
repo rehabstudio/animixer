@@ -6,6 +6,9 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
 
+const config = require('./../../config');
+const animals = require('./animals');
+const contextFn = require('./../logic/context');
 const utils = require('./../../common/utils');
 const knowledgeGraph = require('./../logic/knowledgeGraph');
 const animalFacts = require('./../../common/animalFacts');
@@ -26,6 +29,12 @@ const animalData = yaml.safeLoad(
     'utf-8'
   )
 );
+const animalFactsData = yaml.safeLoad(
+  fs.readFileSync(
+    path.join(__dirname, '..', '..', 'copy/animalFacts.yaml'),
+    'utf-8'
+  )
+);
 
 /**
  * Used for formating response strings
@@ -33,9 +42,18 @@ const animalData = yaml.safeLoad(
  */
 String.prototype.format = function() {
   var args = arguments;
-  return this.replace(/\$\{(\d)\}/g, function(match, id) {
+  var retString = this.replace(/\$\{(\d)\}/g, function(match, id) {
     return args[id];
   });
+
+  // Substitute animal names for full name if exists
+  var substitutes = Object.keys(animalData.animalFull);
+  return substitutes.reduce(function(inString, animalFull) {
+    return inString.replace(
+      animalFull,
+      utils.titleCase(animalData.animalFull[animalFull])
+    );
+  }, retString);
 };
 
 /**
@@ -82,16 +100,29 @@ function animalsNotValid(app, context) {
  * @param  {Object} context parsed values from dialog flow
  */
 function animalsIdentical(app, context) {
-  let animalName = utils.capitalizeFirstLetter(context.animalHead);
+  let animalName = context.animalHead;
   let imageUrl = utils.getImageUrl(context);
   let audioUrl = utils.getAudioUrl(context);
   let simpleResp = {};
   let aOrAn = utils.getAOrAn(animalName);
   let respData = responseData.animals_idential;
-  let success = utils
-    .randomSelection([respData.success_1, respData.success_2])
-    .format(aOrAn, animalName);
+  let success;
   let restart = respData.restart;
+
+  if (responseData.animals_idential[animalName]) {
+    success = utils
+      .randomSelection(responseData.animals_idential[animalName])
+      .format();
+    success += responseData.animal_response.fun_fact.format(
+      animalName,
+      animalFacts.generateFact(animalName)
+    );
+    restart = responseData.animal_response.rediscover_2;
+  } else {
+    success = utils
+      .randomSelection([respData.success_1, respData.success_2])
+      .format(aOrAn, animalName);
+  }
 
   simpleResp.speech =
     '<speak>' +
@@ -101,12 +132,12 @@ function animalsIdentical(app, context) {
     '</speak>';
 
   let card = new BasicCard()
-    .setTitle(animalName)
+    .setTitle(animalName.format())
     .setImage(imageUrl, animalName)
     .setBodyText(`The ${context.animalHead}!`)
     .addButton(
       'Share me',
-      `https://safarimixer.beta.rehab/animal/?animal1=${context.animalHead}` +
+      `${config.Host}/animal/?animal1=${context.animalHead}` +
         `&animal2=${context.animalBody}&animal3=${context.animalLegs}`
     );
   let resp = new RichResponse()
@@ -119,7 +150,6 @@ function animalsIdentical(app, context) {
  * Welcome response
  *
  * @param  {Object} app     app actions on google app object
- * @param  {Object} context parsed values from dialog flow
  */
 function welcome(app, context) {
   let resp;
@@ -153,12 +183,20 @@ function restart(app, context) {
  * @param  {Object} context parsed values from dialog flow
  */
 function animalHead(app, context) {
-  let resp = utils
-    .randomSelection([
-      responseData.animal_head.text_1,
-      responseData.animal_head.text_2
-    ])
-    .format(context.animalHead);
+  let animalHead = context.animalHead || context.animalWelcome;
+  let resp;
+
+  if (responseData.animal_head[animalHead]) {
+    resp = utils.randomSelection(responseData.animal_head[animalHead]).format();
+  } else {
+    resp = utils
+      .randomSelection([
+        responseData.animal_head.text_1,
+        responseData.animal_head.text_2
+      ])
+      .format(animalHead);
+  }
+
   return ask(app, resp);
 }
 
@@ -169,12 +207,21 @@ function animalHead(app, context) {
  * @param  {Object} context parsed values from dialog flow
  */
 function animalBody(app, context) {
-  let resp = utils
-    .randomSelection([
-      responseData.animal_body.text_1,
-      responseData.animal_body.text_2
-    ])
-    .format(context.animalBody);
+  let resp;
+
+  if (responseData.animal_body[context.animalBody]) {
+    resp = utils
+      .randomSelection(responseData.animal_body[context.animalBody])
+      .format();
+  } else {
+    resp = utils
+      .randomSelection([
+        responseData.animal_body.text_1,
+        responseData.animal_body.text_2
+      ])
+      .format(context.animalBody);
+  }
+
   return ask(app, resp);
 }
 
@@ -190,11 +237,13 @@ function animalResponse(app, context) {
   let resp;
   // Generate new animal name and search for its assets
   let animalName = utils.capitalizeFirstLetter(
-    utils.makeAnimalName(
-      context.animalHead,
-      context.animalBody,
-      context.animalLegs
-    )
+    utils
+      .makeAnimalName(
+        context.animalHead,
+        context.animalBody,
+        context.animalLegs
+      )
+      .format()
   );
   let animalVerb;
   let respData = responseData.animal_response;
@@ -215,7 +264,7 @@ function animalResponse(app, context) {
   ]);
   let funFact;
   if (!context.animalData.animalFact) {
-    funFact = animalFacts.generateFact();
+    funFact = animalFacts.generateFact(context.animalHead);
   } else {
     funFact = context.animalData.animalFact;
   }

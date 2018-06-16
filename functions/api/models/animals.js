@@ -41,7 +41,7 @@ function createUpdateAnimal(animal1, animal2, animal3, additionalData) {
     animal1: animal1,
     animal2: animal2,
     animal3: animal3,
-    animalFact: animalFacts.generateFact(),
+    animalFact: animalFacts.generateFact(animal1),
     animalVerb: animalYamlData.verbs[animal1]
   };
   Object.assign(animalObj, additionalData);
@@ -130,7 +130,7 @@ function getAnimal(animal1, animal2, animal3) {
 }
 
 /**
- * Get animal data or create a new one then return data
+ * Check if animal exists and create it if not create a new one then return data
  * @param  {string} animal1 animal string to build animal name with
  * @param  {string} animal2 animal string to build animal name with
  * @param  {string} animal3 animal string to build animal name with

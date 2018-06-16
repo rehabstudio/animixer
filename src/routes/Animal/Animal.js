@@ -87,21 +87,6 @@ class Animal extends React.Component<{}> {
       parsedArgs.animal3
     );
 
-    // We don't need any data if it's not a mixed animal
-    if (
-      parsedArgs.animal1 === parsedArgs.animal2 &&
-      parsedArgs.animal2 === parsedArgs.animal3
-    ) {
-      let animalData = this.state.animalData;
-      animalData.name = parsedArgs.animal1;
-      animalData.shareUrl = shareUrl;
-      return this.setState({
-        animalDiscoverText: `You have discovered the ${parsedArgs.animal1}!`,
-        animalExists: true,
-        animalData: animalData
-      });
-    }
-
     let animalPromise = rp(animalDataUrl);
     return Promise.all([animalPromise])
       .then(responses => {

@@ -43,18 +43,18 @@ function unknownAnimal(app) {
  * @param  {Object} app actions on google app object
  */
 function animalHead(app) {
-  let context;
-  try {
-    context = contextFn.generateContext(
-      app,
-      [contextFn.ANIMAL1_ARGUMENT],
-      true
-    );
-  } catch (e) {
+  let context = contextFn.generateContext(app, [
+    contextFn.ANIMAL1_ARGUMENT,
+    contextFn.WELCOME_ANIMAL
+  ]);
+  if (
+    !context[contextFn.ANIMAL1_ARGUMENT] &&
+    !context[contextFn.WELCOME_ANIMAL]
+  ) {
     app.setContext('HeadComplete', 0);
     return unknownAnimal(app, '');
   }
-
+  app.setContext('HeadComplete', 10);
   responses.animalHead(app, context);
 }
 
@@ -114,6 +114,7 @@ function generateAnimal(app, skipSwitchScreen, context) {
       context.animalLegs
     );
     return Promise.resolve(animalFoundPromise).then(resp => {
+      context.animalData = resp;
       return responses.animalsIdentical(app, context);
     });
   }
@@ -256,6 +257,23 @@ function suggestion(app) {
   }
 }
 
+/**
+ * Check welcome for deep link to animal
+ * @type {Object}
+ */
+function welcomeAnimal(app) {
+  let context = contextFn.generateContext(app, [contextFn.WELCOME_ANIMAL]);
+  // Check for deep link if the user has asked for an animal
+  if (context[contextFn.WELCOME_ANIMAL]) {
+    app.setContext(contextFn.ANIMAL1_ARGUMENT, 10, {
+      animalHead: context[contextFn.WELCOME_ANIMAL]
+    });
+    return animalHead(app);
+  } else {
+    return responses.welcome(app, context);
+  }
+}
+
 module.exports = {
   animalBody,
   animalFoundPost,
@@ -263,5 +281,6 @@ module.exports = {
   changeAnimal,
   generateAnimal,
   unknownAnimal,
-  suggestion
+  suggestion,
+  welcomeAnimal
 };

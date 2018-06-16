@@ -21,6 +21,17 @@ function capitalizeFirstLetter(string) {
 }
 
 /**
+ * Capitalize every word in string
+ * @param  {[type]} string [description]
+ * @return {[type]}        [description]
+ */
+function titleCase(str) {
+  return str.replace(/\w\S*/g, function(txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}
+
+/**
  * Randomly return one item from array
  * @param  {array} values array of values to pick from
  * @return {any} randomly selected values from array
@@ -68,8 +79,13 @@ function getImageUrl(context) {
  * Generate audio url from context object
  */
 function getAudioUrl(context) {
-  let audioName =
-    [context.animalHead, context.animalBody].sort().join('') + '.wav';
+  let audioName;
+  if (context.animalHead !== context.animalBody) {
+    audioName =
+      [context.animalHead, context.animalBody].sort().join('') + '.wav';
+  } else {
+    audioName = context.animalHead + '.wav';
+  }
   let audioUrl = `https://storage.googleapis.com/${
     firebaseConfig.storageBucket
   }/sounds/${audioName}`;
@@ -93,5 +109,6 @@ module.exports = {
   getAudioUrl,
   getImageUrl,
   makeAnimalName,
-  randomSelection
+  randomSelection,
+  titleCase
 };

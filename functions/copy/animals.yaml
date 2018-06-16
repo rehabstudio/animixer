@@ -5,6 +5,7 @@ animals:
   - cat
   - chicken
   - crocodile
+  - dinosaur
   - dog
   - duck
   - elephant
@@ -12,12 +13,14 @@ animals:
   - fox
   - frog
   - giraffe
+  - goldenlion
   - gorilla
   - hippo
   - hyena
   - leopard
   - lion
   - lizard
+  - monkey
   - ostrich
   - pig
   - pony
@@ -26,9 +29,13 @@ animals:
   - sheep
   - tiger
   - tortoise
+  - unicorn
   - warthog
   - wildebeest
   - zebra
+
+animalFull:
+  goldenlion: golden lion
 
 verbs:
   antelope: bleat
@@ -37,6 +44,7 @@ verbs:
   cat: meow
   chicken: cock-a-doodle-doo
   crocodile: snap
+  dinosaur: roar
   dog: bark
   duck: quack
   elephant: trumpet
@@ -44,12 +52,14 @@ verbs:
   flamingo: squawk
   frog: ribbit
   giraffe: hum
+  goldenlion: roar
   gorilla: chatter
   hippo: grunt
   hyena: laugh
   leopard: growl
   lion: roar
   lizard: hiss
+  monkey: chatter
   ostrich: squawk
   pig: oink
   pony: neigh
@@ -58,6 +68,7 @@ verbs:
   sheep: baa
   tiger: growl
   tortoise: mutter
+  unicorn: neigh
   warthog: oink
   wildebeest: bellow
   zebra: neigh
@@ -71,6 +82,7 @@ types:
     - elephant
     - fox
     - giraffe
+    - goldenlion
     - hippo
     - hyena
     - leopard
@@ -81,6 +93,7 @@ types:
     - rhino
     - sheep
     - tiger
+    - unicorn
     - warthog
     - wildebeest
     - zebra
@@ -91,8 +104,10 @@ types:
     - ostrich
   primate:
     - gorilla
+    - monkey
   reptile:
     - crocodile
+    - dinosaur
     - frog
     - tortoise
     - lizard
@@ -122,6 +137,10 @@ syllables:
     - croc
     - oco
     - dile
+  dinosaur:
+    - d
+    - ino
+    - saur
   dog:
     - pupp
     - uppy
@@ -150,6 +169,10 @@ syllables:
     - gir
     - ira
     - raffe
+  goldenlion:
+    - gold
+    - io
+    - ion
   gorilla:
     - gor
     - illa
@@ -174,6 +197,10 @@ syllables:
     - liz
     - iza
     - zard
+  monkey:
+    - mon
+    - onke
+    - key
   ostrich:
     - ostr
     - emu
@@ -206,6 +233,10 @@ syllables:
     - tort
     - ortoi
     - toise
+  unicorn:
+    - un
+    - uni
+    - corn
   warthog:
     - wart
     - artho

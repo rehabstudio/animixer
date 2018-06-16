@@ -12,9 +12,9 @@
 // ------------------------------------------------------------------
 var path = ((File($.fileName)).path);
 var errorStr = '';
-var rootDir = 'D:/';
+var rootDir = 'D:/Animixes/image/';
 // For quick jobs needs to be setup as an argument in the tool
-var hardcodedPermuation;
+var hardcodedPermuations;
 /*var hardcodedPermuations = [
     [18, 5, 1],
     [20, 1, 13],
@@ -211,7 +211,7 @@ function placeBodyTallHead(headLayer, bodyLayer) {
   // Make body if head is tall
   if (headLayer.name.endsWith('_tall') === true) {
     bodyLayer.transform.anchorPoint.setValueAtTime(0, [
-      center[0], center[1] - 250
+      center[0], center[1] - 50
     ]);
   }
 }
@@ -232,10 +232,29 @@ function renderComposition(renderComp, folderPath, filepath) {
 
   Folder(folderPath).create();
   output.file = new File(filepath);
-
   output.applyTemplate('PNG Sequence with Alpha');
 
-  return renderItem
+  return renderItem;
+}
+
+function renderCompThumbnail(renderComp, folderPath, filepath) {
+  var renderItem = app.project.renderQueue.items.add(renderComp);
+  var output = renderItem.outputModule(1);
+
+  // TODO: Hide the background layer to reveal the shape
+  var bgLayer = getLayers(renderComp, 'bg', 'startsWith')[0];
+  bgLayer.enabled = false;
+  renderComp.duration = 1 * renderComp.frameDuration;
+
+  Folder(folderPath).create();
+
+  // Render thumb_nails
+  output.timeSpanStart = 0;
+  output.timeSpanDuration = 1 * renderComp.frameDuration;
+  output.file = new File(filepath + '_thumbnail');
+  output.applyTemplate('PNG Sequence with Alpha');
+
+  return renderItem;
 }
 
 /**
@@ -249,7 +268,7 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   var legs = legsComp.name.replace('_walk', '');
   var compName = head + '_' + body + '_' + legs + '_render';
   var existing = getComps(compName)[0];
-  var foldersPath = outputPath || rootDir + 'Animixes';
+  var foldersPath = outputPath || rootDir;
   var folderPath = foldersPath + '/' + compName;
   var filepath = folderPath + '/' + compName;
   var AEFolderName = 'Animixes';
@@ -267,27 +286,40 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
 
   // Get BG layer
   var bgLayer = getLayers(bodyComp, 'bg', 'startsWith')[0];
+  var bgShapeLayer = getLayers(bodyComp, 'shape', 'endsWith')[0];
+  bgLayer.enabled = true;
 
   // Get All layers we need to generate new comp
   var headLayer = getLayers(headComp, head + '_head', 'startsWith')[0];
   var bodyLayer = getLayers(bodyComp, body + '_body', 'startsWith')[0];
-  var tailLayer = getLayers(bodyComp, body + '_tail', 'startsWith')[0];
+  try {
+    var tailLayer = getLayers(bodyComp, body + '_tail', 'startsWith')[0];
+  } catch (e) {
+    var tailLayer = null;
+  }
+
   var legsLayer = getLayers(legsComp, legs + '_legs', 'startsWith')[0];
   var bodyLegsMarkers = getLayers(bodyComp, 'x_' + body + '_legs', 'startsWith');
   var legsMarkers = getLayers(legsComp, 'x_' + legs + '_legs', 'startsWith');
   var headMarker = getLayers(bodyComp, 'x_' + body + '_head', 'startsWith')[0];
-  var tailMarker = getLayers(bodyComp, 'x_' + body + '_tail', 'startsWith')[0];
+  if (tailLayer) {
+    var tailMarker = getLayers(bodyComp, 'x_' + body + '_tail', 'startsWith')[0];
+  }
+
   var markerPos;
 
   var headOnTop = headLayer.name.endsWith('_ontop');
 
   // Copy layers to render comp
+  bgShapeLayer.copyToComp(renderComp)
   bgLayer.copyToComp(renderComp);
   if (!headOnTop) {
     headLayer.copyToComp(renderComp);
   }
   legsLayer.copyToComp(renderComp);
-  tailLayer.copyToComp(renderComp);
+  if (tailLayer) {
+    tailLayer.copyToComp(renderComp);
+  }
   bodyLayer.copyToComp(renderComp);
   if (headOnTop) {
     headLayer.copyToComp(renderComp);
@@ -298,17 +330,21 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   var renderHeadLayer = getLayers(renderComp, head + '_head', 'startsWith')[0];
   var renderBodyLayer = getLayers(renderComp, body + '_body', 'startsWith')[0];
   var renderLegsLayer = getLayers(renderComp, legs + '_legs', 'startsWith')[0];
-  var renderTailLayer = getLayers(renderComp, body + '_tail', 'startsWith')[0];
+
   renderHeadLayer.locked = false;
   renderHeadLayer.visibile = true;
   renderBodyLayer.locked = false;
   renderBodyLayer.visibile = true;
   renderLegsLayer.locked = false;
   renderLegsLayer.visibile = true;
-  renderTailLayer.locked = false;
-  renderTailLayer.visibile = true;
   renderBGLayer.locked = false;
   renderBGLayer.visibile = true;
+
+  if (tailLayer) {
+    var renderTailLayer = getLayers(renderComp, body + '_tail', 'startsWith')[0];
+    renderTailLayer.locked = false;
+    renderTailLayer.visibile = true;
+  }
 
   // Move head to body
   markerPos = headMarker.transform.position.value;
@@ -317,17 +353,21 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   ]);
 
   // Move tail to body
-  markerPos = tailMarker.transform.position.value;
-  renderTailLayer.transform.position.setValueAtTime(0, [
-    markerPos[0], markerPos[1]
-  ]);
+  if (tailLayer) {
+    markerPos = tailMarker.transform.position.value;
+    renderTailLayer.transform.position.setValueAtTime(0, [
+      markerPos[0], markerPos[1]
+    ]);
+  }
 
   // Move legs to body
   placeLegs(bodyLegsMarkers, legsMarkers, renderLegsLayer);
 
   // Parent head and tail to body
   renderHeadLayer.parent = renderBodyLayer;
-  renderTailLayer.parent = renderBodyLayer;
+  if (tailLayer) {
+    renderTailLayer.parent = renderBodyLayer;
+  }
   renderLegsLayer.parent = renderBodyLayer;
 
   // Move tall heads
@@ -337,9 +377,12 @@ function renderAnimalComp(headComp, bodyComp, legsComp, outputPath) {
   //scaleComp(renderComp, 0.25);
 
   // render
-  var renderItem = renderComposition(renderComp, folderPath, filepath);
+  var renderItem1 = renderComposition(renderComp, folderPath, filepath);
+  var thumbRenderComp = renderComp.duplicate();
+  thumbRenderComp.name = renderComp.name + '_thumb';
+  var renderItem2 = renderCompThumbnail(thumbRenderComp, folderPath, filepath + '_thumb');
 
-  return [renderComp, renderItem];
+  return [renderComp, thumbRenderComp];
 }
 
 function scaleComp(comp, scaleFactor) {
@@ -444,10 +487,11 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
       var walk_cmp_1 = walkComps[permutations[0][0]];
       var walk_cmp_2 = walkComps[permutations[0][1]];
       var walk_cmp_3 = walkComps[permutations[0][2]];
-      var renderCompItem = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, outputPath);
-      if (renderCompItem) {
+      var renderCompItems = renderAnimalComp(walk_cmp_1, walk_cmp_2, walk_cmp_3, outputPath);
+      if (renderCompItems.length > 0) {
         $.writeln('Composed animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
-        comps.push(renderCompItem[0]);
+        comps.push(renderCompItems[0]);
+        comps.push(renderCompItems[1]);
         batch++;
       } else {
         $.writeln('Skipping animal: ' + walk_cmp_1.name + walk_cmp_2.name + walk_cmp_3.name);
@@ -478,7 +522,7 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
   if (errorStr) {
     errorStr = 'Error Report:\n' + errorStr;
     $.writeln(errorStr);
-    alert(errorStr);
+    //alert(errorStr);
   }
 
   $.writeln('Render animals complete');
@@ -493,4 +537,4 @@ function renderAnimals(projectPath, permutationsFile, outputPath) {
 // ------------------------------------------------------------------
 
 //renderAnimals(undefined, 'C:\\Users\\rehabstudio\\Projects\\animixer\\generateGif\\ae_project\\permutations.json', undefined);
-//renderAnimals(undefined, '~/Projects/animixer/generateGif/ae_project/permutations.json', undefined);
+//renderAnimals(undefined, '~/Projects/animixer/generateGif/ae_project/permutations.json', '~/Animixes/images');
