@@ -66,7 +66,7 @@ const FadeBottom = styled.div`
   ${FadeCss} top: 0;
 `;
 
-class Background extends React.Component<{}> {
+class Background extends React.Component {
   render() {
     return (
       <BackgroundContainer>

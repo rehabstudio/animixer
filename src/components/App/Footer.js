@@ -81,7 +81,7 @@ const RehabImg = styled.img`
   margin-left: auto;
 `;
 
-class Footer extends React.Component<{}> {
+class Footer extends React.Component {
   render() {
     return (
       <FooterContainer className={this.props.hide ? 'hidden' : ''}>

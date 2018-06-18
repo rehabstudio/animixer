@@ -31,7 +31,7 @@ function goMixipedia() {
   history.push('/mixipedia');
 }
 
-class Toolbar extends React.Component<{}, {}> {
+class Toolbar extends React.Component {
   state = {};
 
   render() {

@@ -20,7 +20,7 @@ const Container = styled.div`
   overflow-y: hidden;
 `;
 
-class App extends React.Component<{}> {
+class App extends React.Component {
   constructor(props) {
     super(props);
     let hideHeader = null;

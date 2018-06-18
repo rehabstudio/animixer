@@ -211,7 +211,7 @@ function placeBodyTallHead(headLayer, bodyLayer) {
   // Make body if head is tall
   if (headLayer.name.endsWith('_tall') === true) {
     bodyLayer.transform.anchorPoint.setValueAtTime(0, [
-      center[0], center[1] - 50
+      center[0], center[1] - 100
     ]);
   }
 }

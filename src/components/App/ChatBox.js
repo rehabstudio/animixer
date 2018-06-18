@@ -9,7 +9,7 @@ import Artyom from 'artyom.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-// Compiled with babel in node_modules for build process
+// Compiled with babel in node_modules otherwise minify react build process fails
 import { ApiAiClient } from '.lib/api-ai-javascript';
 
 import Animal from './Animal';
@@ -95,7 +95,7 @@ const ChatBoxContainer = styled.div`
   }
 `;
 
-class ChatBox extends React.Component<{}, {}> {
+class ChatBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

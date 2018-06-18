@@ -45,7 +45,7 @@ const Logo = styled.img`
   }
 `;
 
-class Welcome extends React.Component<{}> {
+class Welcome extends React.Component {
   constructor(props) {
     super(props);
     this.scrollDown = this.props.scrollDown || function() {};

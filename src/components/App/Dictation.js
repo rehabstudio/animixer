@@ -17,7 +17,7 @@ const MicIcon = styled.div`
   flex-shrink: 0;
 `;
 
-class Dictation extends React.Component<{}> {
+class Dictation extends React.Component {
   constructor(props) {
     super(props);
     this.artyom = props.artyom || new Artyom();

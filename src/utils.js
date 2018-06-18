@@ -4,10 +4,10 @@ if (window.location.href.startsWith('http://localhost')) {
   Host = 'http://localhost:3000';
   APIHost = 'http://localhost:5000/animixer-1d266/us-central1';
 } else if (window.location.href.startsWith('https://safarimixer.beta.rehab')) {
-  Host = 'https://safarimixer.com';
+  Host = 'https://safarimixer.beta.rehab';
   APIHost = 'https://us-central1-animixer-1d266.cloudfunctions.net';
 } else {
-  Host = 'https://animixer-dev.firebaseapp.com/';
+  Host = 'https://animixer-dev.firebaseapp.com';
   APIHost = 'https://us-central1-animixer-dev.cloudfunctions.net';
 }
 
