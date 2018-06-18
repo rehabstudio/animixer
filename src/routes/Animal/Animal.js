@@ -21,7 +21,7 @@ const AnimalContainer = styled.div`
   }
 `;
 
-class Animal extends React.Component<{}> {
+class Animal extends React.Component {
   constructor(props) {
     super(props);
     const parsed = qs.parse(props.location.search);

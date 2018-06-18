@@ -75,7 +75,7 @@ const MixipediaLink = Buttons.TitleLink(
   `
 );
 
-class Header extends React.Component<{}> {
+class Header extends React.Component {
   goHome() {
     if (this.props.location && this.props.location.pathname === '/') {
       window.dispatchEvent(new CustomEvent('reset', { detail: true }));

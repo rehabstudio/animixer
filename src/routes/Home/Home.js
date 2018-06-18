@@ -26,7 +26,7 @@ const token = window.location.href.startsWith('safarimixer.beta.rehab')
   ? '35806a855ec547b28ce01e07815569e4' // prod
   : '1966938d12d44294989f5dae8ceae940'; // dev
 
-class Home extends React.Component<{}> {
+class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

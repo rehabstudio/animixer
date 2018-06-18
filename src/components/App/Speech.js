@@ -18,7 +18,7 @@ const SpeakerIcon = styled.div`
   flex-shrink: 0;
 `;
 
-class Speech extends React.Component<{}> {
+class Speech extends React.Component {
   constructor(props) {
     super(props);
 

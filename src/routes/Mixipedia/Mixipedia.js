@@ -44,7 +44,7 @@ const LoadingSpinner = styled.img`
   display: block;
 `;
 
-class Mixipedia extends React.Component<{}> {
+class Mixipedia extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

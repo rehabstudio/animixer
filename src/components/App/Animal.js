@@ -77,7 +77,7 @@ const buttonMediaCss = `
 const AudioButton = Buttons.TitleLink(null, null, 'auto', buttonMediaCss);
 const AudioButtonText = Buttons.TitleText();
 
-class Animal extends React.Component<{}> {
+class Animal extends React.Component {
   constructor(props) {
     super(props);
     this.shareEnabled =
