@@ -9,7 +9,8 @@ import Artyom from 'artyom.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { ApiAiClient } from 'api-ai-javascript';
+// Compiled with babel in node_modules otherwise minify react build process fails
+import { ApiAiClient } from '.lib/api-ai-javascript';
 
 import Animal from './Animal';
 import Dictation from './Dictation';
