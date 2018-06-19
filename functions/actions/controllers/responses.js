@@ -129,6 +129,7 @@ function animalsIdentical(app, context) {
     success +
     `<audio src="${audioUrl}"></audio>` +
     restart +
+    `<audio src="${chimeSrc}"></audio>` +
     '</speak>';
 
   let card = new BasicCard()
