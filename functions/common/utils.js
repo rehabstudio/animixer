@@ -54,8 +54,23 @@ function makeAnimalName(head, body, legs) {
   if (head === body && body === legs) {
     return head;
   } else {
-    return getSyllable(head, 0) + getSyllable(body, 1) + getSyllable(legs, 2);
+    let resp =
+      getSyllable(head, 0) + getSyllable(body, 1) + getSyllable(legs, 2);
+    return swearGuard(head, body, legs, resp);
   }
+}
+
+/**
+ * To make our app kid friendly remove edge cases that make swear words
+ * @param {*} head
+ * @param {*} body
+ * @param {*} legs
+ */
+function swearGuard(head, body, legs, resp) {
+  if (head === 'sheep' && body === 'kitten') {
+    resp = resp.replace('shit', 'shet');
+  }
+  return resp;
 }
 
 /**
