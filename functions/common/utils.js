@@ -67,7 +67,7 @@ function makeAnimalName(head, body, legs) {
  * @param {*} legs
  */
 function swearGuard(head, body, legs, resp) {
-  if (head === 'sheep' && body === 'kitten') {
+  if (head === 'sheep' && body === 'cat') {
     resp = resp.replace('shit', 'shet');
   }
   return resp;
