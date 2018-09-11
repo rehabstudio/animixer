@@ -1,4 +1,8 @@
 const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+
+const serviceAccount = require('certs/service_account.json');
+
 process.env.DEBUG = 'actions-on-google:*';
 
 const ENV = process.env.ENV;
@@ -46,7 +50,8 @@ const firebaseConfig = {
   databaseURL: `https://${projectId}.firebaseio.com`,
   projectId: `${projectId}`,
   storageBucket: 'animixer-1d266.appspot.com',
-  messagingSenderId: '74799871575'
+  messagingSenderId: '74799871575',
+  credential: admin.credential.cert(serviceAccount)
 };
 const twitterConfig = {
   consumer_key: animixerConfig.twitter_api_key,
