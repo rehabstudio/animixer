@@ -111,7 +111,7 @@ Go to the [Actions on Google developer console](https://actions-console.corp.goo
 
 Click "BUILD" on the Dialogflow card, and follow the flow to create a new Dialogflow agent.
 
-When your agent is created, click on the gear icon to get to the "Export and Import" tab. You can then compress the dialogflow_agent folder from this repo into a zip file, and then import it. You should then see all of Safari Mixer’s Intents and Entities in your project.
+When your agent is created, click on the gear icon to get to the "Export and Import" tab. You can find the dialogflow_agent/animixer.zip file and then import it. You should then see all of Safari Mixer’s Intents and Entities in your project.
 
 [Here](https://dialogflow.com/docs/getting-started/basics) is some more info about how Dialogflow works in general.
 
