@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
-const serviceAccount = require('certs/service_account.json');
+const serviceAccount = require('./certs/service_account.json');
 
 process.env.DEBUG = 'actions-on-google:*';
 
