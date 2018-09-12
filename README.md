@@ -149,6 +149,8 @@ For deploying the website, sounds and gifs for this project we require a service
 
 save the key at the root of this project with the name: animixer-pk.json
 
+If you on windows are also save this file in functions/certs file for functions firebase database access. (A symlink should work on unix / OSX systems).
+
 The Makefiles in generateGif and generateSound setup env vars required which will need to be updated to point at the location of this file on your machine.
 
 ## Sound Generation

@@ -1,12 +1,14 @@
-let admin;
+const { firebaseConfig } = require('./../config');
+let firebase;
 
 if (process.env.NODE_ENV === 'test') {
-  admin = require('firebase');
+  firebase = require('firebase');
+
+  firebase.initializeApp(firebaseConfig);
 } else {
-  admin = require('firebase-admin');
+  firebase = require('firebase-admin');
+
+  firebase.initializeApp(firebaseConfig);
 }
-const { firebaseConfig } = require('./../config');
 
-admin.initializeApp(firebaseConfig);
-
-module.exports = admin;
+module.exports = firebase;
