@@ -1,8 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
-const serviceAccount = require('./certs/animixer-pk.json');
-
 process.env.DEBUG = 'actions-on-google:*';
 
 const ENV = process.env.ENV;
@@ -44,15 +42,20 @@ if (!animixerConfig) {
   }
 }
 
-const firebaseConfig = {
+let firebaseConfig = {
   apiKey: animixerConfig.firebase_api_key,
   authDomain: `${projectId}.firebaseapp.com`,
   databaseURL: `https://${projectId}.firebaseio.com`,
   projectId: `${projectId}`,
   storageBucket: 'animixer-1d266.appspot.com',
-  messagingSenderId: '74799871575',
-  credential: admin.credential.cert(serviceAccount)
+  messagingSenderId: '74799871575'
 };
+
+if (process.env.NODE_ENV !== 'test') {
+  const serviceAccount = require('./certs/animixer-pk.json');
+  firebaseConfig.credential = admin.credential.cert(serviceAccount);
+}
+
 const twitterConfig = {
   consumer_key: animixerConfig.twitter_api_key,
   consumer_secret: animixerConfig.twitter_api_secret,
