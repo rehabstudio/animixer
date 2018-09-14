@@ -317,17 +317,21 @@ Create a head, body, legs and tail (optional) layers containing all the elements
 
 Each body part must be named with the following convention:
 
+```
 {animal}_head e.g. monkey_head
 {animal}_body e.g. monkey_body
 {animal}_legs e.g. monkey_legs
 {animal}_tail e.g. monkey_tail
+```
 
 Create a head, legs front, legs back and tail (not optinal) markers these can be copy pasted from other animals are usually hidden layers with the following name:
 
+```
 x_{animal}_head e.g. x_monkey_head
 x_{animal}_legs e.g. x_monkey_legs_back
 x_{animal}_legs e.g. x_monkey_legs_front
 x_{animal}_tail e.g. x_monkey_tail
+```
 
 Create a background layer with the name:
 
