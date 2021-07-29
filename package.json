@@ -4,7 +4,7 @@
   "homepage": "https://animixer-1d266.firebaseapp.com/",
   "private": true,
   "dependencies": {
-    "@firebase/app": "^0.1.4",
+    "@firebase/app": "^0.6.28",
     "@firebase/auth": "^0.3.0",
     "@firebase/firestore": "^0.2.1",
     "api-ai-javascript": "^2.0.0-beta.21",
