@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "@firebase/app": "^0.1.4",
-    "@firebase/auth": "^0.3.0",
+    "@firebase/auth": "^0.16.8",
     "@firebase/firestore": "^0.2.1",
     "api-ai-javascript": "^2.0.0-beta.21",
     "artyom.js": "^1.0.6",
