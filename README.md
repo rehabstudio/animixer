@@ -300,3 +300,51 @@ The keys are stored in the firebase environment by using the firebase CLI push y
 firebase functions:config:set animixer.firebase_api_key=<API_KEY>
 
 firebase functions:config:set animixer.twitter_api_key=<API_KEY> animixer.twitter_api_secret=<SECRET> animixer.twitter_api_token_key=<TOKEN> animixer.twitter_api_token_secret=<SECRET>
+
+## Creating a new animal
+
+To create a new animal the following is needed:
+
+- Create a new animal in AfterEffects
+- Add the animal to generateGif/generate_gifs.py
+- Add the animal to functions/copy/animals.yaml
+
+### Create new animal
+
+To create a new animal in after effects after an animal is created it will need to be setup in the following way.
+
+Create a head, body, legs and tail (optional) layers containing all the elements required for each, usually the head and tail layers are parented to the body see existing animals for reference.
+
+Each body part must be named with the following convention:
+
+```
+{animal}_head e.g. monkey_head
+{animal}_body e.g. monkey_body
+{animal}_legs e.g. monkey_legs
+{animal}_tail e.g. monkey_tail
+```
+
+Create a head, legs front, legs back and tail (not optinal) markers these can be copy pasted from other animals are usually hidden layers with the following name:
+
+```
+x_{animal}_head e.g. x_monkey_head
+x_{animal}_legs e.g. x_monkey_legs_back
+x_{animal}_legs e.g. x_monkey_legs_front
+x_{animal}_tail e.g. x_monkey_tail
+```
+
+Create a background layer with the name:
+
+`bg {color} shape` and `bg {color}`
+
+bg color is used for gifs and bg shape is used for thumbnails
+
+There are suffixes to add control to unusually shapped animals:
+
+- `_ontop` -> For some heads this will place the head on top of the body as some heads look better on top of the body
+    e.g. frog_head_ontop
+- `_tall` -> For some heads that are tall this suffix will move the entire animal down when rendering
+    e.g. ostrich_head_ontop
+- `_noscale` -> For 2 legged creatures we add _noscale to stop the legs being stretched by the leg scaling script
+    e.g. ostrich_legs_noscale
+
