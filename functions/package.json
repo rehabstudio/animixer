@@ -10,7 +10,7 @@
     "test": "./node_modules/.bin/mocha --exit --timeout 5000"
   },
   "dependencies": {
-    "@google-cloud/storage": "^1.5.2",
+    "@google-cloud/storage": "^5.19.0",
     "actions-on-google": "^1.0.0",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
@@ -18,7 +18,7 @@
     "firebase": "^4.8.1",
     "firebase-admin": "^4.2.1",
     "firebase-functions": "^0.8.1",
-    "firebase-tools": "^4.2.1",
+    "firebase-tools": "^9.4.0",
     "js-yaml": "^3.10.0",
     "path": "^0.12.7",
     "request": "^2.87.0",
