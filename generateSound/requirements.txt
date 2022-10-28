@@ -22,7 +22,7 @@ jsonschema==2.6.0
 jupyter==1.0.0
 jupyter-client==5.2.1
 jupyter-console==5.2.0
-jupyter-core==4.4.0
+jupyter-core==4.11.2
 librosa==0.5.1
 llvmlite==0.21.0
 magenta==0.3.5
