@@ -1,6 +1,6 @@
 appnope==0.1.0
 audioread==2.1.5
-bleach==1.5.0
+bleach==3.3.0
 bokeh==0.12.13
 cycler==0.10.0
 decorator==4.1.2
@@ -45,7 +45,7 @@ pickleshare==0.7.4
 Pillow==5.0.0
 pretty-midi==0.2.8
 prompt-toolkit==1.0.15
-protobuf==3.5.1
+protobuf==3.18.3
 ptyprocess==0.5.2
 Pygments==2.2.0
 pyparsing==2.2.0
@@ -69,5 +69,6 @@ tornado==4.5.3
 tqdm==4.19.5
 traitlets==4.3.2
 wcwidth==0.1.7
-Werkzeug==0.14.1
+Werkzeug==0.15.3
 widgetsnbextension==3.1.0
+wheel>=0.38.0 # not directly required, pinned by Snyk to avoid a vulnerability
