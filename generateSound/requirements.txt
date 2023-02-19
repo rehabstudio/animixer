@@ -35,7 +35,7 @@ mistune==0.8.3
 nbconvert==5.3.1
 nbformat==4.4.0
 notebook==5.7.11
-numba==0.36.2
+numba==0.49.0
 numpy==1.14.0
 pandas==0.22.0
 pandocfilters==1.4.2
