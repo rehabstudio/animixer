@@ -6,7 +6,7 @@
   "dependencies": {
     "@firebase/app": "^0.1.4",
     "@firebase/auth": "^0.3.0",
-    "@firebase/firestore": "^0.9.3",
+    "@firebase/firestore": "^1.14.0",
     "api-ai-javascript": "^2.0.0-beta.21",
     "artyom.js": "^1.0.6",
     "async-work-queue": "^0.3.0",
