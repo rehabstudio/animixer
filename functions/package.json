@@ -21,8 +21,8 @@
     "firebase-tools": "^4.2.1",
     "js-yaml": "^3.10.0",
     "path": "^0.12.7",
-    "request": "^2.87.0",
-    "request-promise": "^4.2.2",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
     "twitter": "^1.7.1"
   },
   "private": true,
